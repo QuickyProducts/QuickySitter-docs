@@ -1,24 +1,27 @@
-repository: AVsitter/avsitter.github.io
+repository: QuickyProducts/QuickySitter-docs
+
+# project-pages: served from https://quickyproducts.github.io/QuickySitter-docs/
+baseurl: /QuickySitter-docs
 
 output: web
 # this property is useful for conditional filtering of content that is separate from the PDF.
 
-topnav_title: AVsitter&trade; documentation
+topnav_title: QuickySitter&trade; documentation
 # this appears on the top navigation bar next to the home button
 
-site_title: AVsitter&trade; documentation
+site_title: QuickySitter&trade; documentation
 # this appears in the html browser tab for the site title (seen mostly by search engines, not users)
 
-company_name: Avcode Technologies
+company_name: QuickyProducts
 # this appears in the footer
 
-github_editme_path: AVsitter/avsitter.github.io/
+github_editme_path: QuickyProducts/QuickySitter-docs/edit/devel/
 # if you're using Github, provide the basepath to the branch you've created for reviews, following the sample here. if not, leave this value blank.
 
-disqus_shortname: 
+disqus_shortname:
 # if you're using disqus for comments, add the shortname here. if not, leave this value blank.
 
-google_analytics: 
+google_analytics:
 # if you have google-analytics ID, put it in. if not, edit this value to blank.
 
 host: 127.0.0.1
@@ -30,11 +33,18 @@ port: 4000
 exclude:
   - .idea/
   - .gitignore
+  - Dockerfile
+  - Gemfile
+  - Gemfile.lock
+  - pdf-*.sh
+  - update.sh
+  - pdfconfigs/
+  - pdf/
 # these are the files and directories that jekyll will exclude from the build
 
-feedback_subject_line: AVsitter documentation
+feedback_subject_line: QuickySitter documentation
 
-feedback_email: example@gmail.com
+feedback_email:
 # used as a contact email for the Feedback link in the top navigation bar
 
 feedback_disable: false
@@ -43,7 +53,7 @@ feedback_disable: false
 # feedback_text: "Need help?"
 # if you uncomment the previous line, it changes the Feedback text
 
-feedback_link: "https://github.com/AVsitter/avsitter.github.io/issues"
+feedback_link: "https://github.com/QuickyProducts/QuickySitter-docs/issues"
 # if you uncomment the previous line, it changes where the feedback link points to
 
 highlighter: rouge
@@ -59,6 +69,8 @@ kramdown:
 # filter used to process markdown. note that kramdown differs from github-flavored markdown in some subtle ways
 
 collections:
+  qs_lsl_examples:
+    output: true
   avsitter1_lsl_examples_beginner:
     output: true
   avsitter1_lsl_examples_advanced:
@@ -126,15 +138,21 @@ sidebars:
 - avsitter1_sidebar
 - other
 
-description: "AVsitter"
+description: "QuickySitter documentation — fork of AVsitter 2 with LSD storage, HUD integration, and a SYNC re-sync API."
 # the description is used in the feed.xml file
 
 # needed for sitemap.xml file only
-url: https://avsitter.github.io
+url: https://quickyproducts.github.io
 
 # Site variables
-script_github: https://github.com/AVsitter
+script_github: https://github.com/QuickyProducts/QuickySitter
+upstream_github: https://github.com/AVsitter/AVsitter
 sl_website: https://secondlife.com
-marketplace: https://marketplace.secondlife.com/stores/79645
-kitely: https://www.kitely.com/market
-inworld: http://maps.secondlife.com/secondlife/Coda/95/119/304
+marketplace:
+kitely:
+inworld:
+
+# Content attribution
+# This site re-uses portions of the AVsitter documentation by Avcode Technologies,
+# licensed CC-BY-SA 4.0. QuickySitter additions are also CC-BY-SA 4.0.
+# Theme is the Documentation Theme for Jekyll by Tom Johnson (MIT).

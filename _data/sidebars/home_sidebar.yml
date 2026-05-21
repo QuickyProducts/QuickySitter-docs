@@ -6,38 +6,140 @@ entries:
   levels: one
   folders:
 
-  - title: AVsitter Documentation
+  - title: QuickySitter
     output: web
     folderitems:
     - title: Introduction
       url: /index.html
       output: web
-    - title: AVsitter2
-      url: /avsitter2_home.html
+    - title: Getting Started
+      url: /getting-started.html
       output: web
-    - title: AVsitter1
-      url: /avsitter1_home.html
-      output: web
-
-  - title: News & Updates
-    output: web
-    folderitems:
-    - title: News Archive
-      url: /news_archive.html
-      output: web
-    - title: In-world Updates
-      url: /updates.html
+    - title: Migration from AVsitter
+      url: /migration.html
       output: web
 
-  - title: Other
+  - title: Core System
     output: web
     folderitems:
+    - title: AVpos Reference
+      url: /avpos-reference.html
+      output: web
+    - title: Submenus
+      url: /submenus.html
+      output: web
+    - title: SitTargets
+      url: /sittargets.html
+      output: web
+    - title: Chat Commands
+      url: /chat-commands.html
+      output: web
+    - title: Adjustment Workflow
+      url: /adjustment-workflow.html
+      output: web
+
+  - title: Multi-Avatar Setups
+    output: web
+    folderitems:
+    - title: Couples Setup
+      url: /couples-setup.html
+      output: web
+    - title: 3+ Avatars
+      url: /multi-avatar.html
+      output: web
+    - title: Animation Sequences
+      url: /animation-sequences.html
+      output: web
+
+  - title: Plugins
+    output: web
+    folderitems:
+    - title: '[QS]prop'
+      url: /plugin-prop.html
+      output: web
+    - title: '[AV]faces'
+      url: /plugin-faces.html
+      output: web
+    - title: '[AV]camera'
+      url: /plugin-camera.html
+      output: web
+    - title: '[AV]sequence'
+      url: /plugin-sequence.html
+      output: web
+    - title: '[AV]control'
+      url: /plugin-control.html
+      output: web
+
+  - title: QuickySitter Extensions
+    output: web
+    folderitems:
+    - title: HUD Integration
+      url: /hud-integration.html
+      output: web
+    - title: Re-Sync Protocol
+      url: /resync-protocol.html
+      output: web
+    - title: LSD Storage
+      url: /lsd-storage.html
+      output: web
+    - title: Personal Pose Offsets
+      url: /personal-pose-offsets.html
+      output: web
+    - title: QSALIVE Discovery
+      url: /qsalive-discovery.html
+      output: web
+    - title: Boot Sequence
+      url: /boot-sequence.html
+      output: web
+
+  - title: Reference
+    output: web
+    folderitems:
+    - title: LinkMessage Numbers
+      url: /linkmessage-numbers.html
+      output: web
+    - title: LSD Keys
+      url: /lsd-keys.html
+      output: web
+    - title: Version Bump Convention
+      url: /version-bump.html
+      output: web
+    - title: Compatibility Matrix
+      url: /compatibility-matrix.html
+      output: web
+
+  - title: Development
+    output: web
+    folderitems:
+    - title: Repo Structure
+      url: /repo-structure.html
+      output: web
+    - title: Contributing
+      url: /contributing.html
+      output: web
+    - title: Debug Flags
+      url: /debug-flags.html
+      output: web
+
+  - title: Support
+    output: web
+    folderitems:
+    - title: FAQ / Troubleshooting
+      url: /faq.html
+      output: web
+    - title: Known Limits
+      url: /known-limits.html
+      output: web
     - title: Support
       url: /support.html
       output: web
-    - title: Contributor Guidelines
-      url: /contribute.html
+
+  - title: Upstream (AVsitter) reference
+    output: web
+    folderitems:
+    - title: AVsitter2 documentation
+      url: /avsitter2_home.html
       output: web
-    - title: Theme instructions
-      url: /mydoc_introduction.html
+    - title: AVsitter1 documentation
+      url: /avsitter1_home.html
       output: web
