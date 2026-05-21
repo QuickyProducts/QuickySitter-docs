@@ -10,10 +10,6 @@ toc: false
 
 If you have purchased AVsitter in Second Life, please collect the latest package by visiting our <a href="{{ site.inworld }}">location in Second Life</a> and click the update giver on the table. The latest packaged release is also sent when you rez the AVsitter package in Second Life.
 
-## Updates in OpenSim
-
-If you have purchased AVsitter for OpenSim from Kitely Market, we suggest you manage any updates manually by taking any updated scripts from the <a href='https://github.com/AVsitter/AVsitter/releases'>the project release page</a> however to request a packaged update please IM AVsitter Resident in Kitely.
-
 ## Notes about updates
 
 {% include note.html content="Before starting a new project, it is a good idea to check <a href='https://github.com/AVsitter/AVsitter/releases'>the project release page</a> for the latest version." %}
