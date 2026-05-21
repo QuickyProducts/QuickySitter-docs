@@ -1,64 +1,37 @@
 ---
-title: AVsitter Support
+title: QuickySitter Support
 sidebar: home_sidebar
-keywords: support
+keywords: support, help, contact
 permalink: support.html
 toc: false
 ---
 
-## Getting help with using AVsitter
+## Getting help with using QuickySitter
 
-If you need advice with using AVsitter, we suggest:
+If you're stuck:
 
--  Study the <a href="https://avsitter.github.io">instructions</a> including the <a href="https://www.youtube.com/user/code5violet/videos">tutorials on youtube</a>.
--  Examine the <a href="/avsitter2_examples.html">example items</a> found inside the AVsitter Examples [BOX] (included in the <a href="{{ site.marketplace }}">packaged edition</a>).
--  Search the <a href="https://avsitter.com/qa">AVsitter support Q&A website archive</a> where many questions were answered.
--  Join <a href="http://world.secondlife.com/group/ccd07e24-4fdd-750f-f28f-fadd795d32ca">Unofficial AVsitter Support Group</a> in Second Life, where community members may be able to help. If you don't receive an immediate answer, try again at another time when other users are online.
--  Follow the <a href="/news_archive.html">news page</a> for information about future development.
+- Read the documentation on this site, especially [Getting Started](getting-started.html), [Migration from AVsitter](migration.html), and the [FAQ](faq.html).
+- For underlying AVsitter behavior that QS keeps intact, the [upstream AVsitter documentation](https://avsitter.github.io) is the canonical reference — sit-target setup, AVpos notecard syntax, etc.
+- Check [Known Limits](known-limits.html) for hard SL limits QS can't work around.
 
-## Reporting code & documentation bugs
+## Reporting bugs
 
--  Code bugs can be reported on the <a href="https://github.com/AVsitter/AVsitter/issues">AVsitter GitHub issues page</a>.
--  For AVsitter Documentation issues please use the <a href="https://github.com/AVsitter/avsitter.github.io/issues">AVsitter Documentation GitHub issues page</a>.
+- **Code bugs and behavior issues:** [GitHub Issues on the QuickySitter repo](https://github.com/QuickyProducts/QuickySitter/issues).
+- **Documentation bugs and typos:** [GitHub Issues on this docs repo](https://github.com/QuickyProducts/QuickySitter-docs/issues). The "Edit me" link at the top of every page links to the source on GitHub.
 
-## Marketplace enquiries
-If you have a Marketplace or purchase related enquiry please contact <a href="http://world.secondlife.com/resident/8c24c939-bbe9-4bd0-8868-b5b92cc90bc9">AVsitter Resident</a> with a full description. Messages will be checked every 3-4 days, so please be patient awaiting a response.
+For a bug report to be actionable, include:
 
-# Development/Support Team
-The current Development/Support Team consists of the following members:
+- QS script versions involved (from each `[QS]*.lsl`'s `string version = "X.YYY";` line, or from chat — boot logs versions on `state_entry`).
+- Steps to reproduce.
+- Expected vs observed behavior.
+- Relevant chat output, especially anything `bDebug` produced.
 
-### Inworld Group Support:
-  * [Kyra Ishtari](http://world.secondlife.com/resident/e20a9909-3a42-4c0a-8c1d-ddf8bed72d0e)
-  * [trewdie](http://world.secondlife.com/resident/1a443f12-94f4-466c-90b5-5fd77f29c888)
-  * *(wanted)*
+## Contributing
 
-### Second Life Release Tester:
-  * *(wanted)*
+Pull requests are welcome. See [Contributing](contributing.html) for code conventions, the version-bump rule, and the docs/code split.
 
-### OpenSim Release Tester:
-  * *(wanted)*
+## License and trademark
 
-### Code Developers:
-  * [Sei Lisa](http://world.secondlife.com/resident/3c5aaad5-8c66-46a3-b574-cad02acf520d) (Lead Developer / Project Maintainer)
-  * *(wanted)*
+QuickySitter LSL scripts are licensed under the [Mozilla Public License Version 2.0](https://www.mozilla.org/en-US/MPL/2.0/). This documentation site is licensed under [CC-BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/).
 
-### Documentation Maintainer:
-  * *(wanted)*
-
-### Project Management:
-  * [Code Violet](http://world.secondlife.com/resident/b30c9262-9abf-4cd1-9476-adcf5723c029)
-
-### Marketplace Enquiries:
-  * [AVsitter Resident](http://world.secondlife.com/resident/8c24c939-bbe9-4bd0-8868-b5b92cc90bc9)
-
-
-{% include important.html content="Team members work on a voluntary basis and are not required to assist you with your project. If you are reaching out for help please ask nicely and respect their time!" %}
-
-
-## Joining the Team?
-* If you are making significant ongoing contributions to the AVsitter ecosystem you may contact <a href="http://world.secondlife.com/resident/3c5aaad5-8c66-46a3-b574-cad02acf520d">Sei Lisa</a> and request you be considered for addition to the team.
-
-* Distributions received from the sale of the official packaged AVsitter are shared with the project team (adjusted periodically by Project Management based on recent/ongoing activity).
-
-* For code/documentation contributions please follow the <a href="/contribute">contributor guidelines</a>.
-
+QuickySitter&trade; is not affiliated with or sponsored by Linden Research or the AVsitter&trade; project. See the [AVsitter trademark guidelines](https://avsitter.github.io/TRADEMARK.mediawiki) for permitted use of the AVsitter brand. Second Life&reg; is a trademark of Linden Research, Inc.

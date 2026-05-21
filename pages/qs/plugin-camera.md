@@ -1,0 +1,52 @@
+---
+title: '[AV]camera'
+sidebar: home_sidebar
+permalink: plugin-camera.html
+keywords: camera, plugin, view, llSetLinkCamera
+toc: true
+---
+
+The camera plugin in QuickySitter is **stock `[AV]camera` from AVsitter 2** — not forked. Stock camera's only name-bound code (`get_number_of_scripts` via `main_script = "[AV]sitA"`) is dead code (never called anywhere in the file), and all working paths are protocol-based and script-name-agnostic.
+
+No `[QS]camera` is planned. The `camera_script` literal in `[QS]boot` stays as legitimate AVsitter-protocol surface — boot hardcodes the name only for the DUMP cascade (sending 90020 to ask camera to dump its CAMERA lines).
+
+## Notecard syntax
+
+The `CAMERA` section in `AVpos`:
+
+```
+CAMERA
+NAME default
+POS <0.0, 0.0, 0.0>
+ROT <0.0, 0.0, 0.0>
+```
+
+Full reference in the [upstream AVcamera page](https://avsitter.github.io/avsitter2_camera.html).
+
+## Link messages used
+
+| Num | Direction | Use |
+|-----|-----------|-----|
+| `90011` | `[AV]adjuster` → `[AV]camera` | Tell camera scripts to set the `llSetLinkCamera()`. |
+| `90020` | `[QS]boot` → `[AV]camera` | DUMP request. Boot sends this hardcoded for camera (no QSDUMP announce). |
+| `90021` | `[AV]camera` → `[QS]boot` | DUMP complete echo. |
+| `90022` | `[AV]camera` → `[QS]boot` | One dump line. |
+| `90174` | `[AV]adjuster` → `[AV]camera` | Add CAMERA line at runtime. |
+| `90230` | various → `[AV]camera` | Set camera by name. |
+
+These are all stock AVsitter numbers used with stock semantics.
+
+## Should `[QS]camera` ever be forked?
+
+Only if a use case appears that needs script-name-independent gating or QSDUMP-style discovery. Currently no plans:
+
+- Camera doesn't have a menu button that would need gating (camera switches happen via button-bound 90230 messages from pose entries).
+- The hardcoded `camera_script = "[AV]camera"` in boot is the one name-binding left, but it's confined to a literal that's trivial to update if needed.
+
+If you're building a third-party camera plugin, follow the QSALIVE adoption pattern from [QSALIVE Discovery](qsalive-discovery.html) so it can detect QS at runtime without locking to a specific sitter-script name.
+
+## See also
+
+- [Upstream AVcamera documentation](https://avsitter.github.io/avsitter2_camera.html).
+- [LinkMessage Numbers](linkmessage-numbers.html) — full link-message map.
+- [Boot Sequence § QSDUMP](boot-sequence.html#qsdump--plugin-announce-for-the-dump-cascade) — why camera stays hardcoded.
