@@ -61,8 +61,8 @@ See [Boot Sequence](boot-sequence.html).
 | Num | Direction | Use |
 |-----|-----------|-----|
 | `90089` | `[QS]prop` → all | Announces prop presence so `[QS]adjuster` can gate the `[PROP]` menu item without an inventory probe. id = announcer's script name. |
-| `90090` | `[QS]faces` → all | Announces faces presence so `[QS]sitA` / `[QS]adjuster` can gate `[FACES]` / `[EXPRESSION]` menu items. |
-| `90091` | `[QS]adjuster` → all | Announces adjuster presence so `[QS]sitA` can gate the `[HELPER]` menu item. |
+| `90090` | `[QS]faces` → all | Announces faces presence so `[QS]sitB` / `[QS]adjuster` can gate `[FACES]` / `[EXPRESSION]` menu items. |
+| `90091` | `[QS]adjuster` → all | Announces adjuster presence so `[QS]sitB` can gate the `[HELPER]` menu item. |
 | `90092` | `[QS]select` → all | Announces select presence so `[QS]sitB` can gate select-driven menu routing. The legacy `[AV]select` inventory probe stays in sitB as stock-AVsitter backward-compat. |
 | `90093` | bidirectional | hudproxy presence probe. See [HUD Integration](hud-integration.html). |
 | `90094` | `[QS]boot` → all plugins | QSDUMP probe — "if you're DUMP-capable, announce yourself now." |
@@ -76,6 +76,12 @@ See [Boot Sequence](boot-sequence.html).
 |-----|-----------|-----|
 | `90098` | `[QS]adjuster` → `[QS]boot` | "Start dump for channel." Replaces stock adjuster-owned `[DUMP]`. |
 | `90099` | `[QS]boot` → self | Dump tick — self-trigger between dump-line iterations. |
+
+### Plug-and-play plugin registry (9021x)
+
+| Num | Direction | Use |
+|-----|-----------|-----|
+| `90212` | plugin → `[QS]sitB` | QSPLUG_REGISTER — `msg = "<label>\|<click_chan>\|<scriptName>"`. Registers a runtime button into the `[OPTIONS]` top-level menu. sitB dedupes by `scriptName`. Click dispatch lands on `<click_chan>` with `msg = <label>`, `id = <controller-key>`. See [Options Menu Plugins](options-menu-plugins.html). |
 
 ### Personal pose offsets (9026x)
 

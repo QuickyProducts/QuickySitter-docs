@@ -97,21 +97,47 @@ default
 
 ## Sibling presence protocols
 
-QSALIVE inspired a small family of presence broadcasts inside the fork, all unsolicited HELLOs that gate menu items or DUMP routing without inventory probes:
+QSALIVE inspired a small family of presence broadcasts inside the fork. Most are unsolicited HELLOs that gate menu items or DUMP routing without inventory probes; one (QSPLUG_REGISTER) carries enough payload to *register* runtime UI rather than just signal presence:
 
 | Num   | Sender | Purpose |
 |-------|--------|---------|
 | 90089 | `[QS]prop` | Gates the `[PROP]` button in adjuster's menu. |
 | 90090 | `[QS]faces` | Gates the `[FACES]` / `[EXPRESSION]` menu items in sitA and adjuster. |
-| 90091 | `[QS]adjuster` | Gates the `[HELPER]` menu item in sitA. |
+| 90091 | `[QS]adjuster` | Gates the `[HELPER]` menu item in sitB. |
 | 90092 | `[QS]select` | Gates select-driven menu routing in sitB. |
 | 90093 | `[QS]hudproxy` | Bidirectional probe with adjuster — see [HUD Integration](hud-integration.html). |
 | 90094 / 90095 | `[QS]boot` ↔ DUMP plugins | QSDUMP — plugin announce for the DUMP cascade. |
+| 90212 | plugin → `[QS]sitB` | QSPLUG_REGISTER — stateful registration of a plug-and-play `[OPTIONS]` menu button. See [Options Menu Plugins](options-menu-plugins.html). |
 
 All of them are name-independent: a fork could rename `[QS]prop` to `[FOO]prop` and the `[PROP]` button still appears, because gating reads the HELLO bit set by `link_message`, not `llGetInventoryType`.
 
+## Discovery vs. Integration
+
+QSALIVE answers a *discovery* question: "is QuickySitter even here, and what does it support?" That's stateless — every probe is fresh, sitA has no list of who's asked, and the reply payload is read-only metadata.
+
+Some plugins need a second step beyond discovery: they want to put a button into the furniture's menu. That's *integration*, and it's stateful — sitB has to remember which plugins registered, with which label, dispatched to which channel. QSPLUG_REGISTER (90212) is the integration channel; see [Options Menu Plugins](options-menu-plugins.html) for the full spec.
+
+The two protocols complement each other:
+
+| | **QSALIVE** | **QSPLUG_REGISTER** |
+|---|---|---|
+| **Layer** | Discovery | Integration |
+| **Statefulness** | stateless probe + reply | stateful registry (sitB-side) |
+| **Direction** | bidirectional | unidirectional (plugin → sitB) |
+| **Use case** | "Should I activate at all?" | "Add my button to the menu." |
+
+A plugin with UI typically uses **both**:
+
+1. **QSALIVE** at startup to confirm QuickySitter is present (falls back to legacy AVsitter inventory probe if not — see boilerplate above).
+2. **QSPLUG_REGISTER** to claim its `[OPTIONS]` menu slot.
+
+The most important cross-wiring: **listen to 90097 and trigger your QSPLUG_REGISTER re-announce on it**. sitA's unsolicited 90097 broadcast is the cheapest possible "host just rebooted" signal — sitB likely went through its own `QS_BOOT_RELOAD` cascade and dropped your entry. One line in your `link_message` handler keeps the registry consistent for free.
+
+A plugin **without UI** (logger, analytics, state mirror) only needs QSALIVE.
+
 ## See also
 
+- [Options Menu Plugins](options-menu-plugins.html) — the integration counterpart, QSPLUG_REGISTER.
 - [LinkMessage Numbers](linkmessage-numbers.html) — complete fork link-message map.
 - [Boot Sequence](boot-sequence.html) — how boot uses QSALIVE for the self-check.
 - [HUD Integration](hud-integration.html) — 90093, the QSALIVE-shaped probe for hudproxy.

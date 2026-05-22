@@ -88,6 +88,9 @@ entries:
     - title: QSALIVE Discovery
       url: /qsalive-discovery.html
       output: web
+    - title: Options Menu Plugins
+      url: /options-menu-plugins.html
+      output: web
     - title: Boot Sequence
       url: /boot-sequence.html
       output: web
