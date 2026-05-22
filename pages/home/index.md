@@ -21,10 +21,10 @@ QuickySitter keeps full compatibility with stock AVsitter 2 (notecard format, ME
 
 ## Where to start
 
-- **[Getting Started](/getting-started.html)** — install, basic setup, migration from AVsitter.
-- **[Core System](/core-system.html)** — AVpos format, sit targets, menu structure, the adjustment workflow.
-- **[QuickySitter Extensions](/qs-extensions.html)** — what QS adds on top of AVsitter (HUD, Re-Sync, LSD, QSALIVE).
-- **[Reference](/reference.html)** — link message numbers, LSD keys, compatibility matrix.
+- **[Getting Started]({{ site.baseurl }}/getting-started.html)** — install, basic setup, migration from AVsitter.
+- **[AVpos Reference]({{ site.baseurl }}/avpos-reference.html)** — AVpos format, sit targets, menu structure, the adjustment workflow.
+- **[QSALIVE Discovery]({{ site.baseurl }}/qsalive-discovery.html)** — what QS adds on top of AVsitter (HUD, Re-Sync, LSD, presence protocol).
+- **[LinkMessage Numbers]({{ site.baseurl }}/linkmessage-numbers.html)** — link message numbers, LSD keys, compatibility matrix.
 
 ## Source & License
 
