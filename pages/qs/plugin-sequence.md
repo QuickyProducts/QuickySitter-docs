@@ -12,14 +12,19 @@ Behavior is identical to stock from the user's perspective. Animation sequences 
 
 ## Notecard syntax (unchanged from stock)
 
+A sequence is a block of directives starting with `SEQUENCE <pose_or_label>`. Following `WAIT <seconds>` and `SOUND <name>|<flag>` lines belong to that step until the next `SEQUENCE` line.
+
 ```
-SEQUENCE
-NAME Wave
-STEP wave_open 0.5
-STEP wave_close 0.5
+SEQUENCE Lovescene
+WAIT 30
+SEQUENCE poseB
+WAIT 25
+SEQUENCE poseC
+SOUND beat|1
+WAIT 60
 ```
 
-Each `STEP` line is `<animation_name> <duration_seconds>`. The sequence plays one step after another, looping the last step until something else takes over.
+Each line is one directive. `WAIT` takes a single float (seconds); `SOUND <name>|<flag>` plays a sound on the step (`flag = 1` to loop). The sequence plays steps in order; after the last step the timer stops and the running pose continues to loop.
 
 Full reference in the [upstream AVsequence page](https://avsitter.github.io/avsitter2_sequence.html).
 

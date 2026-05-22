@@ -29,27 +29,21 @@ See [SitTargets](sittargets.html) for the per-slot offset model.
 
 ## SYNC poses
 
-For lockstep timing, both partners' poses must be marked `SYNC` (not `POSE`) in the AVpos notecard:
+For lockstep timing, both partners' poses must be declared with `SYNC` (not `POSE`) in the AVpos notecard. Each slot uses the same `<menu_name>` but a different animation file:
 
 ```
-SYNC
-NAME Cuddle
-ANIM cuddle_left
-POS <0.05, 0.0, 0.0>
-ROT <0.0, 0.0, 0.0>
+SITTER 0
+SYNC Cuddle|cuddle_left
+{Cuddle}<0.05, 0.0, 0.0><0.0, 0.0, 0.0>
+
+SITTER 1
+SYNC Cuddle|cuddle_right
+{Cuddle}<-0.05, 0.0, 0.0><0.0, 0.0, 180.0>
 ```
 
-The slot-2 entry has the same pose name but a different animation:
+When the menu selects "Cuddle," both sitA scripts play their respective `cuddle_left` / `cuddle_right` animations at their per-slot offsets.
 
-```
-SYNC
-NAME Cuddle
-ANIM cuddle_right
-POS <-0.05, 0.0, 0.0>
-ROT <0.0, 0.0, 180.0>
-```
-
-When the menu selects "Cuddle," both sitA scripts play their respective `cuddle_left` / `cuddle_right` animations.
+The `{<name>}<pos><rot>` lines are normally written by `[HELPER] [SAVE]` / `[DUMP]` after you adjust positions in-world — you don't usually type them by hand. See [AVpos Reference](avpos-reference.html) for the full grammar.
 
 QS stores SYNC poses without the `P:` prefix in `qs:p:<ch>:<i>` LSD keys. `POSE` (solo) entries get the `P:` prefix to distinguish them. See [LSD Keys](lsd-keys.html).
 

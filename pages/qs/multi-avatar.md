@@ -20,23 +20,20 @@ Each slot has its own sit-target offset, its own ANIM lines in the AVpos notecar
 
 ## SYNC across N slots
 
-A SYNC pose with the same `NAME` in N slots animates all N sitters in lockstep. Each slot picks the correct per-slot animation via the ANIM line:
+A SYNC pose with the same `<menu_name>` in N slots animates all N sitters in lockstep. Each slot picks its own per-slot animation file:
 
 ```
-SYNC
-NAME Group-Hug
-ANIM hug_left
+SITTER 0
+SYNC Group-Hug|hug_left
 
-SYNC  
-NAME Group-Hug
-ANIM hug_center
+SITTER 1
+SYNC Group-Hug|hug_center
 
-SYNC
-NAME Group-Hug
-ANIM hug_right
+SITTER 2
+SYNC Group-Hug|hug_right
 ```
 
-(Slot N's section in the AVpos notecard is delimited by the `MENU` and `TOMENU` structure; consult the [upstream multi-sitter docs](https://avsitter.github.io/avsitter2_home.html) for the full layout.)
+`SITTER <n>` opens the section for sitter slot `<n>`; all subsequent POSE/SYNC/BUTTON lines belong to that slot until the next `SITTER`. See [AVpos Reference](avpos-reference.html) for the full grammar, and the [upstream multi-sitter docs](https://avsitter.github.io/avsitter2_home.html) for tutorial-style examples.
 
 ## Re-Sync with N sitters
 

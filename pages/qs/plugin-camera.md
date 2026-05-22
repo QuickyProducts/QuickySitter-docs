@@ -12,13 +12,17 @@ No `[QS]camera` is planned. The `camera_script` literal in `[QS]boot` stays as l
 
 ## Notecard syntax
 
-The `CAMERA` section in `AVpos`:
+Camera presets are declared with `CAMERA` directives in `AVpos`, one per line. The format is:
 
 ```
-CAMERA
-NAME default
-POS <0.0, 0.0, 0.0>
-ROT <0.0, 0.0, 0.0>
+CAMERA <trigger>|<eye_position>|<focus_position>
+```
+
+`<trigger>` is the pose name (or `DEFAULT` for the un-posed camera). Both positions are vectors relative to the prim's pivot.
+
+```
+CAMERA DEFAULT|<-0.09605, -2.75508, 1.23718>|<-0.07217, -1.81931, 0.88538>
+CAMERA Sit1|<0.12466, -1.65931, 3.34216>|<0.12805, -1.20604, 2.45079>
 ```
 
 Full reference in the [upstream AVcamera page](https://avsitter.github.io/avsitter2_camera.html).

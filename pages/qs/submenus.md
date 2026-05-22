@@ -23,34 +23,25 @@ A menu is built out of three constructs in the AVpos notecard:
 ## Structure example
 
 ```
-SETUP
-  TOMENU Couples
-  TOMENU Solos
+TOMENU Couples
+TOMENU Solos
 
 MENU Couples
-  POSE
-  NAME Cuddle
-  ...
-
-  SYNC
-  NAME Hug
-  ...
+POSE Cuddle|cuddle_anim
+SYNC Hug|hug_anim
 
 MENU Solos
-  POSE
-  NAME Sit
-  ...
-
-  POSE
-  NAME Stand
-  ...
+POSE Sit|sit_anim
+POSE Stand|stand_anim
 ```
+
+Each directive is one line, with `|` separating arguments. `POSE <menu_name>|<animation>` declares a pose; the position is set later by a separate `{<menu_name>}<pos><rot>` line (normally written by `[HELPER] [SAVE]` / `[DUMP]`).
 
 Result: the top-level menu shows two buttons, `Couples` and `Solos`. Clicking `Couples` opens a submenu with `Cuddle` and `Hug`. Clicking `Solos` opens a submenu with `Sit` and `Stand`.
 
 ## Top-level menu
 
-The top-level menu is built from `TOMENU` entries in the `SETUP` section. If you have only one section of poses, you don't need a TOMENU — sitB renders the poses directly. If you have multiple sections, every section needs a corresponding TOMENU at the top to be reachable.
+The top-level menu is built from `TOMENU` entries above the first `MENU` line. If you have only one section of poses, you don't need a TOMENU — sitB renders the poses directly. If you have multiple sections, every section needs a corresponding TOMENU above to be reachable.
 
 A common bug: a creator adds a second `MENU Solos` section but forgets the second `TOMENU Solos` line. The Solos section exists in LSD but never appears in the menu.
 

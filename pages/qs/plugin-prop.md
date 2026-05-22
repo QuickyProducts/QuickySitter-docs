@@ -12,24 +12,34 @@ Everything else matches stock semantics exactly. Drop a stock `[AV]prop` into a 
 
 ## Notecard syntax (unchanged from stock)
 
-The `PROP1` / `PROP2` / `PROP3` sections in `AVpos` work exactly as in stock AVsitter:
+Props are declared with `PROP` / `PROP1` / `PROP2` / `PROP3` directives in `AVpos`, one per line with `|`-separated arguments:
 
 ```
-PROP1
-TRIGGER Sit casual
-PROP CoffeeMug
-TYPE 1
-POINT right hand
+PROP Read|paper|G1|<0.55, 0.0, 0.14>|<-134.0, 75.9, 44.8>
+PROP1 Dine|knife|G1|<0.39, -0.31, 0.17>|<-0.02, 9.9, 90.1>|Right Hand
 ```
+
+Arguments:
+
+| Field | Content |
+|-------|---------|
+| 0 | `<trigger>` — pose name that triggers this prop. |
+| 1 | `<object>` — inventory object name to rez. |
+| 2 | `<group>` — prop group label (e.g. `G1`). Used to de-rez sibling props of the same group when the trigger changes. |
+| 3 | `<pos>` — position vector `<x, y, z>`. |
+| 4 | `<rot>` — rotation Euler `<x, y, z>` in degrees. |
+| 5 | `<attach_point>` *(optional)* — attachment point name for `PROP1` / `PROP2` / `PROP3`. Empty for ground props. |
+
+The directive name controls the prop-type semantic in `[QS]prop`:
+
+| Directive | Internal type | Meaning |
+|-----------|---------------|---------|
+| `PROP`  | `0` | Ground prop (rezzed at the prim's position; no attachment). |
+| `PROP1` | `1` | Attachment prop (auto-attaches to the sitter's `<attach_point>`). |
+| `PROP2` | `2` | Attachment prop, personal (COPY-TRANSFER NEXT). |
+| `PROP3` | `3` | Special — persists across pose changes. |
 
 Full directive reference in the [upstream AVprop page](https://avsitter.github.io/avsitter2_prop.html).
-
-| TYPE | Meaning |
-|------|---------|
-| `0` | Ground prop (COPY-OK NEXT). |
-| `1` | Attachment prop (COPY-TRANSFER NEXT). |
-| `2` | Attachment prop personal. |
-| `3` | Special (persists across pose changes). |
 
 ## QS-specific addition: 90280 (QSPROP_ATTACH)
 

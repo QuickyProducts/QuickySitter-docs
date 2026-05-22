@@ -12,13 +12,26 @@ Behavior is otherwise identical to stock — drop a stock `[AV]faces` into a QS 
 
 ## Notecard syntax (unchanged from stock)
 
-The `ANIM` section in `AVpos` defines face animations:
+Face animations are declared with `ANIM` directives in `AVpos`, one per line. The format is:
 
 ```
-ANIM
-NAME smile
-ON Sit casual
-ANIMATION smile_face
+ANIM <trigger>|<expression>|<duration>|<expression>|<duration>|...
+```
+
+Where `<trigger>` is a pose name (the face animation plays when that pose is selected), and each `<expression>|<duration>` pair specifies an SL face animation plus how long to hold it (in seconds). Up to three expressions per line is the practical limit.
+
+Examples:
+
+```
+ANIM Happy|express_laugh_emote|5|express_smile|1|express_wink_emote|2
+ANIM Sleep|express_disdain|1|express_smile|1
+```
+
+You can also reference an existing `ANIM` line by trigger name to reuse it:
+
+```
+ANIM pose1|express_laugh_emote|5|express_smile|1
+ANIM pose2|pose1
 ```
 
 Full reference in the [upstream AVfaces page](https://avsitter.github.io/avsitter2_faces.html).
