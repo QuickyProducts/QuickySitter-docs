@@ -6,150 +6,197 @@ keywords: avpos, notecard, syntax, directive, pose, menu
 toc: true
 ---
 
-QuickySitter reads the same `AVpos` notecard format as stock AVsitter 2. This page summarises the syntax and points out QS-specific behavior. For the complete tutorial-style upstream reference (with worked examples), see the [AVsitter2 AVpos page](https://avsitter.github.io/avsitter2_avpos.html).
+QuickySitter reads the same `AVpos` notecard format as stock AVsitter 2. This page summarises the syntax and points out QS-specific behavior. For tutorial-style examples, see the [upstream AVsitter2 AVpos reference](https://avsitter.github.io/avsitter2_avpos.html).
 
 ## What the notecard does
 
 A single notecard named **`AVpos`** in the same prim as `[QS]boot`. It defines:
 
-- Sitter slot count (one slot per `[QS]sitA` script you have in inventory).
+- Sitter slot count (one slot per `[QS]sitA` script in inventory).
 - Channel-level settings (BRAND, CUSTOM_TEXT, MTYPE, ETYPE, …).
 - The pose list per slot — pose name, animation, default position, default rotation.
 - Menu structure — submenus, top-level menu items, button definitions.
 - Optional prop attachments, face animations, animation sequences.
 
-## Top-level structure
+## Line format
 
-Sections are introduced by uppercase directives at the start of a line:
+Each line is **`<COMMAND> <arguments>`**. Most commands take their arguments as a single `|`-separated string after the command keyword:
 
 ```
-SETUP
-  channel-level settings
-  …
-
-POSE | SYNC | MENU
-  per-pose data
-  …
-
-PROP1
-  prop attachments
-  …
+POSE Sit casual|sit
+TOMENU SITS
+BUTTON [SWAP]|99
+SITTER 1|Female
 ```
 
-`[QS]boot` parses the notecard line by line; unknown directives are ignored (forward-compat).
+Unknown commands are silently ignored (forward-compat). Blank lines and comment-style lines (anything that isn't a recognised directive followed by data) are skipped.
 
-## SETUP directives
+There is no multi-line block syntax — `NAME`, `ANIM`, `POS`, `ROT` as standalone directives don't exist in the parser. The position/rotation of a pose lives on a separate `{<name>}<pos><rot>` line (see below).
+
+## Channel-level directives
+
+These usually appear once near the top of the notecard. They configure the current sitter slot, opened by the most recent `SITTER` directive (or slot 0 if no `SITTER` line has appeared yet).
 
 | Directive | Argument | Meaning |
 |-----------|----------|---------|
-| `MENU` (top of file) | — | Just the section marker. Top-level menu items follow as `TOMENU` entries. |
-| `TOMENU` | menu label | A button that appears at the top of the dialog menu when the sitter has multiple sub-categories of poses. **Without a TOMENU there is no clickable top-level menu** — common gotcha. |
-| `BRAND` | label | Free-text brand string shown in the menu header. |
-| `CUSTOM_TEXT` | text | Custom message above the menu (escape special chars per stock rules). |
-| `MTYPE` | integer | Menu type. See upstream docs for values. |
-| `ETYPE` | integer | Exit type for stand-up behavior. |
-| `SET` | integer | Number of sit-target sets (defaults to 1). |
-| `SWAP` | 0/1/2 | Swap mode for couple poses. |
-| `SELECT` | integer | Used by `[QS]select` for multi-furniture routing. |
-| `AMENU` | integer | Adjustment-menu style. |
-| `OLD_HELPER_METHOD` | 0/1 | Reverts to AVsitter 1 helper bar. |
-| `WARN` | 0/1 | Print warning chat on bad notecard lines. |
-| `HASKEYFRAME` | 0/1 | KeyFrame motion present (for motion props). |
-| `REFERENCE` | name | Reference position by name (advanced). |
-| `DFLT` | integer | Default sit-target index. |
-| `RLVDesignations` | text | RLV path mapping. |
-| `GENDERS` | CSV | Allowed gender CSV per slot. |
+| `SITTER <n>` (or `SITTER <n>\|<info>`) | sitter slot index (0-based); optional info field can include `Male` / `Female` gender | Starts a new sitter channel. Subsequent POSE/SYNC/MENU/BUTTON lines belong to this slot until the next `SITTER` line. |
+| `MTYPE <int>` | menu type | Dialog behavior. See upstream docs for values. |
+| `ETYPE <int>` | exit type | Stand-up behavior. |
+| `SET <int>` | sit-target sets count | Defaults to 1. |
+| `SWAP <int>` | 0/1/2 | Swap mode for couple/multi-sitter setups. |
+| `SELECT <int>` | — | Used by `[QS]select` for multi-furniture routing. |
+| `AMENU <int>` | — | Adjustment menu style. |
+| `HELPER <int>` | 0/1 | `1` reverts to the AVsitter-1-style helper bar. |
+| `WARN <int>` | 0/1 | Print warning chat on bad notecard lines. |
+| `KFM <int>` | 0/1 | KeyFrame motion present (for motion props). |
+| `LROT <int>` | — | Local rotation flag (advanced). |
+| `DFLT <int>` | — | Default sit-target index (1-based). |
+| `BRAND <text>` | brand label | Free-text shown in the menu header. |
+| `ONSIT <text>` | — | onSit behavior. |
+| `TEXT <text>` | — | Custom hovertext (escape `\n` for newlines). |
+| `ADJUST <items>` | `\|`-separated menu entries | Customises the `[ADJUST]` submenu. |
+| `ROLES <text>` | — | RLV designations. |
 
-## POSE / SYNC / MENU sections
-
-Each pose entry is a block of two to four lines:
+## Pose declarations
 
 ```
-POSE
-NAME Sit casual
-ANIM sit
-POS <0.0, 0.0, 0.05>
-ROT <0.0, 0.0, 0.0>
+POSE <menu_name>|<animation_filename>
+SYNC <menu_name>|<animation_filename>
 ```
 
-| Directive | Value |
-|-----------|-------|
-| `POSE` | Solo pose. Stored with the `P:` prefix in LSD. |
-| `SYNC` | Multi-sitter sync pose. No `P:` prefix. Subject to [Re-Sync Protocol](resync-protocol.html). |
-| `MENU` | Submenu marker. Following `POSE`/`SYNC` entries appear inside this submenu. |
-| `NAME` | Pose name as shown in the menu. |
-| `ANIM` | SL animation name (must be in the prim's inventory). |
-| `POS` | Position offset `<x, y, z>` relative to sit-target. |
-| `ROT` | Rotation Euler `<x, y, z>` in degrees. |
+- **`POSE`** — solo pose. Stored with the `P:` prefix in LSD.
+- **`SYNC`** — multi-sitter sync pose. Same `<menu_name>` in two or more SITTERs plays them all together. Subject to [Re-Sync Protocol](resync-protocol.html). No `P:` prefix in LSD.
 
-QS stores these as `qs:p:<ch>:<i>` LSD keys with format `name|type|anim|pos|rot` — see [LSD Keys](lsd-keys.html). The on-disk notecard is what creators edit; LSD is what runtime reads.
-
-## PROP1 / PROP2 / PROP3 sections
-
-Each entry attaches a prop on a specific pose:
+Example:
 
 ```
-PROP1
-TRIGGER Sit casual
-PROP CofeeMug
-TYPE 1
-POINT right hand
+POSE Sit casual|sit
+POSE Sit cross-legged|sit_generic
+SYNC Cuddle|hug_female
 ```
 
-See the [`[QS]prop` page](plugin-prop.html) for the prop type matrix and the [`QSPROP_ATTACH` dynamic protocol](hud-integration.html#dynamic-prop-attach--qsprop_attach-90280) used by HUD addons.
-
-## ANIM section ([AV]faces)
-
-Used by `[QS]faces` to play overlay face animations:
+## Position / rotation — `{<name>}<pos><rot>`
 
 ```
-ANIM
-NAME smile
-ON Sit casual
-ANIMATION smile_face
+{Sit casual}<0.000000, 0.000000, 0.050000><0.000000, 0.000000, 0.000000>
 ```
 
-## SEQUENCE section ([AV]sequence)
+This is a **position-update line** — it sets the default `pos` and `rot` for an already-declared pose. The pose name in `{…}` must match a previous `POSE` / `SYNC` line on the same SITTER.
 
-For multi-step animation chains:
+Normally you don't hand-write these. `[HELPER] [SAVE]` writes them to LSD, and `[DUMP]` writes them back to the notecard. If hand-writing, the line goes anywhere after the `POSE <name>|<anim>` line for that pose.
 
-```
-SEQUENCE
-NAME Wave
-STEP wave_open 0.5
-STEP wave_close 0.5
-```
+In QS, this maps to `qs:p:<ch>:<i>` LSD keys with format `name|type|anim|pos|rot` — see [LSD Keys](lsd-keys.html). Boot ignores `{<name>}<pos><rot>` lines for pose names it can't find (no `qs_seed_find` match → silent skip).
 
-Full syntax in the upstream docs.
-
-## BUTTON directives
-
-`BUTTON` lines define `[AV]control` / RLV / `[AV]favs`-style buttons:
+## Menu structure
 
 ```
-BUTTON [GIVE FOLDER]
-COMMAND 90200
-FOLDER MyFolder
+TOMENU <menu_name>
+MENU <menu_name>
 ```
 
-The exact button-command mapping matches stock — see [LinkMessage Numbers](linkmessage-numbers.html) for the integer column.
+- **`TOMENU`** — a clickable button at a higher menu level that opens the named submenu.
+- **`MENU`** — section marker. All `POSE`/`SYNC`/`TOMENU`/`BUTTON` lines below this line belong to the named submenu, until the next `MENU` line.
+
+`MENU` and `TOMENU` are paired — `MENU SITS` is invisible without a corresponding `TOMENU SITS` above it. Common bug: adding a `MENU` section but forgetting the `TOMENU`. Then the section's poses exist in LSD but no button leads there.
+
+Exception (deliberate): a `MENU` without `TOMENU` hides its poses from the dialog, useful for sequence-triggered or script-triggered poses. See [upstream "Hiding poses"](https://avsitter.github.io/avsitter2_sequence.html).
+
+## BUTTON
+
+```
+BUTTON <label>|<integer>
+```
+
+Defines a clickable button that sends a link-message. `<integer>` is the LinkMsg number — `90200` is the AVprop default, `90401`/`90402`/`90403` are AVfavs commands, `99` is SWAP, etc. See [LinkMessage Numbers](linkmessage-numbers.html) for the canonical map.
+
+```
+BUTTON [SWAP]|99
+BUTTON Add Fav|90401
+BUTTON Quilt1
+```
+
+A `BUTTON` line without `|<integer>` defaults to integer `90200` (the AVprop rezz path).
+
+## Prop attachments — `PROP`, `PROP1`, `PROP2`, `PROP3`
+
+```
+PROP <trigger>|<object>|<group>|<pos>|<rot>
+PROP1 <trigger>|<object>|<group>|<pos>|<rot>|<attach_point>
+```
+
+- `PROP` — ground prop (rezzed at the prim).
+- `PROP1` — attachment prop (auto-attaches to the sitter's `<attach_point>`).
+- `PROP2` — attachment prop, personal (COPY-TRANSFER NEXT).
+- `PROP3` — special (persists across pose changes).
+
+Example:
+
+```
+PROP Read|paper|G1|<0.550008, -0.001500, 0.142298>|<-134.045500, 75.901150, 44.793560>
+PROP1 Dine|knife|G1|<0.387543, -0.311709, 0.173970>|<-0.017549, 9.899983, 90.102720>|Right Hand
+```
+
+See [`[QS]prop`](plugin-prop.html) for the prop type matrix, the `<group>` semantic, and the [`QSPROP_ATTACH` dynamic protocol](hud-integration.html#dynamic-prop-attach--qsprop_attach-90280) used by HUD addons.
+
+## Face animations — `ANIM` (handled by `[QS]faces`)
+
+```
+ANIM <trigger_name>|<expression>|<duration>|<expression>|<duration>|...
+```
+
+Trigger is usually a pose name. Expression is an SL face animation; duration is a float (seconds). Up to three expressions per ANIM line are recommended.
+
+```
+ANIM Happy|express_laugh_emote|5|express_smile|1|express_wink_emote|2
+```
+
+Re-use an existing ANIM by referencing it by name:
+
+```
+ANIM pose1|express_laugh_emote|5|express_smile|1
+ANIM pose2|pose1
+```
+
+See [`[QS]faces`](plugin-faces.html).
+
+## Animation sequences — `SEQUENCE` + `WAIT` + `SOUND` (handled by `[QS]sequence`)
+
+```
+SEQUENCE <pose_or_label>
+WAIT <seconds>
+SOUND <sound_name>|<flag>
+```
+
+Each `SEQUENCE` line starts a step; subsequent `WAIT` / `SOUND` lines belong to the step until the next `SEQUENCE` line.
+
+```
+SEQUENCE Lovescene
+WAIT 30
+SEQUENCE poseB
+SOUND beat|1
+WAIT 25
+```
+
+See [`[QS]sequence`](plugin-sequence.html) and the [upstream AVsequence docs](https://avsitter.github.io/avsitter2_sequence.html) for the full sequence semantics.
 
 ## QS-specific behavior
 
 - **Empty notecard.** A notecard with only `This notecard is empty` (or any single non-directive line) is valid and boot accepts it. The prim sits but plays no poses.
 - **Asset-key tracking.** Boot stores the notecard's asset-key in `qs:boot:asset`. Re-saving the notecard with the same content keeps the same asset-key → boot skips re-parse. Editing the text → new asset-key → boot re-seeds. See [Boot Sequence](boot-sequence.html).
-- **`[HELPER] [SAVE]` edits go to LSD, not notecard.** Stock auto-writes pose defaults nowhere. QS writes them to `qs:p:<ch>:<i>` so they survive script reset. The notecard is still the import source on next fresh boot, but edits made in-world are durable. Use `[DUMP]` to back up to the notecard format manually.
+- **`[HELPER] [SAVE]` edits go to LSD, not the notecard.** Stock AVsitter doesn't auto-write pose defaults anywhere; you `[DUMP]` and paste back. QS writes them to `qs:p:<ch>:<i>` LSD so they survive script reset and rerez. The notecard is the import source on next fresh boot, but in-world edits are durable. Use `[DUMP]` to back up to notecard form manually.
 
 ## Common gotchas
 
-- **No TOMENU = no menu.** A `MENU` block without a top-level `TOMENU` button doesn't render. The button is what users click; the section is just a label.
-- **Notecard not saved after creation.** A freshly created notecard that's never been saved is corrupt — `[QS]boot` will hang waiting on the dataserver event. Open, save, reset.
-- **Mixed line endings.** AVpos accepts both CR and LF; CRLF works. If pasted from Windows externally, line breaks should be fine.
-- **The viewer notecard editor truncates around 48 KB.** Edit large notecards externally. See [Known Limits](known-limits.html).
+- **No TOMENU = no menu.** A `MENU` block without a top-level `TOMENU` button doesn't render. The button is what users click; `MENU` is just the section header.
+- **`{<name>}<pos><rot>` without a matching POSE.** The position-update is silently dropped if no `qs_seed_find` match exists. Make sure the pose is declared first.
+- **Notecard never saved after creation.** A freshly created notecard that's never been saved is corrupt — boot will hang on the `dataserver` event. Open, save, reset.
+- **Mixed line endings.** AVpos accepts both CR and LF; CRLF works. Pasted text from Windows is fine.
+- **The viewer notecard editor truncates around 48 KB.** Edit large notecards externally and paste back. See [Known Limits](known-limits.html).
+- **Bytes per line cap.** SL truncates notecard reads at 255 bytes per line. Very long ANIM / PROP lines may silently drop their tail.
 
 ## See also
 
-- [Upstream AVsitter2 AVpos reference](https://avsitter.github.io/avsitter2_avpos.html) — comprehensive tutorial.
-- [Adjustment Workflow](adjustment-workflow.html) — using the `[HELPER]` menu to author poses interactively.
-- [LSD Keys](lsd-keys.html) — how AVpos entries map to LSD.
+- [Upstream AVsitter2 AVpos reference](https://avsitter.github.io/avsitter2_avpos.html) — comprehensive tutorial with example notecards.
+- [Adjustment Workflow](adjustment-workflow.html) — using `[HELPER]` to author and `[SAVE]` poses interactively.
+- [LSD Keys](lsd-keys.html) — how AVpos entries map to `qs:p:<ch>:<i>` LSD.
 - [Boot Sequence](boot-sequence.html) — when boot re-reads the notecard.

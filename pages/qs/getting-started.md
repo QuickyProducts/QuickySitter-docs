@@ -53,15 +53,13 @@ For a richer authoring workflow, the [QuickyHUD addon](hud-integration.html) pro
 You can also edit the `AVpos` notecard by hand:
 
 ```
-SETUP
-TYPE 2
+MTYPE 2
 
-POSE
-NAME Sit casual
-ANIM sit
-POS <0.0, 0.0, 0.05>
-ROT <0.0, 0.0, 0.0>
+POSE Sit casual|sit
+{Sit casual}<0.0, 0.0, 0.05><0.0, 0.0, 0.0>
 ```
+
+Each directive lives on its own line, with `|` separating the arguments of a single directive. `POSE <name>|<animation>` declares the pose; `{<name>}<pos><rot>` sets the position and rotation for an already-declared pose. The position/rotation line is normally written by `[HELPER] [SAVE]` or `[DUMP]` — you usually don't hand-write it.
 
 Save the notecard, and boot detects the asset-key change via `changed(CHANGED_INVENTORY)`, re-seeds LSD, and broadcasts the reload so sitB picks up the new pose list without a manual reset. See [AVpos Reference](avpos-reference.html) for the full directive list.
 
