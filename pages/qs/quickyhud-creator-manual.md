@@ -82,22 +82,6 @@ For troubleshooting, add a `VERBOSE n` line to the AVpos notecard:
 
 Leave it at `0` for anything you ship.
 
-### Updater release metadata
-
-The **description** field of your Quicky Updater HUD identifies the release it ships:
-
-```
-<hudversion>#<productID>#<sitterversion>
-```
-
-| Field | Example | Purpose |
-|-------|---------|---------|
-| `hudversion` | `1.30` | The release version. A piece only accepts a **newer** version, so an old Updater can't downgrade a freshly built piece. |
-| `productID` | *(your product id)* | Used for the purchase / version check, and marks the push as a **creator** build so it won't overwrite a customer build. |
-| `sitterversion` | `0.93` | Shown to you before you push, so you know what the HUD pairs with. |
-
-For test rigs a bare version like `1.30` is fine; the product id only matters once you sell through a vendor.
-
 ## See also
 
 - [User Manual](quickyhud-manual.html) — using the HUD while sitting.
