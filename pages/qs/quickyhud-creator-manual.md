@@ -12,7 +12,7 @@ This manual is for **creators** who build and sell QuickySitter furniture — se
 
 ## Setting up a piece
 
-From your Quicky creator kit you only handle two things: the **installer** (a small object you drop into the furniture) and the **Quicky Updater HUD** (the in-world HUD you wear and click).
+From your Quicky creator kit you only handle two things: the **installer** (a script object you drop into the furniture) and the **Quicky Updater HUD** (the in-world HUD you wear and click).
 
 ### A brand-new piece
 
