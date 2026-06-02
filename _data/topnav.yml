@@ -16,6 +16,8 @@ topnav_dropdowns:
       folderitems:
         - title: QuickyHUD Manual
           url: /quickyhud-manual.html
+        - title: QuickyHUD Creator Manual
+          url: /quickyhud-creator-manual.html
         - title: QuickySitter on GitHub
           external_url: https://github.com/QuickyProducts/QuickySitter
         - title: AVsitter (upstream)
