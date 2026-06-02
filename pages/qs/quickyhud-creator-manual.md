@@ -24,7 +24,7 @@ The complete pose system is installed for you and the installer removes itself. 
 
 ### Converting an existing AVsitter or older Quicky piece
 
-Drop the **creator installer** in and click your **Quicky Updater HUD** — it converts the piece in place and clears out the old parts. (If a *buyer* should convert a piece themselves, hand them the **customer installer** instead.)
+Drop the **creator installer** in and click your **Quicky Updater HUD** — it converts the piece in place and clears out the old parts.
 
 ### Updating a finished piece
 
