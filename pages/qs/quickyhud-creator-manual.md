@@ -42,6 +42,14 @@ Drop a notecard named **`hudconfig`** into the furniture. Its **first line** hol
 RESERVE|ATTACHMODE|TEXTURE|HUDOFFSET
 ```
 
+For example — default reserve, auto-attach, the built-in design, and a small HUD screen offset:
+
+```
+0|auto||<0.45, -0.2, 0>
+```
+
+(The empty third field — the `||` — keeps the built-in design.)
+
 | Field | Default | What it does |
 |-------|---------|--------------|
 | `RESERVE` | `0` | The system already keeps a sensible memory reserve by default. Only raise this above `0` if you know the piece needs more free space. |
