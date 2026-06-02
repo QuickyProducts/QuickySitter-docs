@@ -49,7 +49,7 @@ RESERVE|ATTACHMODE|TEXTURE|HUDOFFSET
 | `TEXTURE` | *(empty)* | The default HUD design, as a texture UUID. Leave empty to keep the built-in design. |
 | `HUDOFFSET` | `<0,0,0>` | Where the HUD sits on screen when attached (see below). |
 
-No `hudconfig` notecard → everything stays at its default. A first line starting with `#` also means "keep defaults".
+No `hudconfig` notecard — or a blank first line — leaves everything at its default. The config has to be on the very first line; comment lines above it aren't supported.
 
 **Attaching by hand (`ATTACHMODE = menu`).** With auto-attach off, give users a way to attach the HUD by hand — add a button to your **AVpos** notecard:
 
