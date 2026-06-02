@@ -32,9 +32,9 @@ A finished piece needs no installer — it updates itself the next time you push
 
 > **Note:** Creator and customer builds can't overwrite each other, so a creator update never downgrades a piece you've already sold.
 
-### Before you sell: permissions
+### Before you sell: script permissions
 
-Set everything inside the piece to **no-modify for the next owner** before you ship it — otherwise a buyer could open and read your work. The Updater refuses to push while anything is still modify-for-next-owner, so you'll be reminded if you forget.
+Before you sell a finished piece, set the Quicky scripts inside to **copy-only** for the next owner — the buyer can copy and use the furniture, but the scripts can't be modified or transferred out.
 
 ## Configuration
 
