@@ -42,14 +42,22 @@ Drop a notecard named **`hudconfig`** into the furniture. Its **first line** hol
 RESERVE|ATTACHMODE|TEXTURE|HUDOFFSET
 ```
 
+For example — default reserve, auto-attach, the built-in design, and a small HUD screen offset:
+
+```
+0|auto||<0.45, -0.2, 0>
+```
+
+(The empty third field — the `||` — keeps the built-in design.)
+
 | Field | Default | What it does |
 |-------|---------|--------------|
-| `RESERVE` | `0` | Extra storage to set aside in the piece — leave at `0` unless you know you need it. |
+| `RESERVE` | `0` | The system already keeps a sensible memory reserve by default. Only raise this above `0` if you know the piece needs more free space. |
 | `ATTACHMODE` | `auto` | `auto` = the HUD attaches by itself when someone sits (via the AVsitter Experience). `menu` = no auto-attach; the user attaches it from a menu / button instead. |
 | `TEXTURE` | *(empty)* | The default HUD design, as a texture UUID. Leave empty to keep the built-in design. |
 | `HUDOFFSET` | `<0,0,0>` | Where the HUD sits on screen when attached (see below). |
 
-No `hudconfig` notecard → everything stays at its default. A first line starting with `#` also means "keep defaults".
+No `hudconfig` notecard — or a blank first line — leaves everything at its default. The config has to be on the very first line; comment lines above it aren't supported.
 
 **Attaching by hand (`ATTACHMODE = menu`).** With auto-attach off, give users a way to attach the HUD by hand — add a button to your **AVpos** notecard:
 
@@ -83,6 +91,23 @@ For troubleshooting, add a `VERBOSE n` line to the AVpos notecard:
 | `3` | + full debug detail |
 
 Leave it at `0` for anything you ship.
+
+## Adding stock AVsitter plugins
+
+QuickySitter is fully AVsitter 2 compatible, so the standard **AVsitter plugins work unchanged** — just drop them into your piece alongside the Quicky scripts. The ones you'd add yourself:
+
+| Plugin | Adds |
+|--------|------|
+| **Camera** (`[AV]camera`) | A custom camera view per pose. |
+| **Control / RLV** (`[AV]control` — LockMeister, LockGuard, Xcite!, RLV) | RLV restraints and lock / adult interaction. |
+| **Favourites** (`[AV]favs`) | Sitters can save and recall favourite poses. |
+| **Expressions** (`[AV]faces`) | Facial expressions per pose. |
+| **Sequences** (`[AV]sequence`) | Auto-advancing pose sequences. |
+| **Helper** (`[AV]helperscript`) | The classic stock pose-adjust helper — QuickySitter's HUD + ADJUSTMODE already cover this, so you rarely need it. |
+
+QuickySitter ships its own take on some of these (expressions, sequences, props, the seat picker) with extra integration — where a Quicky version is included, use that; the stock plugin still works either way.
+
+Full plugin-by-plugin detail: [Compatibility Matrix](compatibility-matrix.html).
 
 ## See also
 
