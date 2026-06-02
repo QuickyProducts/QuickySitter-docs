@@ -12,7 +12,7 @@ This manual is for **creators** who build and sell QuickySitter furniture — se
 
 ## Setting up a piece
 
-From your Quicky creator kit you only handle two things: the **installer** (a small object you drop into the furniture) and the **Quicky Updater HUD** (the in-world HUD you wear and click).
+From your Quicky creator kit you only handle two things: the **installer** (a script object you drop into the furniture) and the **Quicky Updater HUD** (the in-world HUD you wear and click).
 
 ### A brand-new piece
 
@@ -24,17 +24,11 @@ The complete pose system is installed for you and the installer removes itself. 
 
 ### Converting an existing AVsitter or older Quicky piece
 
-Drop the **creator installer** in and click your **Quicky Updater HUD** — it converts the piece in place and clears out the old parts. (If a *buyer* should convert a piece themselves, hand them the **customer installer** instead.)
+Drop the **creator installer** in and click your **Quicky Updater HUD** — it converts the piece in place and clears out the old parts.
 
-### Updating a finished piece
+### Before you sell: script permissions
 
-A finished piece needs no installer — it updates itself the next time you push from your Updater HUD, and future updates work without dropping anything into inventory.
-
-> **Note:** Creator and customer builds can't overwrite each other, so a creator update never downgrades a piece you've already sold.
-
-### Before you sell: permissions
-
-Set everything inside the piece to **no-modify for the next owner** before you ship it — otherwise a buyer could open and read your work. The Updater refuses to push while anything is still modify-for-next-owner, so you'll be reminded if you forget.
+Before you sell a finished piece, set the Quicky scripts inside to **copy-only** for the next owner — the buyer can copy and use the furniture, but the scripts can't be modified or transferred out.
 
 ## Configuration
 
@@ -56,6 +50,14 @@ RESERVE|ATTACHMODE|TEXTURE|HUDOFFSET
 | `HUDOFFSET` | `<0,0,0>` | Where the HUD sits on screen when attached (see below). |
 
 No `hudconfig` notecard → everything stays at its default. A first line starting with `#` also means "keep defaults".
+
+**Attaching by hand (`ATTACHMODE = menu`).** With auto-attach off, give users a way to attach the HUD by hand — add a button to your **AVpos** notecard:
+
+```
+BUTTON Quicky HUD|90510|Quicky-HUD
+```
+
+The button label (`Quicky HUD`) is yours to change; the number **`90510`** and the **`Quicky-HUD`** parameter are what trigger the attach, so leave those exactly as shown.
 
 ### HUD screen position (`HUDOFFSET`)
 
@@ -81,22 +83,6 @@ For troubleshooting, add a `VERBOSE n` line to the AVpos notecard:
 | `3` | + full debug detail |
 
 Leave it at `0` for anything you ship.
-
-### Updater release metadata
-
-The **description** field of your Quicky Updater HUD identifies the release it ships:
-
-```
-<hudversion>#<productID>#<sitterversion>
-```
-
-| Field | Example | Purpose |
-|-------|---------|---------|
-| `hudversion` | `1.30` | The release version. A piece only accepts a **newer** version, so an old Updater can't downgrade a freshly built piece. |
-| `productID` | *(your product id)* | Used for the purchase / version check, and marks the push as a **creator** build so it won't overwrite a customer build. |
-| `sitterversion` | `0.93` | Shown to you before you push, so you know what the HUD pairs with. |
-
-For test rigs a bare version like `1.30` is fine; the product id only matters once you sell through a vendor.
 
 ## See also
 
