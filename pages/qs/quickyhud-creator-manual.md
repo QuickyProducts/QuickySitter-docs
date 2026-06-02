@@ -51,6 +51,14 @@ RESERVE|ATTACHMODE|TEXTURE|HUDOFFSET
 
 No `hudconfig` notecard → everything stays at its default. A first line starting with `#` also means "keep defaults".
 
+**Attaching by hand (`ATTACHMODE = menu`).** With auto-attach off, give users a way to attach the HUD by hand — add a button to your **AVpos** notecard:
+
+```
+BUTTON Quicky HUD|90510|Quicky-HUD
+```
+
+The button label (`Quicky HUD`) is yours to change; the number **`90510`** and the **`Quicky-HUD`** parameter are what trigger the attach, so leave those exactly as shown.
+
 ### HUD screen position (`HUDOFFSET`)
 
 Second Life resets a HUD's position every time it attaches, so the HUD re-applies your `HUDOFFSET` on each attach. The value in `hudconfig` is the default you ship; a user can nudge it afterwards and their own choice is remembered.
