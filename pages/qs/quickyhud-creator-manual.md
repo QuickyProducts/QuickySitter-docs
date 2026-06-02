@@ -26,12 +26,6 @@ The complete pose system is installed for you and the installer removes itself. 
 
 Drop the **creator installer** in and click your **Quicky Updater HUD** — it converts the piece in place and clears out the old parts.
 
-### Updating a finished piece
-
-A finished piece needs no installer — it updates itself the next time you push from your Updater HUD, and future updates work without dropping anything into inventory.
-
-> **Note:** Creator and customer builds can't overwrite each other, so a creator update never downgrades a piece you've already sold.
-
 ### Before you sell: script permissions
 
 Before you sell a finished piece, set the Quicky scripts inside to **copy-only** for the next owner — the buyer can copy and use the furniture, but the scripts can't be modified or transferred out.
