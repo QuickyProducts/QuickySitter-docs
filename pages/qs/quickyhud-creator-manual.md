@@ -92,6 +92,23 @@ For troubleshooting, add a `VERBOSE n` line to the AVpos notecard:
 
 Leave it at `0` for anything you ship.
 
+## Adding stock AVsitter plugins
+
+QuickySitter is fully AVsitter 2 compatible, so the standard **AVsitter plugins work unchanged** — just drop them into your piece alongside the Quicky scripts. The ones you'd add yourself:
+
+| Plugin | Adds |
+|--------|------|
+| **Camera** (`[AV]camera`) | A custom camera view per pose. |
+| **Control / RLV** (`[AV]control` — LockMeister, LockGuard, Xcite!, RLV) | RLV restraints and lock / adult interaction. |
+| **Favourites** (`[AV]favs`) | Sitters can save and recall favourite poses. |
+| **Expressions** (`[AV]faces`) | Facial expressions per pose. |
+| **Sequences** (`[AV]sequence`) | Auto-advancing pose sequences. |
+| **Helper** (`[AV]helperscript`) | The classic stock pose-adjust helper — QuickySitter's HUD + ADJUSTMODE already cover this, so you rarely need it. |
+
+QuickySitter ships its own take on some of these (expressions, sequences, props, the seat picker) with extra integration — where a Quicky version is included, use that; the stock plugin still works either way.
+
+Full plugin-by-plugin detail: [Compatibility Matrix](compatibility-matrix.html).
+
 ## See also
 
 - [User Manual](quickyhud-manual.html) — using the HUD while sitting.
