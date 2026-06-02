@@ -44,7 +44,7 @@ RESERVE|ATTACHMODE|TEXTURE|HUDOFFSET
 
 | Field | Default | What it does |
 |-------|---------|--------------|
-| `RESERVE` | `0` | Extra storage to set aside in the piece — leave at `0` unless you know you need it. |
+| `RESERVE` | `0` | The system already keeps a sensible memory reserve by default. Only raise this above `0` if you know the piece needs more free space. |
 | `ATTACHMODE` | `auto` | `auto` = the HUD attaches by itself when someone sits (via the AVsitter Experience). `menu` = no auto-attach; the user attaches it from a menu / button instead. |
 | `TEXTURE` | *(empty)* | The default HUD design, as a texture UUID. Leave empty to keep the built-in design. |
 | `HUDOFFSET` | `<0,0,0>` | Where the HUD sits on screen when attached (see below). |
