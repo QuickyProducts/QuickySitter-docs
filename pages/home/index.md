@@ -5,7 +5,7 @@ permalink: index.html
 toc: false
 ---
 
-# QuickySitter&trade;
+<p style="text-align: center;"><img src="{{ site.baseurl }}/images/QuickySitterLogo.png" alt="QuickySitter" width="480" /></p>
 
 Welcome to the documentation for QuickySitter&trade; — a furniture pose system for Second Life<sup>&reg;</sup>, written in LSL and built as a **fork of [AVsitter&trade; 2](https://github.com/AVsitter/AVsitter)**.
 
