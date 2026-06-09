@@ -10,18 +10,18 @@ If you already have a working AVsitter 2 furniture and want to move it to Quicky
 
 ## TL;DR
 
-1. Keep the existing `AVpos` notecard — no edits needed.
-2. Delete `[AV]sitA` + `[AV]sitB` + `[AV]select`. Add `[QS]boot`, `[QS]sitA`, `[QS]sitB`, `[QS]select`.
-3. Optional but recommended: also swap `[AV]adjuster` → `[QS]adjuster`, `[AV]prop` → `[QS]prop`, `[AV]faces` → `[QS]faces`, `[AV]sequence` → `[QS]sequence`. Add `[QS]offset`.
+1. Keep the existing `AVpos` notecard — no edits needed. (It is mandatory: boot ERRORs without it.)
+2. Delete `[AV]sitA` + `[AV]sitB`. Add `[QS]boot`, `[QS]sitA`, `[QS]sitB`. These three plus the notecard are the only required ingredients.
+3. Optional but recommended: also swap `[AV]select` → `[QS]select`, `[AV]adjuster` → `[QS]adjuster`, `[AV]prop` → `[QS]prop`, `[AV]faces` → `[QS]faces`, `[AV]sequence` → `[QS]sequence`. Add `[QS]offset` for personal-offset persistence.
 4. Reset the prim. Boot reads the existing AVpos and seeds LSD.
 
-Stock `[AV]camera`, `[AV]control` (LockGuard, LockMeister, Xcite!, RLV), `[AV]favs`, and `[AV]helperscript` all work unchanged inside a QS linkset and don't need to be replaced.
+Stock `[AV]camera`, `[AV]favs`, `[AV]helperscript`, and the LockGuard / LockMeister / Xcite! plugins all work unchanged inside a QS linkset and don't need to be replaced. QS forks its own root family (`[QS]root`, `[QS]root-control`, `[QS]root-security`, `[QS]root-RLV`), but the stock `[AV]root-*` scripts also keep working if you leave them in.
 
 ## What changes for the end user
 
 Nothing user-visible if you swap only the base scripts. The pose menu, sit-target, animation sequences, and props all behave identically — QS is structurally different inside but presents the same surface to sitters.
 
-Differences become visible if you add `[QS]offset` (personal-offset persistence across reset) or `[QS]adjuster` + `[QS]hudproxy` (HUD-driven adjustment with live `[SAVE]` writing into LSD).
+Differences become visible if you add `[QS]offset` (personal-offset persistence across reset) or `[QS]adjuster` plus the QuickyHUD addon (`[QS]hudproxy`/`[QS]hudadmin` live in the separate [QuickyHUD repo](https://github.com/QuickyProducts/QuickyHUD)) for HUD-driven adjustment with live `[SAVE]` writing into LSD.
 
 ## What changes for the creator
 
@@ -41,7 +41,7 @@ QuickySitter's `[QS]sitB` reads `qs:p:<ch>:<i>` from LSD on demand via `qs_pose_
 
 ### Stock plugins keep working
 
-Drop a stock `[AV]prop` or `[AV]faces` into a QS prim and it works. Stock plugins use legacy script-name inventory probes (`llGetInventoryType("[AV]sitA")`); when the probe fails, they fall back to the QSALIVE handshake at 90096/90097 — `[QS]sitA` replies and the plugin latches on. Some QS-specific gating (the `[PROP]` menu item being available, for example) requires the QS variant of the plugin so the relevant presence broadcast (90089, 90090) is emitted.
+Drop a stock `[AV]prop` or `[AV]faces` into a QS prim and it works. Stock plugins use legacy script-name inventory probes (`llGetInventoryType("[AV]sitA")`) to find the main script; QS satisfies those probes, so the stock plugin latches on as usual. Some QS-specific gating (the `[PROP]` menu item being available, for example) requires the QS variant of the plugin, because that is what publishes the relevant `qs:alive:<name>` presence flag (`qs:alive:prop`, `qs:alive:faces`) that the menu reads. The old HELLO broadcasts (90088–90092) that used to carry this presence were retired in 0.9951.
 
 ## Step-by-step migration
 
@@ -49,13 +49,11 @@ Drop a stock `[AV]prop` or `[AV]faces` into a QS prim and it works. Stock plugin
 2. **Swap the base scripts.** In the prim's contents:
    - Delete `[AV]sitA`, `[AV]sitA 2`, `[AV]sitA 3`, … (one per sitter slot).
    - Delete `[AV]sitB`, `[AV]sitB 2`, `[AV]sitB 3`, … (matching count).
-   - Delete `[AV]select` if present.
    - Add `[QS]boot` (one instance, no slot suffix).
    - Add `[QS]sitA`, `[QS]sitA 2`, `[QS]sitA 3`, … (same count as before).
    - Add `[QS]sitB`, `[QS]sitB 2`, `[QS]sitB 3`, … (same count).
-   - Add `[QS]select`.
-3. **(Optional) Swap plugins.** Replace `[AV]adjuster`, `[AV]prop`, `[AV]faces`, `[AV]sequence` with their `[QS]` counterparts. Add `[QS]offset` if you want personal-offset persistence.
-4. **Leave stock plugins alone.** Keep `[AV]camera`, `[AV]LockGuard`, `[AV]LockMeister`, `[AV]Xcite!`, `[AV]root-control`, `[AV]root-RLV`, `[AV]root-RLV-extra`, `[AV]favs`, `[AV]root-security`, `[AV]texture` if present. They work as-is.
+3. **(Optional) Swap plugins.** Replace `[AV]select`, `[AV]adjuster`, `[AV]prop`, `[AV]faces`, `[AV]sequence` with their `[QS]` counterparts. (`[QS]select` is optional — sitB has a built-in picker.) Add `[QS]offset` if you want personal-offset persistence; if you want the forked root family, swap in `[QS]root-control`, `[QS]root-security`, `[QS]root-RLV`.
+4. **Leave stock plugins alone.** Keep `[AV]camera`, `[AV]LockGuard`, `[AV]LockMeister`, `[AV]Xcite!`, `[AV]favs`, `[AV]texture`, and any stock `[AV]root-*` scripts if present. They work as-is.
 5. **Keep the AVpos notecard.** No edits needed — same syntax.
 6. **Reset.** Right-click the prim, edit, contents, hit "Reset Scripts in Selection" (or just `llResetScript` on `[QS]boot`). Boot detects no prior `qs:boot:asset`, parses AVpos, seeds LSD, broadcasts reload. Total time ~1 – 5 s depending on AVpos size.
 
@@ -64,13 +62,15 @@ You should see `llOwnerSay` chatter from boot reporting parsed channels. Sit on 
 ## What stays stock by design
 
 - **`[AV]camera`** — stock camera's only name-bound code (`get_number_of_scripts` via `main_script="[AV]sitA"`) is dead, and all working paths are protocol-based. There's no `[QS]camera` planned.
-- **`[AV]root-RLV` / `[AV]root-RLV-extra` / `[AV]root-control` / `[AV]root-security` / `[AV]LockGuard` / `[AV]LockMeister` / `[AV]Xcite!`** — all stock controls. QS doesn't fork them.
+- **`[AV]LockGuard` / `[AV]LockMeister` / `[AV]Xcite!`** — third-party lock/Xcite plugins. QS doesn't fork them.
 - **`[AV]favs`** — favourites are user-state, stored in sitA via 90401/90402/90403. Stock favs works unchanged.
 - **`[AV]helperscript`** — only relevant during the import workflow, not at runtime.
 
+QS **does** fork the root family — `[QS]root`, `[QS]root-control`, `[QS]root-security`, `[QS]root-RLV` (the last publishes `qs:alive:rlv`). The stock `[AV]root-*` scripts still work if you leave them, so swapping them is optional. There is no `[AV]root-RLV-extra` in the set.
+
 ## What does NOT migrate
 
-- **Personal offsets stored in stock `CUSTOMS`.** These live in sitA's per-session memory and are wiped on script reset. Migration replaces sitA, so any per-user offsets accumulated in the previous prim are gone. If users had `[SAVE OFFSET]`-ed positions, they'll need to re-save after the migration. (This is the same as any stock-AVsitter reset.)
+- **Personal offsets stored in stock `CUSTOMS`.** In stock AVsitter these live in sitA's per-session memory and are wiped on script reset. Migration replaces sitA, so any per-user offsets accumulated in the previous prim are gone — users who had `[SAVE OFFSET]`-ed positions will need to re-save after the migration. (This is the same as any stock-AVsitter reset.) Going forward, install `[QS]offset` and the re-saved offsets persist in LSD (`QSO:*`) across reset and re-rez instead of being volatile. Note that `[QS]offset` **owns** the `CUSTOMS` store: without it there is no personal-offset persistence and no sitA fallback.
 - **`[DUMP]` history.** The `[DUMP]` URL written to the AVsitter settings service is tied to the prim/sitter UUID, not the script. After migration the dump URL changes; old URLs go stale.
 
 ## Reverting

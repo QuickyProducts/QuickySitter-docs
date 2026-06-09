@@ -22,7 +22,7 @@ That's the entire integration. Sending the LinkMsg is one line:
 llMessageLinked(LINK_SET, 90271, "", "");
 ```
 
-Available on `[QS]sitA` 0.22 and later.
+Handled by current `[QS]sitA` (the receiver shipped during the unified-version line; all shipped scripts now report `0.999`).
 
 ## Mechanism
 

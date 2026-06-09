@@ -17,6 +17,8 @@ Quick-reference table for every Linkset Data key QuickySitter writes or reads. F
 | `qs:p:*` | `[QS]boot` (seed) and `[QS]adjuster` (live edits) write; sitB, boot read | Pose defaults — one key per pose entry. |
 | `qs:meta:*` | `[QS]boot` writes; sitA, sitB poll | Per-channel "seeded" marker. |
 | `qs:boot:*` | `[QS]boot` writes and reads | Boot orchestration markers (currently only `qs:boot:asset`). |
+| `qs:alive:*` | each optional plugin writes its own flag; sitA, sitB, adjuster read | Plugin-presence flags (`qs:alive:prop`, `…:faces`, `…:adjuster`, `…:select`, `…:rlv`). `[QS]offset` uses the **inverted** name `qs:offset:alive`. Read on demand at menu-build, re-stamped on `QS_ALIVE_CENSUS` (90079). |
+| `qs:prop:*` | `[QS]prop` writes and reads | Lazy-loaded prop database (replaces parsing PROP entries from the notecard on every play). |
 | `QSO:*` | `[QS]offset` writes and reads; sitA reads | Personal pose offsets (per user, per slot, per pose). |
 | `QPP_CFG:*` | QuickyHUD scripts write; sitA, sitB, adjuster, offset read | HUD configuration. Mostly protected on the HUD side. `ADJUSTMODE` and `RAM_TIER_COUNT` are the unprotected exceptions. |
 
@@ -29,6 +31,18 @@ Quick-reference table for every Linkset Data key QuickySitter writes or reads. F
 **Format:** `\n`-separated positional values, in order: MTYPE, ETYPE, SET, SWAP, SELECT, AMENU, OLD_HELPER_METHOD, WARN, HASKEYFRAME, REFERENCE, DFLT, BRAND, onSit, CUSTOM_TEXT (escaped), ADJUST_MENU (SEP-joined), RLVDesignations, GENDERS (CSV).
 
 Persistent across rerez. `<ch>` is the 0-based sitter slot.
+
+### `qs:cfg:verbose`
+
+**Writer:** `[QS]boot.state_entry` (from the AVpos `VERBOSE n` directive).
+**Readers:** `[QS]sitA`, `[QS]sitB`, `[QS]adjuster`, `[QS]faces`, `[QS]offset`, `[QS]prop`, `[QS]select`, `[QS]sequence` — each reads it in `state_entry`.
+**Format:** `"0"`–`"3"`. Project-wide verbose ladder (0 = errors only, 1 = boot banner, 2 = runtime status, 3 = debug). Singleton, not per-channel.
+
+### `qs:cfg:slots:<ch>`
+
+**Writer:** `[QS]boot` (`qs:cfg:slots:<ch>` written at seed); `[QS]sitB` rewrites it during sidecar rebuild.
+**Reader:** `[QS]sitB` (`SLOTS`, replaces `llGetListLength(MENU_LIST)`).
+**Format:** integer string — the channel's pose-entry count. Added in 0.9952.
 
 ### `qs:sitter:<ch>`
 
@@ -66,13 +80,42 @@ Compared against `llGetInventoryKey("AVpos")` at `state_entry`. Match → skip r
 
 See [Boot Sequence](boot-sequence.html) for the full skip-seed / fresh-seed decision.
 
+### `qs:alive:<name>` (and `qs:offset:alive`)
+
+**Writers:** each optional plugin writes its own flag in `state_entry` — `[QS]prop` → `qs:alive:prop`, `[QS]faces` → `qs:alive:faces`, `[QS]adjuster` → `qs:alive:adjuster`, `[QS]select` → `qs:alive:select`, `[QS]root-RLV` → `qs:alive:rlv`. `[QS]offset` writes the **inverted** name `qs:offset:alive`.
+**Readers:** `[QS]sitB` (`select_present()`, `rlv_present()`, `[FACES]`/`[HELPER]` gating), `[QS]adjuster` (`[PROP]`/`[FACE]`), `[QS]boot` (self-check), `[QS]sitA` + hudproxy read `qs:offset:alive`.
+**Format:** `"1"` when present (absent = plugin not loaded).
+
+Read on demand at menu-build, never cached. `[QS]boot` wipes every `qs:alive:*` + `qs:offset:alive` on `QS_ALIVE_CENSUS` (90079) and at the end of `finalize_boot`; survivors re-stamp. See [QSALIVE Discovery](qsalive-discovery.html).
+
+### `qs:prop:*`
+
+**Writer / Reader:** `[QS]prop` only.
+**Layout:** lazy-loaded prop database, replacing repeated notecard parsing:
+
+| Key | Format |
+|-----|--------|
+| `qs:prop:meta` | `<notecard_key>\t<count>\t<warn>\t<groups_nl>` — lazy-load index header; a matching `notecard_key` means the parsed record is current. |
+| `qs:prop:<i>` | `<trig>\t<type>\t<obj>\t<grp>\t<pos>\t<rot>\t<pt>\t<prs>` (8 fields). One row per parsed prop entry. |
+| `qs:prop:trig:<trig>` | CSV of `qs:prop:<i>` indices matching this trigger string. |
+| `qs:prop:sit:<sit>` | CSV of `qs:prop:<i>` indices belonging to this sitter slot. |
+| `qs:prop:grp:<grp>` | CSV of `qs:prop:<i>` indices belonging to this group. |
+
+The whole namespace is wiped (`^qs:prop:.*`) and re-parsed on `CHANGED_INVENTORY` or a notecard-key mismatch.
+
+### `qs:hud:unlicensed`
+
+**Writer:** `[QS]hudadmin` (QuickyHUD repo) — sets `"1"` when its license check fails.
+**Readers:** `[QS]sitB` (`[HELPER]`/`[QUICKYHUD]` gate), `[QS]adjuster` (license gate).
+**Format:** `"1"` when unlicensed; absent otherwise. Singleton flag (since 0.9935).
+
 ### `QSO:<short>:<slot>:<pose>`
 
-**Writer:** `[QS]offset.save_offset` (when `lsdHasRoom()` returns TRUE), ≥ 0.09.
+**Writer:** `[QS]offset.save_offset` (when `lsdHasRoom()` returns TRUE).
 **Readers:** `[QS]offset.push_customs_for`, `drop_pose_for_slot`; `[QS]sitA.apply_current_anim`; hudproxy's `lookupEffectiveOffset`.
 **Format:** `<pos>|<rot>` (Euler degrees, both `vector`-string).
 
-Unprotected. The slot in the key lets each sitter slot keep its own offset for the same pose name (SYNC couple poses on multiple slots had a flat (user, pose) key before 0.09 and would overwrite each other on save).
+Unprotected. The slot in the key lets each sitter slot keep its own offset for the same pose name (an earlier flat (user, pose) key let SYNC couple poses on multiple slots overwrite each other on save).
 
 `<short>` is the first 8 characters of the user's UUID; `<pose>` is the pose name. Magic name `M#T!` is the all-poses fallback set via `[SAVE ALL]`.
 

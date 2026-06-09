@@ -22,7 +22,7 @@ The sit-target is **per-slot**, the pose POS is **per-pose**.
 
 ## SET sets
 
-The `SET <n>` directive in `SETUP` declares how many sit-target *sets* the furniture has. Each set is a different physical seating arrangement (e.g., chair facing left, chair facing right, couples on a sofa, solo on a bench). The user picks the set via the `[SET]` button in the menu.
+The `SET <n>` directive declares how many sit-target *sets* the furniture has. It is a plain channel-level directive — there is no `SETUP` section wrapping it. Each set is a different physical seating arrangement (e.g., chair facing left, chair facing right, couples on a sofa, solo on a bench). The user picks the set via the `[SET]` button in the menu.
 
 `DFLT <n>` sets which set is active by default (1-based).
 
@@ -30,7 +30,7 @@ For each set there's a per-slot sit-target offset. The notecard syntax for decla
 
 ## Adjusting sit-targets in-world
 
-With `[QS]adjuster` installed, the `[ADJUST] [SITTARGET]` menu enters sit-target adjustment mode:
+With `[QS]adjuster` installed, the `[ADJUST]` → `[HELPER]` → `[SITTARGET]` menu path enters sit-target adjustment mode:
 
 - Helper-bar arrows move the **sit-target itself** (not the pose offset).
 - Click `[SAVE]` to commit.
@@ -62,6 +62,6 @@ Personal pose offsets ([Personal Pose Offsets](personal-pose-offsets.html)) sit 
 ## See also
 
 - [AVpos Reference](avpos-reference.html) — `SET` and `DFLT` directives.
-- [Adjustment Workflow](adjustment-workflow.html) — `[ADJUST] [SITTARGET]` mode.
+- [Adjustment Workflow](adjustment-workflow.html) — `[HELPER]` → `[SITTARGET]` mode.
 - [Personal Pose Offsets](personal-pose-offsets.html) — per-user offsets layered on top.
 - [Known Limits](known-limits.html) — sit-target clamp details.

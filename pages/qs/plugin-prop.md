@@ -63,26 +63,27 @@ Idempotent: re-issuing 90280 for the same `(sitter, object)` pair replaces the m
 
 Full protocol details in [HUD Integration § QSPROP_ATTACH](hud-integration.html#dynamic-prop-attach--qsprop_attach-90280).
 
-## QS additions: presence broadcasts
+## QS additions: presence + DUMP
 
-`[QS]prop` (≥ 0.020) also:
+`[QS]prop` also:
 
 1. **Announces itself for QSDUMP** on 90095 — joins the DUMP cascade in `[QS]boot` so `[DUMP]` includes prop entries. See [Boot Sequence § QSDUMP](boot-sequence.html#qsdump--plugin-announce-for-the-dump-cascade).
-2. **Broadcasts `QS_PROP_HELLO` (90089)** on `state_entry` / `on_rez` / QSALIVE-reply, so `[QS]adjuster` can gate the `[PROP]` menu item without an inventory probe. id = announcer's script name.
+2. **Publishes the `qs:alive:prop` LSD flag** — written early in `state_entry`, re-stamped on `QS_ALIVE_CENSUS` (90079), read on demand at menu-build, so `[QS]sitB` / `[QS]adjuster` can gate the `[PROP]` menu item without an inventory probe.
 
-This is the script-name-independent presence pattern shared with `[QS]faces` (90090), `[QS]adjuster` (90091), `[QS]select` (90092), and hudproxy (90093). See [QSALIVE Discovery](qsalive-discovery.html).
+This is the script-name-independent presence pattern shared with `[QS]faces`, `[QS]adjuster`, `[QS]select` and `[QS]root-RLV`, all of which write their own `qs:alive:<name>` flag. (The earlier HELLO broadcasts on the `90088`–`90092` band were retired in 0.9951; the only live HELLO today is hudproxy's `90093`.) See [QSALIVE Discovery](qsalive-discovery.html).
 
 ## Stock-diff summary
 
 Total changes from stock `[AV]prop` 2.2p04:
 
-1. **Sitter presence via QSALIVE, not script-name inventory probes.** Stock's `string main_script = "[AV]sitA";` and its `llGetInventoryType(main_script)` checks are gone. Replaced by `qs_alive` + `qs_sitter_count_cached`, populated by a 90096 probe in `state_entry` / `on_rez` / `changed(CHANGED_INVENTORY)`.
-2. **New global** `list prop_post_rez_say;` for the optional post-rez forward.
-3. **One line in `dataserver` event** to keep `prop_post_rez_say` aligned with `prop_triggers`.
-4. **One line in 90171/90173 handler** for the same alignment.
-5. **Three lines in `listen()`'s REZ branch** to forward the post-rez say.
-6. **New `link_message` handler block** for 90280 (≈40 lines) and QSALIVE reply (≈15 lines).
-7. **Version string + header comment block.**
+1. **Lazy-load prop DB in LSD (`qs:prop:*`).** The biggest real change: instead of holding the full prop table in RAM at all times, `[QS]prop` keeps the prop definitions in `qs:prop:*` LSD keys and reads them on demand, so heap stays flat regardless of how many `PROP` lines the notecard carries.
+2. **Presence via the `qs:alive:prop` LSD flag, not script-name inventory probes.** Stock's `string main_script = "[AV]sitA";` and its `llGetInventoryType(main_script)` checks are gone. `[QS]prop` writes `qs:alive:prop` in `state_entry` and re-stamps it on `QS_ALIVE_CENSUS` (90079); menu gating reads it on demand. (QSALIVE 90096/90097 is sitter **count**/version/caps only and is answered by slot-0 sitA, not by plugins.)
+3. **New global** `list prop_post_rez_say;` for the optional post-rez forward.
+4. **One line in `dataserver` event** to keep `prop_post_rez_say` aligned with `prop_triggers`.
+5. **One line in 90171/90173 handler** for the same alignment.
+6. **Three lines in `listen()`'s REZ branch** to forward the post-rez say.
+7. **New `link_message` handler block** for 90280 (≈40 lines).
+8. **Version string + header comment block.**
 
 Everything else verbatim from stock.
 
@@ -94,5 +95,5 @@ No new linkmsg needed for prop removal. Stock `[AV]prop`'s 90065 (stand-up) hand
 
 - [HUD Integration](hud-integration.html) — full QSPROP_ATTACH protocol with the QuickyHUD use case.
 - [Upstream AVprop documentation](https://avsitter.github.io/avsitter2_prop.html) — notecard syntax and behaviors.
-- [QSALIVE Discovery](qsalive-discovery.html) — the presence handshake.
+- [QSALIVE Discovery](qsalive-discovery.html) — sitter count/version discovery and the `qs:alive:*` presence model.
 - [Boot Sequence](boot-sequence.html) — QSDUMP cascade integration.

@@ -8,7 +8,7 @@ toc: true
 
 ## My existing AVsitter prim — can I just swap in QS scripts?
 
-Yes. The minimum change is to delete `[AV]sitA` / `[AV]sitB` / `[AV]select` and add `[QS]boot` + `[QS]sitA` + `[QS]sitB` + `[QS]select`. The existing `AVpos` notecard works unchanged. See [Migration from AVsitter](migration.html) for the full procedure.
+Yes. The minimum change is to delete `[AV]sitA` / `[AV]sitB` and add `[QS]boot` + `[QS]sitA` + `[QS]sitB`. Those three QS scripts plus the existing `AVpos` notecard are the whole mandatory set; the notecard works unchanged. `[QS]select` is **optional** — only add it if you want the QS multi-seat picker (sitB has a built-in picker otherwise). See [Migration from AVsitter](migration.html) for the full procedure.
 
 ## Do I need to replace ALL the AVsitter plugins?
 
@@ -36,7 +36,7 @@ Three possibilities:
 
 ## Why doesn't the `[FACES]` / `[PROP]` button show up even though I have the scripts?
 
-Each QS plugin announces its presence via a HELLO LinkMsg (90089 for prop, 90090 for faces, 90091 for adjuster, …). The button gating reads these flags, not script-name inventory. If the plugin is present but the button is missing, the script either crashed at `state_entry` (check chat for compile errors) or hasn't bumped to the required version. See [QSALIVE Discovery](qsalive-discovery.html).
+Each QS plugin advertises its presence by writing a `qs:alive:<name>` flag to Linkset Data in `state_entry` (`qs:alive:prop`, `qs:alive:faces`, `qs:alive:adjuster`, …; `[QS]offset` uses the inverted `qs:offset:alive`). `[QS]sitB` reads those flags on demand when it builds the menu — not script-name inventory. If the plugin is present but the button is missing, the script most likely crashed at `state_entry` (check chat for compile errors) so its flag was never written. Boot re-confirms the flags on every `QS_ALIVE_CENSUS` (90079): it wipes all `qs:alive:*`, broadcasts, and only live scripts re-stamp themselves. The retired HELLO broadcasts (90088–90092) are no longer used. See [QSALIVE Discovery](qsalive-discovery.html).
 
 ## My couple pose drifts between sitters over time. What do I do?
 
@@ -48,11 +48,11 @@ If you don't have QuickyHUD, any in-prim script can send the trigger:
 llMessageLinked(LINK_SET, 90271, "", "");
 ```
 
-Sit-A 0.22+ required.
+Any current `[QS]sitA` handles 90271 (the Re-Sync trigger has shipped since the unified-version release; all shipped scripts are at the same locked version).
 
 ## Can I rename `[QS]sitA` to keep the AVsitter brand on the prim?
 
-Yes for the publicly-visible script name, no for trademark reasons. You can rename QS scripts to whatever prefix you like — `[FOO]sitA`, `[Bar]sitB`, etc. The QSALIVE handshake (90096/90097) and sibling presence broadcasts (90089–90095) are all script-name-independent.
+Yes for the publicly-visible script name, no for trademark reasons. You can rename QS scripts to whatever prefix you like — `[FOO]sitA`, `[Bar]sitB`, etc. Discovery is script-name-independent: presence is the `qs:alive:*` LSD flags (re-confirmed by the 90079 census), and the QSALIVE count/version handshake (90096/90097) keys off slot, not name. (The old name-matching that counted `[QS]sitA`, `[QS]sitA 2`, … in inventory is the one exception — see the `Boot complete` answer above.)
 
 You cannot, however, distribute renamed scripts as if they were the AVsitter or QuickySitter project — see the [TRADEMARK](https://avsitter.github.io/TRADEMARK.mediawiki) guidelines.
 

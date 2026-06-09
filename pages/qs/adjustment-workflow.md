@@ -12,13 +12,13 @@ This page describes the `[HELPER]` workflow — the in-world authoring loop for 
 
 - **Free repositioning while sitting** (no save, just visual): touch → `[ADJUST]` → use the up/down arrows. Position changes are session-only.
 - **Save a new default for the current pose**: `[HELPER]` → `[SAVE]`. Pose default in LSD is updated.
-- **Save a personal offset for yourself, this pose**: `[ADJUSTER] [SAVE]` (different menu — outside helper mode). Goes to `[QS]offset` as `QSO:<short>:<slot>:<pose>`.
+- **Save a personal offset for yourself, this pose**: `[SAVE]` (gated on `[QS]offset` presence via the `qs:offset:alive` flag). Goes to `[QS]offset` as `QSO:<short>:<slot>:<pose>`. There is no separate `[ADJUSTER]` button.
 - **Save a personal offset for yourself, all poses**: `[SAVE ALL]`. Writes the magic `M#T!` entry — fallback when no pose-specific offset is set.
 - **Add a new pose entry**: `[HELPER]` → `[NEW]` → type name → adjust → `[SAVE]`.
 
 ## The `[HELPER]` menu
 
-`[HELPER]` is exposed only when `[QS]adjuster` is in the prim and the user has creator-level permission. The menu has the following entries (exact set depends on context — sit state, hudproxy presence, etc.):
+`[HELPER]` is exposed only when `[QS]adjuster` is present (sitB reads the `qs:alive:adjuster` flag) and the user has creator-level permission. The menu has the following entries (exact set depends on context — sit state, hudproxy presence, etc.):
 
 | Entry | What it does |
 |-------|--------------|
@@ -28,7 +28,7 @@ This page describes the `[HELPER]` workflow — the in-world authoring loop for 
 | `[CANCEL]` | Exit helper without saving the pending edit. |
 | `[QUICKYHUD]` | Toggle QuickyHUD ADJUSTMODE. Sends 90266 `"On"` to hudproxy. Visible only when hudproxy is present. |
 | `[SITTARGET]` | Enter sit-target adjustment mode (move the sit-target itself, not the pose offset). |
-| `[STOP HELP]` | Leave helper mode. Also relabels as `[STOP HELP]` while in helper mode, swaps back to `[HELPER]` when not. |
+| `[DONE]` | Leave helper mode and return to the normal pose menu. |
 
 ## QS-specific: live LSD persistence
 

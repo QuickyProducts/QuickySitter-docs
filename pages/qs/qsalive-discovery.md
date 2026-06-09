@@ -8,14 +8,16 @@ toc: true
 
 Stock AVsitter plugins detect "is sitA in this prim?" and "how many sitter slots?" with `llGetInventoryType("[AV]sitA")` and a `while (llGetInventoryType("[AV]sitA " + (string)i) == INVENTORY_SCRIPT)` loop. QuickySitter's main script is `[QS]sitA`, so plugins that probe only the stock name see `INVENTORY_NONE` and bail even though sitA is sitting right next to them.
 
-QSALIVE is the replacement: a presence handshake that **does not depend on script names**. Plugins ask the question, sitA answers it.
+QSALIVE is the replacement: a **count / version / capabilities** query that **does not depend on script names**. Plugins ask the question, sitA answers it.
 
-## The handshake
+> **Not a presence handshake.** QSALIVE tells a plugin *how many sitter slots exist and what sitA supports* — it does not report which sibling plugins are loaded. Plugin presence is carried by the `qs:alive:*` LSD flags instead (see [Sibling presence](#sibling-presence) below).
+
+## The query
 
 | Num    | Direction              | `msg`                                    | `id` | Meaning |
 |--------|------------------------|------------------------------------------|------|---------|
-| 90096  | plugin → `[QS]sitA`    | `""`                                     | `""` | "Anyone here? Identify yourself." |
-| 90097  | `[QS]sitA` → plugin    | `<product>\|<ver>\|<sitters>\|<caps>`    | `""` | Presence reply. Also broadcast unsolicited from slot 0's `state_entry` once boot finishes. |
+| 90096  | plugin → `[QS]sitA`    | `""`                                     | `""` | "How many sitters, what version, what caps?" |
+| 90097  | `[QS]sitA` → plugin    | `<product>\|<ver>\|<sitters>\|<caps>`    | `""` | Count/version/caps reply. Also broadcast unsolicited from slot 0's `state_entry` once boot finishes. |
 
 ## Reply payload
 
@@ -34,7 +36,7 @@ Pipe-delimited. **Use `llParseString2List`, not `llParseStringKeepNulls`** — e
 |-------|---------|
 | `customs90260` | Personal-offset cache is available; plugin may request a push via 90261. See [Personal Pose Offsets](personal-pose-offsets.html). |
 | `dump90098` | DUMP cascade is owned by `[QS]boot`; plugin may register via QSDUMP (90094/90095). |
-| `offsetlsd_v1` | `[QS]offset` ≥ 0.04 supports persistent LSD storage at `QSO:<short>:<slot>:<pose>`. Gates migrations from older volatile-only releases. |
+| `offsetlsd_v1` | `[QS]offset` supports persistent LSD storage at `QSO:<short>:<slot>:<pose>`. Gates migrations from older volatile-only releases. |
 
 ## Who answers, when, and on which link
 
@@ -95,21 +97,34 @@ default
 
 `changed(CHANGED_INVENTORY)` is a good place to re-run `probe_qs()` if the plugin needs to react to sitter-count changes. Slot 0 also re-emits 90097 on its own reset (state_entry runs again), so the plugin can rely on either trigger.
 
-## Sibling presence protocols
+## Sibling presence
 
-QSALIVE inspired a small family of presence broadcasts inside the fork. Most are unsolicited HELLOs that gate menu items or DUMP routing without inventory probes; one (QSPLUG_REGISTER) carries enough payload to *register* runtime UI rather than just signal presence:
+"Which sibling plugins are loaded?" is a **separate** question from QSALIVE, answered by `qs:alive:*` LSD flags rather than any link-message reply.
+
+Each optional plugin writes a flag in its `state_entry`:
+
+| Flag | Plugin | Gates |
+|------|--------|-------|
+| `qs:alive:prop` | `[QS]prop` | the `[PROP]` button in adjuster's menu. |
+| `qs:alive:faces` | `[QS]faces` | the `[FACES]` / `[EXPRESSION]` menu items in sitA and adjuster. |
+| `qs:alive:adjuster` | `[QS]adjuster` | the `[HELPER]` menu item in sitB. |
+| `qs:alive:select` | `[QS]select` | select-driven menu routing in sitB (sitB also keeps an `[AV]select` inventory fallback for stock-AVsitter compat). |
+| `qs:alive:rlv` | `[QS]root-RLV` | the RLV `Control…` gate in sitB. |
+| `qs:offset:alive` | `[QS]offset` | personal-offset storage (note the **inverted** flag name). |
+
+Menu builders read these flags **on demand** at menu-build time and never cache them. Removal is handled by `QS_ALIVE_CENSUS` (90079): `[QS]boot` wipes every `qs:alive:*` flag and broadcasts the census; surviving plugins re-stamp their flag, so a removed plugin simply fails to re-appear.
+
+This mechanism is name-independent: a fork could rename `[QS]prop` to `[FOO]prop` and the `[PROP]` button still appears, because gating reads the `qs:alive:prop` flag the plugin wrote, not `llGetInventoryType`.
+
+> **Retired (0.9951).** The per-plugin HELLO broadcasts `90088`–`90092` (`QS_OFFSET/PROP/FACES/ADJUSTER/SELECT_HELLO`) were the *old* presence mechanism and were replaced by these flags. Those numbers are reserved, not reused. The only remaining live HELLO is hudproxy's `90093`.
+
+A couple of related link-messages are still presence-adjacent but are **not** plugin-alive flags:
 
 | Num   | Sender | Purpose |
 |-------|--------|---------|
-| 90089 | `[QS]prop` | Gates the `[PROP]` button in adjuster's menu. |
-| 90090 | `[QS]faces` | Gates the `[FACES]` / `[EXPRESSION]` menu items in sitA and adjuster. |
-| 90091 | `[QS]adjuster` | Gates the `[HELPER]` menu item in sitB. |
-| 90092 | `[QS]select` | Gates select-driven menu routing in sitB. |
 | 90093 | `[QS]hudproxy` | Bidirectional probe with adjuster — see [HUD Integration](hud-integration.html). |
 | 90094 / 90095 | `[QS]boot` ↔ DUMP plugins | QSDUMP — plugin announce for the DUMP cascade. |
 | 90212 | plugin → `[QS]sitB` | QSPLUG_REGISTER — stateful registration of a plug-and-play `[OPTIONS]` menu button. See [Options Menu Plugins](options-menu-plugins.html). |
-
-All of them are name-independent: a fork could rename `[QS]prop` to `[FOO]prop` and the `[PROP]` button still appears, because gating reads the HELLO bit set by `link_message`, not `llGetInventoryType`.
 
 ## Discovery vs. Integration
 

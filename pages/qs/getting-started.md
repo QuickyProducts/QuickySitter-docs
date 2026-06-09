@@ -16,22 +16,23 @@ This page walks through getting QuickySitter scripts running in a Second Life or
 
 ## Minimum script set
 
-The smallest install that gets you a working QuickySitter prim:
+The smallest install that gets you a working QuickySitter prim is three scripts plus a notecard:
 
 1. **`[QS]boot`** — the LSD seeder. Parses `AVpos` once per fresh boot and writes the persistent state.
 2. **`[QS]sitA`** — main pose-and-sit script. One per sitter slot (rename as `[QS]sitA`, `[QS]sitA 2`, `[QS]sitA 3`, etc.).
 3. **`[QS]sitB`** — menu-and-state companion to sitA. Must match the count of sitA scripts.
-4. **`[QS]select`** — sit-time menu router (required for multi-sitter / multi-furniture setups; harmless for single-sitter).
+4. **an `AVpos` notecard** — boot's self-check ERRORs (red hovertext) if it is missing. boot is the sole writer of `qs:cfg`/`qs:p`/`qs:meta`/`qs:sitter`, so without the notecard sitA/sitB never leave their pre-boot state.
 
-Optional but commonly added:
+Everything else is optional and presence-gated — each plugin announces itself via a `qs:alive:<name>` LSD flag, and the feature degrades silently (or with a warn) when absent:
 
+- **`[QS]select`** — sit-time seat-select picker for multi-sitter / multi-furniture setups. sitB has a built-in picker, so this is optional; sitB reads `qs:alive:select` (falling back to an `[AV]select` inventory probe for stock-AVsitter compat).
 - **`[QS]adjuster`** — enables the `[HELPER]` menu and live `[SAVE]`-to-LSD writing. Without it, you can still play poses, but creators can't fine-tune positions in-world.
 - **`[QS]prop`** — handles `PROP*` directives in the notecard and the dynamic-prop attach protocol used by HUD addons.
 - **`[QS]faces`** — handles face/expression animations.
-- **`[QS]offset`** — dedicated personal-offset storage. If absent, sitA falls back to the legacy inline `CUSTOMS` list.
+- **`[QS]offset`** — dedicated personal-offset storage. It owns the `CUSTOMS` store; without it there is **no** personal-offset persistence and no sitA fallback.
 - **`[QS]sequence`** — animation sequences.
 
-The stock AVsitter plugins (`[AV]camera`, `[AV]control` family, `[AV]favs`) work unchanged inside a QuickySitter linkset — see [Compatibility Matrix](compatibility-matrix.html).
+The stock AVsitter plugins (`[AV]camera`, `[AV]favs`, `[AV]helperscript`) work unchanged inside a QuickySitter linkset — see [Compatibility Matrix](compatibility-matrix.html). QS forks its own root family (`[QS]root`, `[QS]root-control`, `[QS]root-security`, `[QS]root-RLV`); there is no `[QS]camera` fork (stock `[AV]camera` is used as-is).
 
 ## Step-by-step
 
@@ -39,7 +40,7 @@ The stock AVsitter plugins (`[AV]camera`, `[AV]control` family, `[AV]favs`) work
 2. **Prepare a host prim.** Any modifiable prim works. Rez a box.
 3. **Create the AVpos notecard.** In your inventory, create a new notecard, name it exactly `AVpos`, open it and write a single line: `This notecard is empty` (any non-AVpos-command text is fine; even a single space works). **Save it.** A notecard that has never been saved after creation is corrupt and will cause boot to hang.
 4. **Drop the scripts into the prim.** Drag all `[QS]*` scripts plus the `AVpos` notecard into the prim's contents.
-5. **Verify boot.** Boot writes a `llOwnerSay` line on first run reporting which channels were seeded. If you see "Boot complete: 1 channel(s) seeded", boot found one `[QS]sitA` and one `[QS]sitB` and wrote `qs:meta:0` to LSD.
+5. **Verify boot.** On first run boot parses the notecard and writes `qs:meta:<ch>` per seeded channel; with one `[QS]sitA` and one `[QS]sitB` it writes `qs:meta:0` to LSD. If the `AVpos` notecard is missing, boot's self-check sets red hovertext and the prim stays unresponsive.
 6. **Sit on the prim.** You should be sitting on the default sit-target and not animated (no poses defined yet). Touch the prim to bring up the menu — at this point you only see the AVsitter `[ADJUST]` and `[STOP HELP]` style entries.
 
 ## Adding your first pose
@@ -68,6 +69,7 @@ Save the notecard, and boot detects the asset-key change via `changed(CHANGED_IN
 | Symptom | Likely cause |
 |---------|--------------|
 | Prim is silent on sit | `[QS]sitA` or `[QS]sitB` missing → boot self-check should have shouted; check your inventory. |
+| Red hovertext: "AVpos notecard missing" | No `AVpos` notecard in the prim. boot's self-check hard-fails — add a saved `AVpos` notecard and reset. |
 | `llOwnerSay`: "[QS]sitA: missing [QS]sitB" | sitter-count mismatch — same number of sitA and sitB scripts required. |
 | Boot hangs at "Parsing AVpos…" | Notecard was never saved after creation; open it, save it, reset the script. |
 | `[PROP]` button missing despite `PROP*` lines in AVpos | `[QS]prop` not installed. Boot self-check warns about this case. |
