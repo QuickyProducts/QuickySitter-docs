@@ -6,7 +6,7 @@ keywords: qsplug_register, 90212, options menu, plug-and-play, plugin button, pl
 toc: true
 ---
 
-QuickySitter ≥ 0.910 exposes a public extension point that lets a third-party plugin add a button to the furniture's pose menu **without editing any of the fork's core scripts**. The plugin announces its button at runtime via one link-message; `[QS]sitB` renders it under a new top-level `[OPTIONS]` entry and dispatches clicks straight back to the plugin's chosen channel.
+QuickySitter exposes a public extension point that lets a third-party plugin add a button to the furniture's pose menu **without editing any of the fork's core scripts**. The plugin announces its button at runtime via one link-message; `[QS]sitB` renders it under a new top-level `[OPTIONS]` entry and dispatches clicks straight back to the plugin's chosen channel.
 
 This is the **integration** half of the fork's plug-and-play story. The **discovery** half — "is QuickySitter even present here?", "how many sitter slots?" — is [QSALIVE](qsalive-discovery.html). The two protocols complement each other (see [Relationship to QSALIVE](#relationship-to-qsalive) below); most plugins with UI use both.
 
@@ -38,7 +38,7 @@ Pipe-delimited. **Use `llParseString2List`, not `llParseStringKeepNulls`** — e
 
 ## What sitB does with this
 
-sitB caches registrations in a strided-3 RAM list `QSPLUG_REGISTRY = [label, click_chan, scriptName, ...]`. The animation menu builder shows an `[OPTIONS]` top-level button in the pose menu **only when the registry is non-empty** — a furniture without any plug-and-play plugins installed looks identical to pre-0.908 furniture.
+sitB caches registrations in a strided-3 RAM list `QSPLUG_REGISTRY = [label, click_chan, scriptName, ...]`. The animation menu builder shows an `[OPTIONS]` top-level button in the pose menu **only when the registry is non-empty** — a furniture without any plug-and-play plugins installed looks identical to furniture from before this feature existed.
 
 Clicking `[OPTIONS]` opens a dedicated dialog listing every registered label. The dialog automatically pages with `[<<]`/`[>>]` when more than ~10 plugins are installed (the exact cap is 11 labels per page when no paging is needed, 9 when paging is on, because sitB always shows `[BACK]` and reserves room for the nav buttons).
 
@@ -140,7 +140,7 @@ The most important cross-wiring is: **listen to 90097 and re-announce on it**. s
 ## FAQ
 
 **Why does `[OPTIONS]` only show up sometimes?**
-The button is gated on `QSPLUG_REGISTRY` being non-empty. If no plug-and-play plugin has registered yet (slow plugin state_entry, plugin not present, plugin crashed), the button is hidden — the pose menu looks pre-0.908.
+The button is gated on `QSPLUG_REGISTRY` being non-empty. If no plug-and-play plugin has registered yet (slow plugin state_entry, plugin not present, plugin crashed), the button is hidden — the pose menu looks as it did before this feature existed.
 
 **My plugin's label disappeared after I renamed the script in inventory.**
 Expected: the dedupe key is `llGetScriptName()`, which just changed. The old entry is still in the registry under the *old* name; the new name has no entry yet. Adding `changed(CHANGED_INVENTORY) { register_button(); }` (in the boilerplate above) fixes it — sitB will see the new name as a fresh registration. The old ghost entry gets flushed on the next sitB / sitA reset.

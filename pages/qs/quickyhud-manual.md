@@ -28,18 +28,20 @@ The HUD evaluates the camera position to determine movement direction. This ensu
 
 ### Automatic HUD Attachment (Experience Enabled)
 
-The HUD uses the AVsitter Experience to attach automatically. When an avatar sits on a compatible AVsitter furniture piece:
+On furniture set up for **auto-attach** (the default mode), the HUD uses the AVsitter Experience to attach automatically. When an avatar sits on such a piece:
 
 - The HUD is automatically attached to the sitter.
 - There is no need to manually search for or attach the HUD from the inventory.
+
+Some pieces are instead configured for **menu mode**, where the HUD does not attach on its own. On those, attach it yourself by pressing the **Quicky HUD** button the creator added to the menu.
 
 ### One-Time Installation
 
 The automatic attachment requires a one-time installation. Please follow the steps described in the Installation Manual to enable the Experience and prepare the furniture.
 
-After the installation is completed, the HUD will attach and detach automatically whenever someone sits or stands up.
+After the installation is completed, the HUD will attach and detach automatically whenever someone sits or stands up — on pieces left in the default auto-attach mode. (A creator can switch a piece to menu mode, where the HUD is attached from a button instead.)
 
-Future updates work without inventory drop. You just attach an update object and all furnitures on your parcel will get an update.
+Future updates work without inventory drop. You just attach the Quicky Updater HUD and click it — it broadcasts the update region-wide to every matching Quicky piece you own in the region. The update is owner-gated (only your own furniture answers) and version-gated (a piece is only touched if the HUD carries a newer version).
 
 ### Quicky Design HUD
 
@@ -101,8 +103,8 @@ See also: [Personal Pose Offsets](personal-pose-offsets.html) for the technical 
 The HUD provides quick access to the most important positioning functions for AVsitter adjustments. Each section of the HUD is designed for a specific category of action:
 
 - **Directional control pad** — the X/Y/Z nudge buttons with step-size selection.
-- **Action buttons** — SYNC, MENU, RESET, SETTINGS, HELP.
-- **Settings menu** — ADJUSTMODE toggle, AUTOSYNC interval, CLEAR offset storage, texture/design.
+- **Action buttons** — SYNC, MENU, SWAP (seat-swap picker), SELECT (sitter picker — choose whom you adjust), SETTINGS, HELP.
+- **Settings menu** — RESET (reset your SELECT target to its default position), ADJUSTMODE toggle, AUTOSYNC interval, CLEAR offset storage, texture/design.
 
 ## See also
 

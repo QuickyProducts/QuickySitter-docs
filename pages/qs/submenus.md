@@ -47,7 +47,9 @@ A common bug: a creator adds a second `MENU Solos` section but forgets the secon
 
 ## Menu pagination
 
-The SL dialog menu shows 12 buttons per page. QS automatically paginates if you have more entries than fit: a `[NEXT]` button appears, and an implicit `[BACK]` button takes you up to the parent menu.
+An SL dialog has 12 button slots. In a submenu, a `[BACK]` button is always present (it takes you up to the parent menu), leaving **11 slots** for pose entries. When a section has more entries than fit, QS paginates: `[<<]` and `[>>]` paging buttons appear, which consume two more slots and leave **9 pose slots per page**. The navigation buttons are `[<<]` / `[>>]` — there is no `[NEXT]` button.
+
+On the top-level pose menu, control buttons (`[OPTIONS]`, `[SWAP]`, plugin-registered buttons, etc.) consume slots first, before poses are laid out.
 
 ## Menu navigation messages
 
@@ -55,7 +57,7 @@ For plugin authors: menu choices are reported via LinkMsg 90050 (pose selection)
 
 ## QS-specific behaviors
 
-- **`[NEW]` button appears in the helper-bar branch** when `[QS]adjuster` is present and the user is in HELPER mode. Click → enter a name → fresh pose stub gets written to LSD.
+- **`[NEW]` button appears** when `[QS]adjuster` is present and the user is in HELPER mode (or in QuickyHUD ADJUSTMODE). Click → enter a name → fresh pose stub gets written to LSD.
 - **`[QUICKYHUD]` button** in the Adjust dialog appears only if `QPP_CFG:ADJUSTMODE` exists (set by hudproxy). See [HUD Integration](hud-integration.html).
 - **`[ADJUST OFF]`** in the main pose menu appears only when `QPP_CFG:ADJUSTMODE == "On"`. Clicking sends 90266 `"Off"` to hudproxy.
 

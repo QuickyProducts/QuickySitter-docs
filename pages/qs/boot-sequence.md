@@ -28,12 +28,12 @@ After seeding completes, boot broadcasts `QS_BOOT_RELOAD` (90023) so any already
 
 ## Boot self-check — 90077 / 90078
 
-`[QS]boot` verifies the minimum base scripts are present in the linkset right after seeding. Two failure modes get surfaced as `llOwnerSay` errors so the creator catches a missing-script install before the first sit attempt instead of seeing a silent no-menu / no-animation furniture:
+`[QS]boot` verifies the minimum base ingredients are present in the linkset right after seeding. Failure modes get surfaced as `llOwnerSay` errors so the creator catches a broken install before the first sit attempt instead of seeing a silent no-menu / no-animation furniture:
 
-1. **Hard-fail.** `[QS]sitA` or `[QS]sitB` missing — no animation or no menu. Sets `llSetText` red so the prim is visibly broken in-world.
+1. **Hard-fail.** `[QS]sitA` missing, `[QS]sitB` missing, **or** the `AVpos` notecard missing ([`[QS]boot.lsl:725-732`](https://github.com/QuickyProducts/QuickySitter/blob/master/qs/%5BQS%5Dboot.lsl)) — no animation, no menu, or nothing to seed. Sets `llSetText` red so the prim is visibly broken in-world. These three plus `[QS]boot` itself are the only mandatory ingredients; everything else is optional and presence-gated.
 2. **Conditional warn.** AVpos has `PROP*` directives but `[QS]prop` is not installed — props won't be rezzed.
 
-Adjuster presence is deliberately **not** checked. `[QS]sitA` already gates the `[HELPER]` menu item on `QS_ADJUSTER_HELLO` (90091), so an end-user (read-only) install just doesn't expose the Adjust path — nothing is broken from the user's view.
+Adjuster presence is deliberately **not** treated as a failure. The `[HELPER]` / `[QUICKYHUD]` menu gate lives in `[QS]sitB`, keyed on the `qs:alive:adjuster` LSD flag, so an end-user (read-only) install just doesn't expose the Adjust path — nothing is broken from the user's view.
 
 ### Probes
 
@@ -54,7 +54,7 @@ Boot writes the `qs:cfg` / `qs:sitter` / `qs:p:*` keys during seed, so reading t
 
 | Num   | Direction | `msg` | `id` | Meaning |
 |-------|-----------|-------|------|---------|
-| 90098 | `[QS]adjuster` → `[QS]boot` | `(string)channel` | `""` | "Start streaming this channel's dump." Sent on `[DUMP]` for channel 0; boot's own 90021 cascade re-sends it for each subsequent channel. |
+| 90098 | `[QS]adjuster` → `[QS]boot` | `(string)channel` | mode marker (`"quiet"` / `""`) | "Start streaming this channel's dump." Sent on `[DUMP]` for channel 0; boot's own 90021 cascade re-sends it for each subsequent channel. The `id` selects quiet vs. normal output. |
 | 90099 | `[QS]boot` → self | `(string)channel` | `""` | "Process the next pose entry for the channel currently being dumped." Self-trigger between ticks. |
 
 State lives in two boot globals: `qs_dump_ch` (the channel being streamed, `-1` when idle) and `qs_dump_pi` (next entry index). Only one channel streams at a time.
@@ -68,15 +68,17 @@ State lives in two boot globals: `qs_dump_ch` (the channel being streamed, `-1` 
 | 90094 | `[QS]boot` → all plugins | `""` | `""` | QSDUMP probe — "if you're DUMP-capable, announce yourself now." Sent once from boot's `state_entry`. |
 | 90095 | DUMP plugin → `[QS]boot` | `""` | `<script_name>` | QSDUMP hello — "I respond to 90020 DUMP messages addressed to my script name." Sent unsolicited from the plugin's `state_entry` and `on_rez`, and in response to 90094. |
 
-Boot maintains `list dump_plugins` — a deduped list of announced plugin names. The 90021 cascade iterates `dump_plugins + [camera_script]` per channel; the camera script name stays hardcoded until `[QS]camera` is forked and adopts QSDUMP. Boot still `llGetInventoryType`-checks each name before sending 90020, so a stale announce (plugin script deleted from inventory) is silently skipped rather than hanging the cascade waiting for a 90021 echo that never comes.
+Boot maintains `list dump_plugins` — a deduped list of announced plugin names. The 90021 cascade iterates `dump_plugins + [camera_script]` per channel; the stock `[AV]camera` script name stays hardcoded because there is no `[QS]camera` fork to announce itself via QSDUMP. Boot still `llGetInventoryType`-checks each name before sending 90020, so a stale announce (plugin script deleted from inventory) is silently skipped rather than hanging the cascade waiting for a 90021 echo that never comes.
 
 A plugin that never announces still works in stock-AVsitter furniture (no boot → no listener); QSDUMP is purely additive on top of stock's 90020/90021/90022 contract.
 
-### Migration status
+### Plugin participation
 
-- `[QS]prop` (≥ 0.020) — announces ✅ (also broadcasts QS_PROP_HELLO 90089 since 0.901 so `[QS]adjuster` can gate the `[PROP]` menu item without an inventory probe).
-- `[QS]faces` (≥ 0.902) — announces ✅ (also broadcasts QS_FACES_HELLO 90090 so sitA / adjuster can gate the `[FACES]` / `[EXPRESSION]` menu items).
+- `[QS]prop` — announces via QSDUMP ✅. Separately publishes the `qs:alive:prop` LSD flag so the `[PROP]` menu item can be gated without an inventory probe.
+- `[QS]faces` — announces via QSDUMP ✅. Separately publishes the `qs:alive:faces` LSD flag so the `[FACES]` / `[EXPRESSION]` menu items can be gated.
 - `[AV]camera` — stock, hardcoded in boot's cascade. No `[QS]camera` fork planned: stock `[AV]camera`'s only name-bound code is dead, and all working paths are protocol-based and script-name-agnostic.
+
+The old HELLO presence broadcasts (90088–90092: QS_OFFSET / PROP / FACES / ADJUSTER / SELECT_HELLO) were **retired in 0.9951** and replaced by the `qs:alive:<name>` LSD-flag model — flags are written in `state_entry`, re-stamped on the `QS_ALIVE_CENSUS` (90079) sweep, and read on demand at menu-build time. The retired numbers are reserved, not reused. See [QSALIVE Discovery](qsalive-discovery.html).
 
 ## See also
 

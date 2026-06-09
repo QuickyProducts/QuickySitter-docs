@@ -30,10 +30,15 @@ QuickySitter/
 │   ├── [QS]faces.lsl
 │   ├── [QS]offset.lsl
 │   ├── [QS]sequence.lsl
+│   ├── [QS]root.lsl
+│   ├── [QS]root-control.lsl
+│   ├── [QS]root-security.lsl
+│   ├── [QS]root-RLV.lsl
 │   ├── [QS]debug.lsl
+│   ├── test/
+│   │   └── TESTPLAN.md      ← Sync-drift investigation, test scenarios
 │   ├── PROTOCOL.md          ← Fork-specific link-message protocol
 │   ├── STORAGE.md           ← LSD layout and state model
-│   ├── TESTPLAN.md          ← Sync-drift investigation, test scenarios
 │   └── TODOLIST.md
 │
 ├── avstock/                 ← Pinned AVsitter snapshot (upstream reference)
@@ -56,7 +61,7 @@ QuickySitter/
 
 ## qs/ — fork-specific code
 
-Each `[QS]*.lsl` is a self-contained script. Convention: file header starts with a short comment block (purpose, key inputs/outputs, dependencies), followed by `string version = "X.YYY";` and any other top-level constants. The version line is what plugins read via QSALIVE; bumps follow the [0.001-step convention](version-bump.html).
+Each `[QS]*.lsl` is a self-contained script. Convention: file header starts with a short comment block (purpose, key inputs/outputs, dependencies), followed by `string version = "X.YYY";` and any other top-level constants. Every shipped script is currently version-locked at `0.999`. Only `[QS]sitA`'s version reaches other scripts — it is exposed in the QSALIVE (90097) payload; the rest are read directly from the file headers. Bumps follow the [version-bump convention](version-bump.html) (currently +0.00001 per change).
 
 ### Script-by-script summary
 
@@ -67,19 +72,23 @@ Each `[QS]*.lsl` is a self-contained script. Convention: file header starts with
 | `[QS]sitB` | Menu and pose-state companion to sitA. One per sitter slot. Reads pose defaults from LSD on demand. |
 | `[QS]select` | Sit-time menu router for multi-furniture and multi-sitter setups. |
 | `[QS]adjuster` | Creator-tool runtime. `[HELPER] [SAVE]`, sit-target adjust, `[DUMP]` kicker. Optional. |
-| `[QS]prop` | Prop spawning. Stock-compatible plus the QSPROP_ATTACH (90280) dynamic protocol. |
-| `[QS]faces` | Face / expression animations. Adds QS_FACES_HELLO (90090) presence broadcast. |
+| `[QS]prop` | Prop spawning. Stock-compatible plus the QSPROP_ATTACH (90280) dynamic protocol. Publishes `qs:alive:prop`. |
+| `[QS]faces` | Face / expression animations. Publishes the `qs:alive:faces` presence flag. |
 | `[QS]offset` | Personal pose offsets. Two-tier store (LSD `QSO:*` + RAM `CUSTOMS`). Single source of truth. |
-| `[QS]sequence` | Animation sequences. QSDUMP-aware. |
-| `[QS]debug` | Diagnostics. `bDebug` flag in other scripts logs to this script's chat output. |
+| `[QS]sequence` | Animation sequences (fork of `[AV]sequence`). Reads its own `[AV]sequence_settings` notecard. |
+| `[QS]root` | Root-prim touch forwarder — forwards menu touches when no sitA/menu lives in the touched prim. |
+| `[QS]root-control` | "Allow others to control the menu" — couples sitters by name. |
+| `[QS]root-security` | Sit/menu access control (ALL / OWNER / GROUP). |
+| `[QS]root-RLV` | RLV capture/relay. Publishes `qs:alive:rlv`. |
+| `[QS]debug` | Owner-only `/88` LSD inspector and stress-traffic generator. |
 
 ### In-repo design docs
 
-The three Markdown files in `qs/` are the source of truth for many pages on this docs site:
+The design docs in `qs/` are the source of truth for many pages on this docs site:
 
 - [`qs/PROTOCOL.md`](https://github.com/QuickyProducts/QuickySitter/blob/master/qs/PROTOCOL.md) — link-message contracts, fork-specific number ranges, capability tokens.
 - [`qs/STORAGE.md`](https://github.com/QuickyProducts/QuickySitter/blob/master/qs/STORAGE.md) — LSD key layout, state per script, reset behavior.
-- [`qs/TESTPLAN.md`](https://github.com/QuickyProducts/QuickySitter/blob/master/qs/TESTPLAN.md) — sync-drift test scenarios and design decisions for Re-Sync.
+- [`qs/test/TESTPLAN.md`](https://github.com/QuickyProducts/QuickySitter/blob/master/qs/test/TESTPLAN.md) — sync-drift test scenarios and design decisions for Re-Sync.
 
 When these documents disagree with the docs site, the in-repo files are canonical. PRs that modify protocol behavior should update PROTOCOL.md/STORAGE.md in the same change.
 
@@ -99,10 +108,10 @@ Two purposes:
 Long-running Claude sessions often spawn worktrees under `.claude/worktrees/<name>/` to keep work isolated. Each worktree is a full checkout of the repo at a feature branch. Two conventions matter:
 
 - **Edit paths must live under the active worktree root.** A worktree session shouldn't touch a sibling worktree's files.
-- **Coordinate version bumps.** Before bumping a script in your worktree, check sibling worktrees for the same script with an in-flight bump — two parallel `0.916 → 0.917` bumps will both look correct in isolation but collide on merge. See [Version Bump Convention](version-bump.html).
+- **Coordinate version bumps.** Before bumping a script in your worktree, check sibling worktrees for the same script with an in-flight bump — two parallel `0.99901 → 0.99902` bumps will both look correct in isolation but collide on merge. See [Version Bump Convention](version-bump.html).
 
 ## See also
 
 - [Getting Started](getting-started.html) — installing the scripts in an in-world prim.
 - [Contributing](contributing.html) — PR / commit workflow.
-- [Version Bump Convention](version-bump.html) — the 0.001-step rule.
+- [Version Bump Convention](version-bump.html) — the per-change increment rule (currently +0.00001).

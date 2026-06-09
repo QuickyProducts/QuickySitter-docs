@@ -28,18 +28,18 @@ Three components, three message numbers, plus the offset-storage protocol shared
 
 | Component | Role | Talks via |
 |-----------|------|-----------|
-| `[QS]hudproxy` | In-prim presence + ADJUSTMODE state owner. Receives `90271` / `90266`; writes `QPP_CFG:ADJUSTMODE` LSD. | LinkMsg 90093 (presence), 90266 (mode flip), 90262 (save offset). |
+| `[QS]hudproxy` | In-prim presence + ADJUSTMODE state owner. Receives `90266`; **sends** `90271` (Re-Sync to sitA) and `90262` (save offset to `[QS]offset`); writes `QPP_CFG:ADJUSTMODE` LSD. | LinkMsg 90093 (presence), 90266 (mode flip), 90262 (save offset), 90271 (Re-Sync). |
 | `[QS]hudadmin` | In-prim dynamic-prop attacher. Rezzes the Quicky-Pose-HUD on sit / on manual "Quicky HUD" button. | LinkMsg 90280 (`QSPROP_ATTACH`). |
 | Quicky-Pose-HUD | The wearable. Talks to the in-prim hudproxy on its own comm channel. | Out-of-band; not part of this protocol. |
 
 ## HUDPROXY presence — 90093
 
-QuickyHUD's `[QS]hudproxy` writes the `QPP_CFG:ADJUSTMODE` LSD key unprotected on its `state_entry`. `[QS]sitA` and `[QS]sitB` both gate QuickyHUD-aware UI on key existence and value:
+QuickyHUD's `[QS]hudproxy` writes the `QPP_CFG:ADJUSTMODE` LSD key unprotected on its `state_entry`. `[QS]sitB` gates QuickyHUD-aware UI on key existence and value:
 
-- sitA renders the `[QUICKYHUD]` button in the Adjust dialog if the key exists.
+- sitB appends the `[QUICKYHUD]` button to the Adjust-dialog tail for the owner (gated on `qs:alive:adjuster` present and `qs:hud:unlicensed` not set).
 - sitB enriches the main pose menu (`[NEW]`/`[DUMP]`/`[ADJUST OFF]`) if `value == "On"`.
 
-**Problem.** LSD outlives script removal. If the creator removes hudproxy + hudadmin from the linkset after first install, the LSD key persists with whatever value it last had. sitA keeps showing `[QUICKYHUD]` (clicks no-op because nobody handles 90266) and sitB stays stuck in the qh_on-enriched menu forever if the key happened to be `"On"` at removal time — including a non-functional `[ADJUST OFF]` button.
+**Problem.** LSD outlives script removal. If the creator removes hudproxy + hudadmin from the linkset after first install, the LSD key persists with whatever value it last had. sitB keeps showing `[QUICKYHUD]` (clicks no-op because nobody handles 90266) and stays stuck in the qh_on-enriched menu forever if the key happened to be `"On"` at removal time — including a non-functional `[ADJUST OFF]` button.
 
 **Fix.** 90093 active-presence probe.
 
@@ -140,7 +140,7 @@ The HUD also owns Re-Sync policy. `[QS]sitA` exposes a single trigger; the HUD d
 
 ## Lifecycle summary
 
-1. **Install.** Creator drops hudproxy + hudadmin into the prim. Both `state_entry` broadcasts unsolicited HELLOs (90093, 90089). Adjuster latches `hudproxy_present = TRUE`. sitA / sitB enable QuickyHUD menu items.
+1. **Install.** Creator drops hudproxy + hudadmin into the prim. hudproxy's `state_entry` broadcasts an unsolicited HELLO (90093). Adjuster latches `hudproxy_present = TRUE`. sitA / sitB enable QuickyHUD menu items.
 2. **Sit.** hudadmin sends 90280 to attach the wearable Pose-HUD. The user interacts with the HUD; X+/Y+/Z+ clicks go straight to `[QS]offset` via 90262.
 3. **Stand-up.** Stock 90065 sweeps dynamic props. ADJUSTMODE stays as last set.
 4. **Uninstall.** Creator removes hudproxy + hudadmin. Adjuster's next reset (via `CHANGED_INVENTORY`) probes 90093, gets no reply, deletes `QPP_CFG:ADJUSTMODE`. sitA / sitB stop offering QuickyHUD menu items.

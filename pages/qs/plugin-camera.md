@@ -31,12 +31,12 @@ Full reference in the [upstream AVcamera page](https://avsitter.github.io/avsitt
 
 | Num | Direction | Use |
 |-----|-----------|-----|
-| `90011` | `[AV]adjuster` → `[AV]camera` | Tell camera scripts to set the `llSetLinkCamera()`. |
 | `90020` | `[QS]boot` → `[AV]camera` | DUMP request. Boot sends this hardcoded for camera (no QSDUMP announce). |
 | `90021` | `[AV]camera` → `[QS]boot` | DUMP complete echo. |
 | `90022` | `[AV]camera` → `[QS]boot` | One dump line. |
 | `90174` | `[AV]adjuster` → `[AV]camera` | Add CAMERA line at runtime. |
 | `90230` | various → `[AV]camera` | Set camera by name. |
+| `90231` | various → `[AV]camera` | Clear / reset camera. |
 
 These are all stock AVsitter numbers used with stock semantics.
 

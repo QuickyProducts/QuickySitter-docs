@@ -30,6 +30,13 @@ Drop the **creator installer** in and click your **Quicky Updater HUD** — it c
 
 Before you sell a finished piece, set the Quicky scripts inside to **copy-only** for the next owner — the buyer can copy and use the furniture, but the scripts can't be modified or transferred out.
 
+### Installing vs. updating
+
+The two are separate jobs handled by different scripts:
+
+- **Installing / converting / repairing** is the one-shot installer's job. `[QS]install` (customer) and `[QS]installWithLicense` (creator) do a fresh build, an AVsitter-to-Quicky migration, or a repair, then **remove themselves**. The `WithLicense` variant runs an **HTTP license check** before it proceeds; the plain `[QS]install` does not.
+- **Routine updates** don't go through the installer at all. They're driven by the resident **`[QS]hudadmin`** script that stays in the piece — the Quicky Updater HUD's region-wide push talks to it, so you don't drop anything into the prim to update an already-installed piece.
+
 ## Configuration
 
 This is where you, as the creator, decide how the HUD looks and behaves.
@@ -79,6 +86,10 @@ Set the shipped design in the `TEXTURE` field. Users can also switch designs liv
 
 ADJUSTMODE is your working mode while building. With it on, every move and rotate you make with the HUD writes **straight into the pose data** instead of being stored as a personal offset. Tune your poses, then use the **`[DUMP]`** function to write the result into a fresh AVpos notecard. Toggle ADJUSTMODE (with a confirmation) from the HUD's Settings menu; it stays on until you turn it off. See [User Manual → ADJUSTMODE for Creators](quickyhud-manual.html#adjustmode-for-creators-owner-only) for the full workflow.
 
+On a piece in **menu mode** (no auto-attach on sit), turning ADJUSTMODE on also makes sure you have a HUD to drive it: the in-prim hudproxy fires `90274 ATTACH_FOR_ADJUST` to hudadmin, which attaches a HUD to the seated operator. So you can enter ADJUSTMODE on a menu-mode piece without first attaching the HUD by hand.
+
+You can also enter ADJUSTMODE from QuickySitter's own in-world adjust tool, **`[QS]adjuster`** — the `[HELPER]` bar in the pose menu (shown when `[QS]adjuster` is present, gated on the `qs:alive:adjuster` flag). Picking its *Quicky HUD* option flips ADJUSTMODE on through the same path.
+
 ### Diagnostics (`VERBOSE`)
 
 For troubleshooting, add a `VERBOSE n` line to the AVpos notecard:
@@ -105,7 +116,9 @@ QuickySitter is fully AVsitter 2 compatible, so the standard **AVsitter plugins 
 | **Sequences** (`[AV]sequence`) | Auto-advancing pose sequences. |
 | **Helper** (`[AV]helperscript`) | The classic stock pose-adjust helper — QuickySitter's HUD + ADJUSTMODE already cover this, so you rarely need it. |
 
-QuickySitter ships its own take on some of these (expressions, sequences, props, the seat picker) with extra integration — where a Quicky version is included, use that; the stock plugin still works either way.
+QuickySitter ships its own take on some of these (expressions, sequences, props, the seat picker) with extra integration — where a Quicky version is included, use that.
+
+For **camera, control and favourites** the stock plugin works either way. **Props are the exception:** the HUD's auto-attach is wired to `[QS]prop` (it listens for the `90280 QSPROP_ATTACH` hook that `[QS]prop` publishes). Stock `[AV]prop` has no such hook, so a prop dropped in as `[AV]prop` will rez but the HUD won't auto-attach to its sitter — use `[QS]prop` for props.
 
 Full plugin-by-plugin detail: [Compatibility Matrix](compatibility-matrix.html).
 

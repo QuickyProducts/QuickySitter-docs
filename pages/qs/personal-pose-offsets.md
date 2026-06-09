@@ -8,11 +8,13 @@ toc: true
 
 QuickySitter moves personal (per-user, per-slot) pose offsets out of `[AV]sitA`'s inline `CUSTOMS` list into a dedicated `[QS]offset` script with a two-tier store. The slot is in the key because SYNC couple poses share a pose name across multiple slots, but each slot has its own DEFAULT (sit-target offset relative to root); a flat `(user, pose)` key would let a save on slot 1 overwrite a save on slot 0 for the same pose name.
 
+`[QS]offset` is **optional and presence-gated** (it publishes the inverted flag `qs:offset:alive`). It is also the *only* personal-offset store: with no `[QS]offset` in the linkset there is **no persistent offset storage and no sitA fallback** — saves have nowhere to go and seated avatars always land on the pose DEFAULT.
+
 ## Storage tiers (owned exclusively by `[QS]offset`)
 
-### LSD tier — `QSO:<short>:<slot>:<pose>` (≥ 0.09)
+### LSD tier — `QSO:<short>:<slot>:<pose>`
 
-Persistent across script reset and re-rez. Used while LSD has room for at least 200 more entries past the `QPP_CFG:RESERVE` budget that hudprop sets.
+Persistent across script reset and re-rez. Used while LSD has at least `LSD_MIN_FREE_POSES` worth of free space left past the `QPP_CFG:RESERVE` budget that the HUD sets. (This LSD floor is independent of the 200-entry RAM cap below — don't conflate the two.)
 
 Keys are written **unprotected**: the proprietary QuickyHUD `LSD_PASS` is intentionally absent from this MPL-licensed source; `QPP_CFG:*` keys (license, reserve, migration flag) stay protected on the QuickyHUD side. Pose offsets aren't security-sensitive, so unprotected reads/writes are acceptable.
 

@@ -41,19 +41,19 @@ LinkMsg 90271 broadcasts to all sitA slots simultaneously via `LINK_SET`. Each s
 
 ## Memory considerations
 
-At 1000+ poses across N slots, QuickySitter's LSD-backed `MENU_LIST` becomes a noticeable improvement over stock — sitB stays slim while stock would push past the 64 KB Mono cap. See [LSD Storage](lsd-storage.html).
+At 1000+ poses across N slots, QuickySitter's LSD-backed menu storage becomes a noticeable improvement over stock — sitB stays slim while stock would push past the 64 KB Mono cap. The old in-RAM `MENU_LIST` was retired (0.9954); menu state is now built from paged LSD reads of `qs:p:<ch>:<i>`, windowed by the `qs:nm` sidecar. See [LSD Storage](lsd-storage.html).
 
 The other scaling concern is `[QS]offset`'s RAM tier (200-entry LRU cap). With N users × N slots × M poses of personal offsets, persistent LSD storage (`QSO:*`) is the durable place; RAM is the volatile fallback. See [Personal Pose Offsets](personal-pose-offsets.html).
 
 ## Menu navigation
 
-With many poses and many sitters, the dialog menu pagination becomes important. The `[NEXT]` button cycles through pages; menu structure (top-level TOMENU buttons → submenus) helps group poses by scene.
+With many poses and many sitters, the dialog menu pagination becomes important. The `[<<]` / `[>>]` buttons page through entries when a section overflows; menu structure (top-level TOMENU buttons → submenus) helps group poses by scene.
 
 See [Submenus](submenus.html) for navigation design.
 
 ## Common gotchas
 
-- **`[QS]select`.** Recommended for any multi-sitter setup so the right sitter slot can route the right user's menu. Without it, multi-sitter menu routing falls back to the legacy `[AV]select` if present.
+- **`[QS]select`.** Optional and presence-gated — sitB has a built-in seat picker, so multi-sitter menu routing works without it. When `[QS]select` is present (sitB reads the `qs:alive:select` flag, with a `[AV]select` inventory probe as fallback), it provides the dedicated seat-select picker.
 - **Sit-target clamp.** SL clamps sit-target offsets to ±1.7 m for ground prims. For very long furniture (e.g., banquet table with 8 sitters), you'll need linked child prims with their own sit-targets, not stretched offsets from a single root.
 
 ## See also

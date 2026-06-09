@@ -12,7 +12,7 @@ This page focuses on the QS-specific aspects. For the tutorial walk-through see 
 
 ## Notecard syntax (unchanged from stock)
 
-A sequence is a series of `SEQUENCE <pose_or_label>` lines, each followed by a `WAIT <seconds>` (and optionally a `SOUND <name>|<flag>` line). Each `SEQUENCE` line names the pose (or label) to play for that step; `WAIT` gives the step's duration.
+Sequence definitions live in a dedicated **`[AV]sequence_settings`** notecard, read by `[QS]sequence` directly — not in the AVpos notecard. A sequence is a series of `SEQUENCE <pose_or_label>` lines, each followed by a `WAIT <seconds>` (and optionally a `SOUND <name>|<flag>` line). Each `SEQUENCE` line names the pose (or label) to play for that step; `WAIT` gives the step's duration.
 
 ```
 SEQUENCE Lovescene
@@ -50,11 +50,9 @@ In practice, sequences with short steps (< 1 s) are visible-loop fast enough tha
 
 See [Re-Sync Protocol](resync-protocol.html).
 
-## QSDUMP integration
+## Configuration notecard
 
-`[QS]sequence` participates in the DUMP cascade via QSDUMP_HELLO (90095). `[DUMP]` output includes all SEQUENCE entries reconstructed from the plugin's state.
-
-Stock `[AV]sequence` was hardcoded by name in stock adjuster's dump cascade. QS's dynamic announce protocol means a renamed or forked sequence plugin still gets picked up.
+`[QS]sequence` does **not** participate in the `[DUMP]` cascade — it has no QSDUMP announce, and `SEQUENCE` lines are not reconstructed in `[DUMP]` output. Instead, the plugin reads its own separate **`[AV]sequence_settings`** notecard (not the AVpos notecard) for sequence definitions. Its only fork change from stock `[AV]sequence` is the sitter-count query via QSALIVE (90096/90097); the product string is still the un-rebranded `"AVsitter™ sequence"`.
 
 ## Sound and music sequences
 

@@ -6,9 +6,9 @@ keywords: faces, face animations, expressions, plugin
 toc: true
 ---
 
-`[QS]faces` is a minimal fork of stock `[AV]faces` that adds the QS presence broadcast (90090) so `[QS]sitA` and `[QS]adjuster` can gate `[FACES]` / `[EXPRESSION]` menu items without an inventory probe.
+`[QS]faces` is a minimal fork of stock `[AV]faces` that publishes the QS presence flag `qs:alive:faces` so `[QS]sitB` and `[QS]adjuster` can gate `[FACES]` / `[EXPRESSION]` menu items without an inventory probe.
 
-Behavior is otherwise identical to stock — drop a stock `[AV]faces` into a QS prim and faces still work; drop `[QS]faces` into a stock-AVsitter prim and it works too.
+Behavior is otherwise identical to stock — drop a stock `[AV]faces` into a QS prim and faces still play, but with no `qs:alive:faces` flag the menu gating can't see it on a multi-sitter linkset; drop `[QS]faces` into a stock-AVsitter prim and it works too.
 
 ## Notecard syntax (unchanged from stock)
 
@@ -36,36 +36,28 @@ ANIM pose2|pose1
 
 Full reference in the [upstream AVfaces page](https://avsitter.github.io/avsitter2_faces.html).
 
-## QS addition: QS_FACES_HELLO (90090)
+## QS addition: presence via `qs:alive:faces`
 
-| Num | Direction | `msg` | `id` | Meaning |
-|-----|-----------|-------|------|---------|
-| 90090 | `[QS]faces` → all | `""` | `<script_name>` | "I'm present and handle face animations." Sent on `state_entry`, `on_rez`, and in response to a slot-0 sitA QSALIVE-reply. |
+`[QS]faces` advertises its presence by writing the LSD flag `qs:alive:faces` early in `state_entry` (the offset uses the inverted `qs:offset:alive`; faces uses the plain `qs:alive:faces`). It re-stamps the flag whenever boot broadcasts `QS_ALIVE_CENSUS` (90079), and removes nothing on its own — boot wipes all `qs:alive:*` on a census and only the survivors re-write, so a removed faces script simply stops re-stamping.
 
-`[QS]sitA` and `[QS]adjuster` latch this flag and gate menu items on it:
+`[QS]sitB` and `[QS]adjuster` read the flag **on demand at menu-build time** — never cached — and gate menu items on it:
 
 ```lsl
-integer QS_FACES_HELLO = 90090;
-integer faces_present;
-
-link_message(integer s, integer num, string msg, key id)
-{
-    if (num == QS_FACES_HELLO) {
-        faces_present = TRUE;
-    }
-}
+// at menu build, on demand:
+integer faces_present = (llLinksetDataRead("qs:alive:faces") != "");
 ```
 
-If `faces_present` is FALSE when the menu is built, `[FACES]` / `[EXPRESSION]` buttons don't appear. No inventory probe required, so the gating works regardless of whether the script is named `[QS]faces`, `[FOO]faces`, or anything else.
+If `qs:alive:faces` is unset when the menu is built, `[FACES]` / `[EXPRESSION]` buttons don't appear. No inventory probe and no script-name binding, so the gating works regardless of whether the script is named `[QS]faces`, `[FOO]faces`, or anything else.
+
+The HELLO presence broadcasts (the retired `90088`–`90092` band, which once included a `QS_FACES_HELLO`) were removed in 0.9951 in favour of the `qs:alive:*` flags.
 
 ## Stock-diff summary
 
 Total changes from stock `[AV]faces`:
 
-1. **QSALIVE-based sitter presence** — same pattern as `[QS]prop`.
-2. **Unsolicited 90090 broadcast** on `state_entry`, `on_rez`, and as part of QSALIVE-reply handling.
-3. **QSDUMP integration** — announces on 90095 so face entries are included in `[DUMP]` output.
-4. Version string + header comment block.
+1. **Presence via the `qs:alive:faces` LSD flag** — written in `state_entry`, re-stamped on `QS_ALIVE_CENSUS` (90079), read on demand. Same pattern as `[QS]prop`.
+2. **QSDUMP integration** — announces on 90095 so face entries are included in `[DUMP]` output.
+3. Version string + header comment block.
 
 ## See also
 

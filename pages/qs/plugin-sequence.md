@@ -6,13 +6,13 @@ keywords: sequence, animation chains, plugin
 toc: true
 ---
 
-`[QS]sequence` is a thin fork of stock `[AV]sequence` that adds the QSDUMP integration so animation-sequence entries are included in `[DUMP]` output.
+`[QS]sequence` is a very thin fork of stock `[AV]sequence`. Its **only** fork-specific change is that it learns the sitter count over QSALIVE (90096/90097) instead of probing for sitter scripts by name. It does **not** participate in the `[DUMP]` cascade, does not publish a `qs:alive:*` presence flag, and its product string is still the upstream `AVsitter(TM) sequence`.
 
-Behavior is identical to stock from the user's perspective. Animation sequences (chained pose / animation runs with timing) are defined the same way in the notecard.
+Behaviour is otherwise identical to stock from the user's perspective. Animation sequences (chained pose / animation runs with timing) are defined the same way. Note that `[QS]sequence` reads its own separate `[AV]sequence_settings` notecard — **not** the main `AVpos` notecard — and SEQUENCE lines are therefore **not** part of the `[DUMP]` output.
 
 ## Notecard syntax (unchanged from stock)
 
-A sequence is a block of directives starting with `SEQUENCE <pose_or_label>`. Following `WAIT <seconds>` and `SOUND <name>|<flag>` lines belong to that step until the next `SEQUENCE` line.
+Sequences live in the dedicated `[AV]sequence_settings` notecard (the same separate notecard stock `[AV]sequence` uses), not in `AVpos`. A sequence is a block of directives starting with `SEQUENCE <pose_or_label>`. Following `WAIT <seconds>` and `SOUND <name>|<flag>` lines belong to that step until the next `SEQUENCE` line.
 
 ```
 SEQUENCE Lovescene
@@ -28,11 +28,15 @@ Each line is one directive. `WAIT` takes a single float (seconds); `SOUND <name>
 
 Full reference in the [upstream AVsequence page](https://avsitter.github.io/avsitter2_sequence.html).
 
-## QS addition: QSDUMP announce
+## What the fork does *not* change
 
-`[QS]sequence` broadcasts QSDUMP_HELLO (90095) on `state_entry`, `on_rez`, and in response to boot's QSDUMP_PROBE (90094). This registers the script for the DUMP cascade so `[DUMP]` output includes its SEQUENCE entries.
+To be explicit, `[QS]sequence` deliberately does **not** add the features some of the other QS plugins have:
 
-Stock `[AV]sequence` was hardcoded by name in `[AV]adjuster`'s dump cascade. The QS fork removes that hardcoding and lets sequence announce itself, so creator-renamed forks of sequence work without patching boot.
+- **No `[DUMP]` participation.** It does not announce on QSDUMP (90094/90095) and SEQUENCE lines never appear in `[DUMP]` output. Its config lives in `[AV]sequence_settings`, which the creator edits directly.
+- **No `qs:alive:*` presence flag.** Unlike `[QS]prop`/`[QS]faces`, sequence does not publish a presence flag.
+- **Un-rebranded product string.** The script still reports `product = "AVsitter(TM) sequence"`.
+
+The single fork change is sitter-count discovery over QSALIVE (90096/90097) in place of stock's script-name probing.
 
 ## Sound and music
 
@@ -40,23 +44,16 @@ Stock `[AV]sequence` was hardcoded by name in `[AV]adjuster`'s dump cascade. The
 
 ## Link messages
 
-Stock-AVsitter numbers used unchanged:
+All stock-AVsitter numbers, used unchanged — `[QS]sequence` adds no link-messages of its own:
 
 | Num | Direction | Use |
 |-----|-----------|-----|
-| `90003` | sitA → sequence | Play overlay (sequence ignores 90003 to avoid re-triggering itself). |
+| `90003` | sequence → sitA | Play the next pose/animation in the sequence step. |
 | `90205` | any → sequence | Toggle sound. |
 | `90210` | various | BUTTON-line default integer for sequence triggers. |
-
-Plus QSDUMP additions:
-
-| Num | Direction | Use |
-|-----|-----------|-----|
-| `90094` | `[QS]boot` → `[QS]sequence` | QSDUMP probe. |
-| `90095` | `[QS]sequence` → `[QS]boot` | QSDUMP hello. |
 
 ## See also
 
 - [Upstream AVsequence documentation](https://avsitter.github.io/avsitter2_sequence.html).
 - [Animation Sequences](animation-sequences.html) — using sequences in multi-avatar setups.
-- [Boot Sequence § QSDUMP](boot-sequence.html#qsdump--plugin-announce-for-the-dump-cascade).
+- [QSALIVE Discovery](qsalive-discovery.html) — the sitter-count discovery sequence's one fork change relies on.

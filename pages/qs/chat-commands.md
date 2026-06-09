@@ -6,7 +6,7 @@ keywords: chat, commands, slash, slash command, channel
 toc: true
 ---
 
-QuickySitter inherits all the chat commands from stock AVsitter 2. This page is a quick-reference; for the conceptual tutorial see the [upstream AVsitter chat commands page](https://avsitter.github.io/avsitter2_home.html).
+QuickySitter inherits the user-facing chat commands from stock AVsitter 2 (the `/1 …` family below behaves the same). It also adds its own owner-only diagnostics channel — `/88`, served by the optional `[QS]debug` script; see [Debug Flags](debug-flags.html). This page is a quick-reference; for the conceptual tutorial see the [upstream AVsitter chat commands page](https://avsitter.github.io/avsitter2_home.html).
 
 ## Public commands (chat channel 0)
 
@@ -41,7 +41,8 @@ Each script listens on a channel derived from its slot and purpose. Plugin autho
 |--------|----------------|---------|
 | `[QS]sitA` slot N | Sit-channel derived from `llGetOwner` and slot | Per-sitter dialog menus, public commands. |
 | `[QS]adjuster` | Helper-bar channel | Adjustment values from chat. |
-| `[QS]select` | Cross-furniture select channel | Multi-furniture routing. |
+| `[QS]select` (optional) | Cross-furniture select channel | Multi-furniture routing. Only present when the optional `[QS]select` plugin is installed. |
+| `[QS]debug` (optional) | `/88` (owner-only) | LSD inspector + stress-test commands. See [Debug Flags](debug-flags.html). |
 
 ## Dialog interaction
 

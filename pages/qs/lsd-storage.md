@@ -15,12 +15,14 @@ This page is the **state layout reference** — where every piece of runtime sta
 | What | Where | Persistent? |
 |------|-------|-------------|
 | **Pose defaults** (`<pos><rot>` from AVpos) | LSD `qs:p:<ch>:<i>` — written by `[QS]boot` at seed and by `[QS]adjuster` on `[HELPER] [SAVE]` | ✅ survives rerez |
-| **Personal user offsets** (per-(user, slot, pose), incl. `M#T!` per-slot all-poses fallback) | `[QS]offset` — LSD `QSO:<short>:<slot>:<pose>` when room allows, else RAM `CUSTOMS` list | ✅ LSD persistent (≥ 0.09), ❌ RAM volatile fallback |
+| **Personal user offsets** (per-(user, slot, pose), incl. `M#T!` per-slot all-poses fallback) | `[QS]offset` — LSD `QSO:<short>:<slot>:<pose>` when room allows, else RAM `CUSTOMS` list | ✅ LSD persistent, ❌ RAM volatile fallback |
 | **Pose runtime state** (which pose is playing, menu navigation, speed) | `[QS]sitB` per-sitter globals | ❌ volatile per session |
 | **Playback state** (`CURRENT_POSITION` / `CURRENT_ROTATION`, anim filename, `MY_SITTER`) | `[QS]sitA` per-sitter globals | ❌ volatile |
 | **Channel settings** (MTYPE, ETYPE, SWAP, BRAND, CUSTOM_TEXT, ADJUST_MENU, …) | LSD `qs:cfg:<ch>` (boot writes) + in-memory cache in sitA/sitB | ✅ LSD persistent; memory is cache |
 | **Sitter info** (names, gender) | LSD `qs:sitter:<ch>` | ✅ |
 | **Boot marker** (channel already seeded?) | LSD `qs:meta:<ch>` (per-channel) + `qs:boot:asset` (notecard asset-key) | ✅ |
+| **Plugin-presence flags** (which optional plugins are loaded) | LSD `qs:alive:<name>` (`prop`/`faces`/`adjuster`/`select`/`rlv`) + inverted `qs:offset:alive` | ✅ LSD, but re-stamped each boot / `QS_ALIVE_CENSUS` (90079) |
+| **Prop database** (parsed PROP entries, lazy-loaded) | LSD `qs:prop:*` (`meta`/`<i>`/`trig:`/`sit:`/`grp:`) — `[QS]prop` only | ✅ until notecard-key change, then wiped + re-parsed |
 | **Dump output state** (cache, webkey, webcount) | `[QS]boot` globals | ❌ volatile per dump |
 
 ## Linkset Data layout
@@ -34,7 +36,7 @@ All keys are namespaced `qs:*`. `<ch>` is the sitter slot (0-based, matches `SCR
 | `qs:p:<ch>:<i>` | `name\|type\|anim\|pos\|rot` (type is single char: `P`/`S`/`M`/`T`/`B`) | boot's `qs_p_write()`, adjuster's `qs_save_pose_offset` / `qs_add_pose` | sitB's `qs_pose_data()`, adjuster's `qs_find_index` / `qs_p_count`, boot's `qs_dump_tick` |
 | `qs:meta:<ch>` | `"qs1"` (presence = "channel seeded") | boot | sitA, sitB (`state_entry` poll) |
 | `qs:boot:asset` | notecard asset-key as string — written last in `finalize_boot` after all `qs:meta:<ch>` | boot | boot's `state_entry` skip-check |
-| `QSO:<short>:<slot>:<pose>` | `<pos>\|<rot>` (Euler degrees, both `vector`-string) — unprotected | `[QS]offset` ≥ 0.09 `save_offset` (when `lsdHasRoom()`) | `[QS]offset` `push_customs_for`, `drop_pose_for_slot` |
+| `QSO:<short>:<slot>:<pose>` | `<pos>\|<rot>` (Euler degrees, both `vector`-string) — unprotected | `[QS]offset` `save_offset` (when `lsdHasRoom()`) | `[QS]offset` `push_customs_for`, `drop_pose_for_slot` |
 
 `SEP` is U+FFFD, initialized at runtime via `llUnescapeURL("%EF%BF%BD")` because the SL script editor mangles a literal U+FFFD on upload.
 

@@ -14,8 +14,8 @@ This page covers practical conventions specific to QS. For LSL coding norms in g
 
 1. Fork the repo on GitHub, or create a feature branch if you have push access.
 2. Make your changes, following the conventions below.
-3. Bump touched scripts' versions by 0.001 (see [Version Bump Convention](version-bump.html)).
-4. Test in-world — at minimum, follow the relevant scenarios in [`qs/TESTPLAN.md`](https://github.com/QuickyProducts/QuickySitter/blob/master/qs/TESTPLAN.md).
+3. Bump touched scripts' versions by 0.00001 — all to the same locked number (see [Version Bump Convention](version-bump.html)).
+4. Test in-world — at minimum, follow the relevant scenarios in [`qs/test/TESTPLAN.md`](https://github.com/QuickyProducts/QuickySitter/blob/master/qs/test/TESTPLAN.md).
 5. Open a PR with a description of what changed and why.
 6. Update `qs/PROTOCOL.md` and/or `qs/STORAGE.md` in the same PR if protocol behavior or state layout changes.
 
@@ -48,10 +48,10 @@ A comment that would still be true and useful in 2 years is the bar.
 When a PR touches script versions, the PR description starts with the file + bump list:
 
 ```
-**Update:** [QS]sitA 0.915 → 0.916, [QS]boot 0.914 → 0.915
+**Update:** [QS]sitA 0.999 → 0.99901, [QS]boot 0.999 → 0.99901
 ```
 
-This makes review queues easy to skim for "which scripts changed."
+This makes review queues easy to skim for "which scripts changed." Touched scripts share the same new locked number.
 
 ## Documentation
 
@@ -69,5 +69,5 @@ By contributing you agree your contributions are licensed under MPL 2.0 (code) o
 ## See also
 
 - [Repo Structure](repo-structure.html) — what lives where in the source tree.
-- [Version Bump Convention](version-bump.html) — the 0.001-step rule.
+- [Version Bump Convention](version-bump.html) — the +0.00001 locked-version rule.
 - [Debug Flags](debug-flags.html) — how to instrument new code temporarily.

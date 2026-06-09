@@ -44,10 +44,11 @@ These usually appear once near the top of the notecard. They configure the curre
 | `ETYPE <int>` | exit type | Stand-up behavior. |
 | `SET <int>` | sit-target sets count | Defaults to 1. |
 | `SWAP <int>` | 0/1/2 | Swap mode for couple/multi-sitter setups. |
-| `SELECT <int>` | — | Used by `[QS]select` for multi-furniture routing. |
+| `SELECT <int>` | — | Read by `[QS]select` (optional, presence-gated) for multi-seat routing. |
 | `AMENU <int>` | — | Adjustment menu style. |
 | `HELPER <int>` | 0/1 | `1` reverts to the AVsitter-1-style helper bar. |
 | `WARN <int>` | 0/1 | Print warning chat on bad notecard lines. |
+| `VERBOSE <int>` | 0–3 | QS-specific. Diagnostic verbosity level; boot stores it in the `qs:cfg:verbose` LSD key. `0` = quiet, `3` = most verbose. |
 | `KFM <int>` | 0/1 | KeyFrame motion present (for motion props). |
 | `LROT <int>` | — | Local rotation flag (advanced). |
 | `DFLT <int>` | — | Default sit-target index (1-based). |
@@ -176,6 +177,8 @@ SEQUENCE poseB
 SOUND beat|1
 WAIT 25
 ```
+
+`SEQUENCE` lines in the AVpos notecard name the steps, but `[QS]sequence` reads its own separate **`[AV]sequence_settings`** notecard (not AVpos) for the full sequence definitions. `SEQUENCE` entries are not part of the `[DUMP]` output.
 
 See [`[QS]sequence`](plugin-sequence.html) and the [upstream AVsequence docs](https://avsitter.github.io/avsitter2_sequence.html) for the full sequence semantics.
 

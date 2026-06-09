@@ -56,26 +56,31 @@ See [Boot Sequence](boot-sequence.html).
 | `90077` | `[QS]boot` → `[QS]sitB` | Boot self-check probe ("is the menu pipeline present?"). One-shot from boot's `state_entry`. |
 | `90078` | `[QS]sitB` → `[QS]boot` | Boot self-check reply. |
 
-### Presence announcements (9008x – 9009x)
+### Plugin presence (9007x – 9009x)
+
+Plugin presence is **not** a link-message handshake. Each plugin writes a `qs:alive:<name>` LSD flag in its `state_entry` (the offset plugin uses the inverted name `qs:offset:alive`); menu builders read those flags on demand, never caching. The only presence-related link-message is the census re-stamp:
 
 | Num | Direction | Use |
 |-----|-----------|-----|
-| `90089` | `[QS]prop` → all | Announces prop presence so `[QS]adjuster` can gate the `[PROP]` menu item without an inventory probe. id = announcer's script name. |
-| `90090` | `[QS]faces` → all | Announces faces presence so `[QS]sitB` / `[QS]adjuster` can gate `[FACES]` / `[EXPRESSION]` menu items. |
-| `90091` | `[QS]adjuster` → all | Announces adjuster presence so `[QS]sitB` can gate the `[HELPER]` menu item. |
-| `90092` | `[QS]select` → all | Announces select presence so `[QS]sitB` can gate select-driven menu routing. The legacy `[AV]select` inventory probe stays in sitB as stock-AVsitter backward-compat. |
-| `90093` | bidirectional | hudproxy presence probe. See [HUD Integration](hud-integration.html). |
+| `90079` | `[QS]boot` → all | `QS_ALIVE_CENSUS`. boot wipes every `qs:alive:*` flag and broadcasts this; surviving plugins re-stamp their flag in response, so a removed plugin drops out without an inventory probe. |
+| `90093` | bidirectional | hudproxy presence probe (the only live HELLO). See [HUD Integration](hud-integration.html). |
 | `90094` | `[QS]boot` → all plugins | QSDUMP probe — "if you're DUMP-capable, announce yourself now." |
 | `90095` | DUMP plugin → `[QS]boot` | QSDUMP hello — "I respond to 90020 DUMP messages." |
-| `90096` | plugin → `[QS]sitA` | QSALIVE presence probe. See [QSALIVE Discovery](qsalive-discovery.html). |
-| `90097` | `[QS]sitA` (slot 0) → plugin | QSALIVE reply / boot-announce. |
+| `90096` | plugin → `[QS]sitA` | QSALIVE count/version/caps probe (**not** a presence handshake). See [QSALIVE Discovery](qsalive-discovery.html). |
+| `90097` | `[QS]sitA` (slot 0) → plugin | QSALIVE count/version/caps reply, plus one unsolicited boot-announce. |
 
 ### DUMP cascade ownership (9009x)
 
 | Num | Direction | Use |
 |-----|-----------|-----|
-| `90098` | `[QS]adjuster` → `[QS]boot` | "Start dump for channel." Replaces stock adjuster-owned `[DUMP]`. |
+| `90098` | `[QS]adjuster` → `[QS]boot` | "Start dump for channel." Replaces stock adjuster-owned `[DUMP]`. `id` is a mode marker — `"quiet"` for the silent self-check dump, `""` (or `"loud"`) for the operator-visible `[DUMP]`. |
 | `90099` | `[QS]boot` → self | Dump tick — self-trigger between dump-line iterations. |
+
+### Quiet swap (9003x)
+
+| Num | Direction | Use |
+|-----|-----------|-----|
+| `90031` | menu source → `[QS]sitA` | Quiet SWAP — like stock `90030` SWAP but suppresses the swap announcement. Fork addition; stock furniture has no 90031 sender. |
 
 ### Plug-and-play plugin registry (9021x)
 
@@ -96,6 +101,18 @@ See [Boot Sequence](boot-sequence.html).
 | `90266` | `[QS]adjuster` → hudproxy | "Flip QuickyHUD ADJUSTMODE remotely" — `"On"` / `"Off"`. |
 
 See [Personal Pose Offsets](personal-pose-offsets.html).
+
+### Retired presence HELLOs (9008x – 9009x)
+
+These per-plugin HELLO broadcasts were the original (pre-0.9951) presence mechanism. They were **retired in 0.9951** and replaced by the `qs:alive:*` LSD flags + `QS_ALIVE_CENSUS` (90079) described above. The numbers are reserved and not reused; current scripts neither send nor listen for them.
+
+| Num | Was | Replaced by |
+|-----|-----|-------------|
+| `90088` | `QS_OFFSET_HELLO` — offset presence | `qs:offset:alive` LSD flag (inverted name). |
+| `90089` | `QS_PROP_HELLO` — prop presence (gated `[PROP]`) | `qs:alive:prop` LSD flag. |
+| `90090` | `QS_FACES_HELLO` — faces presence (gated `[FACES]`/`[EXPRESSION]`) | `qs:alive:faces` LSD flag. |
+| `90091` | `QS_ADJUSTER_HELLO` — adjuster presence (gated `[HELPER]`) | `qs:alive:adjuster` LSD flag. |
+| `90092` | `QS_SELECT_HELLO` — select presence (gated select routing) | `qs:alive:select` LSD flag (sitB also keeps an `[AV]select` inventory fallback for stock-AVsitter compat). |
 
 ### Re-Sync and dynamic props (9027x – 9028x)
 

@@ -12,18 +12,24 @@ A couples furniture has two sitter slots and at least one SYNC pose pair so the 
 
 For a 2-sitter prim:
 
+Mandatory:
+
 - `[QS]boot` (one instance)
 - `[QS]sitA` + `[QS]sitA 2` (two instances)
 - `[QS]sitB` + `[QS]sitB 2` (matching count)
-- `[QS]select` (recommended for multi-sit menus)
+- an `AVpos` notecard
+
+Optional (all presence-gated; add only what you need):
+
 - `[QS]adjuster` (for `[HELPER]`)
-- Optional: `[QS]offset`, `[QS]prop`, `[QS]faces`, `[QS]sequence`
+- `[QS]select` (dedicated seat-select picker; sitB already has a built-in picker, so this is not required)
+- `[QS]offset`, `[QS]prop`, `[QS]faces`, `[QS]sequence`
 
 The script name suffix matches stock — space + number for instances beyond the first.
 
 ## Sit-targets
 
-Each slot has its own sit-target. The `SET` directive in `SETUP` declares how many sit-target sets the furniture has (couples on a sofa might have one set; a sofa with both "facing each other" and "lying down" arrangements has two).
+Each slot has its own sit-target. The `SET` directive declares how many sit-target sets the furniture has (couples on a sofa might have one set; a sofa with both "facing each other" and "lying down" arrangements has two). `SET` is a plain channel-level directive — there is no `SETUP` section.
 
 See [SitTargets](sittargets.html) for the per-slot offset model.
 
@@ -67,7 +73,7 @@ See [Personal Pose Offsets](personal-pose-offsets.html).
 
 ## Common gotchas
 
-- **Mismatched sitA/sitB counts.** `[QS]sitA` instances must match `[QS]sitB` instances. Boot's self-check warns if the count is off.
+- **Mismatched sitA/sitB counts.** `[QS]sitA` instances should match `[QS]sitB` instances. Boot's self-check hard-fails (ERROR) only when sitA or sitB is missing entirely — it does not raise a dedicated warning for a count mismatch, so double-check the instance counts yourself.
 - **Same pose name in both slots.** Required — both slots have a pose named `Cuddle` so the menu can pick it as a single entry that triggers both. Different pose names in each slot don't pair up.
 - **Animation drift after region restart.** Region restart preserves LSD, but viewer-side animation phase resets to `t=0`. A re-sync after sit-down restores phase coherence.
 - **SWAP behavior.** The `SWAP` directive controls whether the menu allows users to swap positions (slot 0 ↔ slot 1). Stock semantics unchanged in QS.

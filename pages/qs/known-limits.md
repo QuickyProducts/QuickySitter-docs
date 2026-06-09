@@ -14,7 +14,7 @@ LSL scripts compiled with Mono have a hard 64 KB cap on combined code + stack + 
 
 **What QS does:** Moves `DATA_LIST` and `POS_ROT_LIST` out of `[QS]sitB`'s memory and into LSD (`qs:p:<ch>:<i>`). At 1000+ pose entries, stock AVsitter pushes past the cap; QS reads on demand and stays slim.
 
-**What it still can't fix:** A single script's own logic + globals + local-variable peaks still must fit in 64 KB. Very large `[QS]adjuster` configurations (deep `ADJUST_MENU` trees, many custom strings) can push adjuster past the cap. If you see `Stack-Heap Collision` errors in chat, check whether any script is consistently above ~55 KB used.
+**What it still can't fix:** A single script's own logic + globals + local-variable peaks still must fit in 64 KB. Very large `[QS]adjuster` configurations (deep `ADJUST_MENU` trees, many custom strings) can push adjuster past the cap. If you see `Stack-Heap Collision` errors in chat, check whether any script is consistently above ~55 KB used. (The fork moved the `[DUMP]` pipeline out of `[QS]adjuster` and into `[QS]boot`, which frees a chunk of adjuster heap — adjuster now only kicks the cascade with a single 90098 message.)
 
 ## LSD storage limits
 
@@ -79,4 +79,4 @@ SL's `llSitTarget` accepts an offset relative to the prim's pivot. The offset is
 - [LSD Storage](lsd-storage.html) — the key layout that respects the 128 KB cap.
 - [Personal Pose Offsets](personal-pose-offsets.html) — the LSD-vs-RAM tier decision.
 - [Re-Sync Protocol](resync-protocol.html) — the 90271 trigger for SYNC-drift.
-- [Project note: SL Notecard editor cut at ~48 KB](https://github.com/QuickyProducts/QuickySitter/blob/master/qs/) (in-repo issue tracker).
+- [In-repo design docs](https://github.com/QuickyProducts/QuickySitter/tree/master/qs) — `PROTOCOL.md`, `STORAGE.md`, `test/TESTPLAN.md`.
