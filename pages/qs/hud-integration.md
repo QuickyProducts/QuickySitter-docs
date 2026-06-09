@@ -8,7 +8,7 @@ toc: true
 
 QuickySitter is designed so that **HUD addons attach as seamless adjustment modules over the same LinkMsg surface that the built-in helper uses**. QuickyHUD is the reference HUD; third-party HUDs can speak the same protocol.
 
-This page covers the integration contract — the message numbers, the presence-detection handshake, and the lifecycle. The HUD code itself lives in the [QuickyHUD repository](https://github.com/QuickyProducts/QuickyHUD).
+This page covers the integration contract — the message numbers, the presence-detection handshake, and the lifecycle. The HUD code itself lives in the separate QuickyHUD project.
 
 ## Why a HUD addon at all
 
@@ -152,4 +152,3 @@ The fact that ADJUSTMODE is unprotected (no `LSD_PASS`) and adjuster can delete 
 - [QSALIVE Discovery](qsalive-discovery.html) — sibling presence protocol for plugin gating.
 - [Re-Sync Protocol](resync-protocol.html) — the SYNC trigger HUD policy owns.
 - [Personal Pose Offsets](personal-pose-offsets.html) — 90262 / 90264 lifecycle from the storage side.
-- [QuickyHUD repository](https://github.com/QuickyProducts/QuickyHUD) — implementation of hudproxy and hudadmin.
