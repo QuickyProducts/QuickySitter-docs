@@ -398,21 +398,6 @@ ul#mysidebar {
     border-radius:0px;
 }
 
-/* QuickySitter logo header in the sidebar (home_sidebar) on the navbar colour */
-li.sidebarLogo {
-    background-color: #563d7c; /* same as the top navbar (theme-purple .navbar-inverse) */
-    padding: 12px;
-    border-radius: 4px;
-}
-
-li.sidebarLogo img {
-    display: block;
-    width: 100%;
-    max-width: 180px;
-    height: auto;
-    margin: 0 auto;
-}
-
 .nav ul li ul li a {
     padding-left:40px;
 }
