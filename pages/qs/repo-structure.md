@@ -14,7 +14,7 @@ The QuickySitter source tree is laid out so that fork-specific code (`qs/`) and 
 |------|--------------|
 | [QuickyProducts/QuickySitter](https://github.com/QuickyProducts/QuickySitter) | LSL scripts, build helper, vendored AVsitter snapshot, in-repo design docs. |
 | [QuickyProducts/QuickySitter-docs](https://github.com/QuickyProducts/QuickySitter-docs) | Jekyll documentation site (this site). |
-| [QuickyProducts/QuickyHUD](https://github.com/QuickyProducts/QuickyHUD) | HUD addon scripts (hudproxy, hudadmin, the wearable Quicky-Pose-HUD). Sibling project. |
+| QuickyProducts/QuickyHUD *(private)* | HUD addon scripts (hudproxy, hudadmin, the wearable Quicky-Pose-HUD). Sibling project — source not public. |
 
 ## QuickySitter source tree
 

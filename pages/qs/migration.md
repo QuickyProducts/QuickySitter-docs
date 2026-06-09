@@ -21,7 +21,7 @@ Stock `[AV]camera`, `[AV]favs`, `[AV]helperscript`, and the LockGuard / LockMeis
 
 Nothing user-visible if you swap only the base scripts. The pose menu, sit-target, animation sequences, and props all behave identically — QS is structurally different inside but presents the same surface to sitters.
 
-Differences become visible if you add `[QS]offset` (personal-offset persistence across reset) or `[QS]adjuster` plus the QuickyHUD addon (`[QS]hudproxy`/`[QS]hudadmin` live in the separate [QuickyHUD repo](https://github.com/QuickyProducts/QuickyHUD)) for HUD-driven adjustment with live `[SAVE]` writing into LSD.
+Differences become visible if you add `[QS]offset` (personal-offset persistence across reset) or `[QS]adjuster` plus the QuickyHUD addon (`[QS]hudproxy`/`[QS]hudadmin` from the separate QuickyHUD project) for HUD-driven adjustment with live `[SAVE]` writing into LSD.
 
 ## What changes for the creator
 
