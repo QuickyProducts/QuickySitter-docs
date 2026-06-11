@@ -6,7 +6,7 @@ keywords: link message, linkmsg, reference, 90000, 90500
 toc: true
 ---
 
-QuickySitter uses link-message numbers in the range **90000 – 90500**, identical to stock AVsitter 2. Stock numbers are unchanged from a sender's perspective — drop a stock plugin into QuickySitter furniture and it works.
+QuickySitter uses link-message numbers in the range **90000 – 90500**, identical to stock AVsitter 2. Stock numbers are unchanged from a sender's perspective — a stock plugin's link-message traffic works as-is in QuickySitter furniture. (Script-**name** probes are another matter: see [Compatibility Matrix](compatibility-matrix.html).)
 
 This page lists the **fork-specific numbers** QuickySitter adds (in stock-unused ranges) and notes the stock numbers whose handler script moved or whose semantics changed slightly. For the complete stock AVsitter 2 reference, see [`avsitter2_link_message_reference.md`](https://github.com/QuickyProducts/QuickySitter/blob/master/avstock/avsitter2_link_message_reference.md) in the QS repo (vendored copy of upstream).
 
@@ -123,7 +123,7 @@ These per-plugin HELLO broadcasts were the original (pre-0.9951) presence mechan
 
 ## Compatibility summary
 
-- **Stock plugin in QuickySitter furniture:** ✅ works unchanged.
+- **Stock plugin in QuickySitter furniture:** ✅ link-message traffic works unchanged; plugins relying on `[AV]sitA` script-name probes degrade — see [Compatibility Matrix](compatibility-matrix.html).
 - **QuickySitter scripts in stock-AVsitter furniture:** ❌ doesn't work — sitA/sitB expect `qs:cfg`/`qs:sitter`/`qs:p:*` LSD keys that boot writes during seed; stock furniture has no `[QS]boot`. This is intentional, not a goal of the fork.
 
 See also: [Compatibility Matrix](compatibility-matrix.html), [LSD Keys](lsd-keys.html).

@@ -12,7 +12,7 @@ Yes. The minimum change is to delete `[AV]sitA` / `[AV]sitB` and add `[QS]boot` 
 
 ## Do I need to replace ALL the AVsitter plugins?
 
-No. Stock `[AV]camera`, `[AV]control` (LockGuard, LockMeister, Xcite!, RLV), `[AV]favs` work unchanged inside a QS linkset. You only need the QS variants of plugins you want QS-specific features from. See [Compatibility Matrix](compatibility-matrix.html).
+Not all of them. Stock `[AV]camera`, `[AV]control` (LockGuard, LockMeister, Xcite!, RLV) and `[AV]favs` work unchanged — they are purely link-message-driven. `[AV]faces`, `[AV]select`, `[AV]adjuster`, `[AV]sequence` and `[AV]prop` find the engine via `[AV]sitA` script names and degrade in a QS linkset (single-sitter at best, no QS menu entries) — use their `[QS]` variants. See [Compatibility Matrix](compatibility-matrix.html).
 
 ## What happens to existing pose adjustments after migration?
 
@@ -64,7 +64,7 @@ You cannot, however, distribute renamed scripts as if they were the AVsitter or 
 
 ## Will stock AVsitter scripts run inside a QS linkset?
 
-Yes. Drop a stock `[AV]prop` into a QS prim and it works. The fork is structured so the link-message contracts at the plugin boundary are unchanged. See [Compatibility Matrix](compatibility-matrix.html).
+The link-message contracts at the plugin boundary are unchanged, so purely protocol-driven stock scripts (camera, the control family, favs) run as-is. Stock plugins that probe `[AV]sitA` script names for presence or sitter count (`[AV]faces`, `[AV]select`, `[AV]adjuster`, `[AV]sequence`, `[AV]prop`) mis-detect the QS-named engine and degrade — use their `[QS]` variants. See [Compatibility Matrix](compatibility-matrix.html).
 
 The reverse — QS scripts in a stock prim — does NOT work, because the QS scripts expect `[QS]boot` to have seeded LSD.
 

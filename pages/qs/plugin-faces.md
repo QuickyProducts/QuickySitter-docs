@@ -6,9 +6,9 @@ keywords: faces, face animations, expressions, plugin
 toc: true
 ---
 
-`[QS]faces` is a minimal fork of stock `[AV]faces` that publishes the QS presence flag `qs:alive:faces` so `[QS]sitB` and `[QS]adjuster` can gate `[FACES]` / `[EXPRESSION]` menu items without an inventory probe.
+`[QS]faces` is a minimal fork of stock `[AV]faces` that takes the sitter count from QSALIVE (90096/90097) instead of walking `[AV]sitA N` script names, and publishes the QS presence flag `qs:alive:faces` so `[QS]sitB` and `[QS]adjuster` can gate the `[FACES]` / `[FACE]` menu items without an inventory probe.
 
-Behavior is otherwise identical to stock — drop a stock `[AV]faces` into a QS prim and faces still play, but with no `qs:alive:faces` flag the menu gating can't see it on a multi-sitter linkset; drop `[QS]faces` into a stock-AVsitter prim and it works too.
+Behavior is otherwise identical to stock — drop `[QS]faces` into a stock-AVsitter prim and it works too. The reverse is degraded: a stock `[AV]faces` in a QS prim finds no `[AV]sitA N` scripts to count (faces play for sitter 0 at best, nothing on the other slots), and without the `qs:alive:faces` flag the `[FACES]` / `[FACE]` menu entries never appear.
 
 ## Notecard syntax (unchanged from stock)
 

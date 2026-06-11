@@ -6,13 +6,13 @@ keywords: compatibility, avsitter, stock, plugin, mix
 toc: true
 ---
 
-QuickySitter aims to keep the contract that **plugin scripts** (`[AV]prop`, `[AV]faces`, `[AV]camera`, `[AV]sequence`, `[AV]favs`) and **notecard consumers** see identical to stock AVsitter 2. The fork's structural changes happen below the link-message surface that plugins talk to. QS does fork the root family (`[QS]root`, `[QS]root-control`, `[QS]root-security`, `[QS]root-RLV`), but the stock `[AV]` equivalents still run unchanged in a QS linkset.
+QuickySitter keeps the **link-message contract** that plugin scripts and **notecard consumers** see identical to stock AVsitter 2 — the fork's structural changes happen below that surface. What the fork does **not** keep is script-**name**-based discovery: the engine scripts are named `[QS]sitA` / `[QS]sitB`, so a stock plugin that probes `llGetInventoryType("[AV]sitA")` for presence or walks `[AV]sitA N` names for the sitter count mis-detects the engine, and QS menu entries are gated on `qs:alive:*` flags that only `[QS]` plugins write. Purely protocol-driven plugins work unchanged. QS does fork the root family (`[QS]root`, `[QS]root-control`, `[QS]root-security`, `[QS]root-RLV`), but the stock `[AV]` equivalents still run unchanged in a QS linkset.
 
 ## Direction by direction
 
 | Scenario | Status | Notes |
 |----------|--------|-------|
-| **Stock AVsitter plugin in QuickySitter furniture** | ✅ Works unchanged. | Drop a stock `[AV]prop`, `[AV]faces`, etc. into a QS prim and it works identically to stock. All stock link-message numbers QS receives are handled with the same semantics. |
+| **Stock AVsitter plugin in QuickySitter furniture** | ⚠️ Protocol-compatible — name probes are not. | All stock link-message numbers QS receives are handled with the same semantics, so purely protocol-driven plugins (camera, control family, favs, …) work unchanged. Plugins that find the engine via `[AV]sitA` script names or need QS menu gating (faces, select, adjuster, sequence, prop) degrade — see the [plugin table](#plugin-compatibility-table). |
 | **QuickySitter scripts in stock-AVsitter furniture** | ❌ Doesn't work. | sitA/sitB expect `qs:cfg`/`qs:sitter`/`qs:p:*` LSD keys that boot writes during seed; stock furniture has no `[QS]boot`. This is intentional, not a goal of the fork. |
 | **Mixed (some [QS], some [AV] scripts in one prim)** | ✅ Works for the QS-script set documented below. | The fork is structured so that creators can adopt one QS script at a time. See "Minimal QS install" below. |
 | **AVsitter notecard (AVpos) in QuickySitter furniture** | ✅ Reads stock AVpos directly. | Boot parses the unchanged AVpos format on first run, seeds LSD. No notecard migration needed. |
@@ -26,7 +26,9 @@ The smallest installation that gets QS benefits while leaving as much stock as p
 - `[QS]boot` — required. The notecard-to-LSD seeder.
 - an `AVpos` notecard — required. boot's self-check ERRORs (red hovertext) if it is missing; without it boot writes no LSD and sitA/sitB never leave their pre-boot state.
 
-Everything else (select, adjuster, prop, faces, sequence) can remain stock. The fork's QSALIVE handshake (90096/90097) lets stock plugins keep working alongside the QS base set; the unsolicited reply from slot-0 sitA reaches stock plugins too — they ignore it via the `num` mismatch.
+Camera, the control family, favs, texture and helperscript can remain stock — they are purely protocol-driven (QS's unsolicited QSALIVE broadcasts reach them too; they ignore the unknown `num`). Select, adjuster, prop, faces and sequence are a different story: each derives engine presence and/or the sitter count from `[AV]sitA` script names that don't exist in a QS linkset, so they degrade to single-sitter behavior at best — and their QS menu entries stay hidden, because the gates read `qs:alive:*` flags only the `[QS]` variants write. That is exactly why these five have `[QS]` forks; plan to swap them along with the base set.
+
+> **Escape hatch — stock names.** QS scripts never locate each other by hardcoded name (each derives its sibling names from its own name at runtime), so a creator who must keep a legacy name-probing plugin can rename the base pair back to the stock names — `[QS]sitA` → `[AV]sitA` (numbered copies too) and `[QS]sitB` → `[AV]sitB` — and legacy presence probes and `[AV]sitA N` count walks find their targets again. This does **not** restore the flag-gated QS menu entries; those still need the `[QS]` plugin forks.
 
 If you want the full QS feature set:
 
@@ -41,15 +43,16 @@ If you want the full QS feature set:
 
 | Plugin | Stock works in QS? | QS variant? | QS-only features |
 |--------|-------------------|-------------|------------------|
-| `[AV]prop` | ✅ | `[QS]prop` | `QSPROP_ATTACH` (90280) for dynamic, no-notecard props; lazy `qs:prop:*` LSD store. Publishes `qs:alive:prop`. |
-| `[AV]faces` | ✅ | `[QS]faces` | Publishes the `qs:alive:faces` presence flag. |
-| `[AV]camera` | ✅ | none planned | Stock camera has no QS-specific code path. |
-| `[AV]sequence` | ✅ | `[QS]sequence` | Multi-sitter fix via QSALIVE count. Reads its own `[AV]sequence_settings` notecard. |
+| `[AV]prop` | ⚠️ degraded | `[QS]prop` | Stock prop derives presence/sitter mapping from `[AV]sitA` names: pose-driven rezzing works for slot 0 / single-sitter at best, and boot's self-check WARNs "prop plugin missing" because `qs:alive:prop` is never written. `[QS]prop` adds `QSPROP_ATTACH` (90280) and the lazy `qs:prop:*` LSD store. |
+| `[AV]faces` | ⚠️ degraded | `[QS]faces` | Stock faces counts sitters by walking `[AV]sitA N` names → faces play for sitter 0 at best, and the flag-gated `[FACES]` / `[FACE]` menu entries never appear. |
+| `[AV]adjuster` | ⚠️ degraded | `[QS]adjuster` | The `[HELPER]` menu entry is gated on `qs:alive:adjuster`, which stock never writes — the helper flow is unreachable from QS menus; stock's sitter-count walk also comes up empty. `[QS]adjuster` adds the LSD `[SAVE]`, the 90263 eviction protocol and `[QUICKYHUD]`. |
+| `[AV]camera` | ✅ | none planned | Stock camera's only name-bound code path is dead code; all working paths are protocol-based. |
+| `[AV]sequence` | ⚠️ single-sitter only | `[QS]sequence` | Stock counts sitters via `[AV]sitA N` names → slots ≥ 1 lose sequences. `[QS]sequence` takes the count from QSALIVE; reads its own `[AV]sequence_settings` notecard. |
 | LockGuard / LockMeister / Xcite! | ✅ | none | All stock lock/Xcite controls work unchanged. |
 | `[AV]control` family | ✅ | `[QS]root-control`, `[QS]root-security`, `[QS]root-RLV` | QS forks the root family. `[QS]root-RLV` publishes `qs:alive:rlv`. The stock scripts still work as-is. |
 | `[AV]favs` | ✅ | none | Stock favs works unchanged. |
 | `[AV]helperscript` | ✅ | none (not packaged for QS) | Use the standard import flow. |
-| `[AV]select` | ✅ | `[QS]select` (optional) | sitB has a built-in picker. It reads `qs:alive:select`, falling back to an `[AV]select` inventory probe for stock-AVsitter compat. |
+| `[AV]select` | ⚠️ effectively broken | `[QS]select` (optional) | sitB detects a stock `[AV]select` via a legacy inventory fallback and hands the seat menu over — but stock select's own `[AV]sitA N` count walk then sees one sitter, useless on the multi-sitter furniture it exists for. Use `[QS]select`, or sitB's built-in picker. |
 
 ## Detection rules for stock plugins that want QS support
 

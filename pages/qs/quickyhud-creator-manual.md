@@ -103,22 +103,22 @@ For troubleshooting, add a `VERBOSE n` line to the AVpos notecard:
 
 Leave it at `0` for anything you ship.
 
-## Adding stock AVsitter plugins
+## Adding plugins
 
-QuickySitter is fully AVsitter 2 compatible, so the standard **AVsitter plugins work unchanged** — just drop them into your piece alongside the Quicky scripts. The ones you'd add yourself:
+QuickySitter keeps the AVsitter 2 plugin protocol, so protocol-driven stock **AVsitter plugins work unchanged** alongside the Quicky scripts — and QS ships its own variants where the stock plugin would mis-detect the engine. The ones you'd add yourself:
 
 | Plugin | Adds |
 |--------|------|
 | **Camera** (`[AV]camera`) | A custom camera view per pose. |
 | **Control / RLV** (`[AV]control` — LockMeister, LockGuard, Xcite!, RLV) | RLV restraints and lock / adult interaction. |
 | **Favourites** (`[AV]favs`) | Sitters can save and recall favourite poses. |
-| **Expressions** (`[AV]faces`) | Facial expressions per pose. |
-| **Sequences** (`[AV]sequence`) | Auto-advancing pose sequences. |
+| **Expressions** (`[QS]faces`) | Facial expressions per pose. |
+| **Sequences** (`[QS]sequence`) | Auto-advancing pose sequences. |
 | **Helper** (`[AV]helperscript`) | The classic stock pose-adjust helper — QuickySitter's HUD + ADJUSTMODE already cover this, so you rarely need it. |
 
 QuickySitter ships its own take on some of these (expressions, sequences, props, the seat picker) with extra integration — where a Quicky version is included, use that.
 
-For **camera, control and favourites** the stock plugin works either way. **Props are the exception:** the HUD's auto-attach is wired to `[QS]prop` (it listens for the `90280 QSPROP_ATTACH` hook that `[QS]prop` publishes). Stock `[AV]prop` has no such hook, so a prop dropped in as `[AV]prop` will rez but the HUD won't auto-attach to its sitter — use `[QS]prop` for props.
+For **camera, control and favourites** the stock plugin works either way. **Expressions, sequences and props need the Quicky versions:** stock `[AV]faces` / `[AV]sequence` / `[AV]prop` detect the engine by probing `[AV]sitA` script names, which a QS linkset doesn't have. Props have a second reason: the HUD's auto-attach is wired to `[QS]prop` (it listens for the `90280 QSPROP_ATTACH` hook that `[QS]prop` publishes) — a prop dropped in as `[AV]prop` would rez, but the HUD won't auto-attach to its sitter.
 
 Full plugin-by-plugin detail: [Compatibility Matrix](compatibility-matrix.html).
 
