@@ -72,10 +72,48 @@ Boot maintains `list dump_plugins` — a deduped list of announced plugin names.
 
 A plugin that never announces still works in stock-AVsitter furniture (no boot → no listener); QSDUMP is purely additive on top of stock's 90020/90021/90022 contract.
 
+### Joining the cascade, step by step
+
+Your plugin needs this if it keeps **its own directive lines in the AVpos notecard**: without joining the cascade, those lines are missing from the `[DUMP]` settings copy — and silently lost the next time the creator replaces AVpos with that dump. A plugin without notecard directives can skip all of this.
+
+1. **Announce.** Send `90095` with your script name in `id` — from `state_entry`, from `on_rez`, and again whenever the `90094` probe arrives. Boot dedupes, so repeat announces are harmless.
+2. **Answer `90020`.** During a dump, boot walks the announced scripts once per sitter channel, addressing each by name: `num == 90020`, `id` = your script name, `msg` = the channel. Emit the AVpos lines belonging to that sitter's section as `90022` link messages (`msg` = the line, `id` = the channel).
+3. **Always echo `90021`** (`msg` = the channel, `id` = your script name) when you're done — even if you emitted nothing for that channel. Boot waits for the echo before moving on and uses your `id` to find its place in the walk.
+
+```lsl
+integer QSDUMP_PROBE = 90094;
+integer QSDUMP_HELLO = 90095;
+
+announce() { llMessageLinked(LINK_SET, QSDUMP_HELLO, "", llGetScriptName()); }
+
+default
+{
+    state_entry()     { announce(); }
+    on_rez(integer p) { announce(); }
+
+    link_message(integer sender, integer num, string msg, key id)
+    {
+        if (num == QSDUMP_PROBE) { announce(); return; }
+        if (num == 90020 && (string)id == llGetScriptName())
+        {
+            // msg = sitter channel being dumped. Emit this channel's
+            // AVpos lines; per-furniture (global) lines go out once,
+            // during the channel-0 pass.
+            if ((integer)msg == 0)
+                llMessageLinked(LINK_THIS, 90022, "SWING SPEED|2.0", msg);
+            // ALWAYS echo — boot waits for this before moving on.
+            llMessageLinked(LINK_THIS, 90021, msg, llGetScriptName());
+        }
+    }
+}
+```
+
+Emitting many lines? Throttle (`llSleep(0.2)` between `90022` sends, like `[QS]faces` does) so boot's collector queue keeps up. Everything except the announce is the stock AVsitter dump round-trip — the `dump90098` capability token in the [QSALIVE reply](qsalive-discovery.html) just tells you the announce will actually be heard.
+
 ### Plugin participation
 
 - `[QS]prop` — announces via QSDUMP ✅. Separately publishes the `qs:alive:prop` LSD flag so the `[PROP]` menu item can be gated without an inventory probe.
-- `[QS]faces` — announces via QSDUMP ✅. Separately publishes the `qs:alive:faces` LSD flag so the `[FACES]` / `[EXPRESSION]` menu items can be gated.
+- `[QS]faces` — announces via QSDUMP ✅. Separately publishes the `qs:alive:faces` LSD flag so the `[FACES]` (sitB) / `[FACE]` (adjuster) menu items can be gated.
 - `[AV]camera` — stock, hardcoded in boot's cascade. No `[QS]camera` fork planned: stock `[AV]camera`'s only name-bound code is dead, and all working paths are protocol-based and script-name-agnostic.
 
 The old HELLO presence broadcasts (90088–90092: QS_OFFSET / PROP / FACES / ADJUSTER / SELECT_HELLO) were **retired in 0.9951** and replaced by the `qs:alive:<name>` LSD-flag model — flags are written in `state_entry`, re-stamped on the `QS_ALIVE_CENSUS` (90079) sweep, and read on demand at menu-build time. The retired numbers are reserved, not reused. See [QSALIVE Discovery](qsalive-discovery.html).
