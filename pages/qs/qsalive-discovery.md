@@ -23,20 +23,24 @@ QSALIVE is the replacement: a **count / version / capabilities** query that **do
 
 Pipe-delimited. **Use `llParseString2List`, not `llParseStringKeepNulls`** — empty trailing fields would otherwise produce stale entries that confuse capability matching.
 
-| Field | Content |
-|-------|---------|
-| 0     | Product token. `QuickySitter` for this fork. Future forks (or upstream) may set their own. |
-| 1     | Version string. Mirrors the global `version` in `[QS]sitA.lsl`. |
-| 2     | Sitter-slot count, identical to `get_number_of_scripts()`. Plugins can use this directly instead of running the legacy inventory loop. |
-| 3     | Capability CSV. Substring-match for individual features. Initial set: `customs90260`, `dump90098`, `offsetlsd_v1`. |
+| Field | What it is | What your plugin does with it |
+|-------|------------|-------------------------------|
+| 0     | Product token — `QuickySitter` for this fork; other forks (or upstream) may set their own. | Identity check. Compare against the token you support and treat anything else as "QS not present". |
+| 1     | Version string — mirrors the global `version` in `[QS]sitA.lsl`. | Diagnostics and support output only. Don't gate features on version comparisons — that's what the capability tokens are for. |
+| 2     | Sitter-slot count — the same number `get_number_of_scripts()` returns. | Use it directly instead of the legacy `[AV]sitA N` inventory loop. For most plugins this is the field that matters. |
+| 3     | Capability CSV. | Feature discovery. Substring-match the tokens you need; ignore tokens you don't know. |
+
+**Payload contract:** the field order is fixed, new fields are only ever appended, and the capability CSV only ever grows. Parse leniently — don't assume exactly four fields, and never treat an unknown capability token as an error.
 
 ### Capability tokens
 
-| Token | Meaning |
-|-------|---------|
-| `customs90260` | Personal-offset cache is available; plugin may request a push via 90261. See [Personal Pose Offsets](personal-pose-offsets.html). |
-| `dump90098` | DUMP cascade is owned by `[QS]boot`; plugin may register via QSDUMP (90094/90095). |
-| `offsetlsd_v1` | `[QS]offset` supports persistent LSD storage at `QSO:<short>:<slot>:<pose>`. Gates migrations from older volatile-only releases. |
+Most current tokens are first-party plumbing — they exist so QS's own optional scripts and the QuickyHUD can detect features without script-name probes. Third-party plugins rarely need more than `dump90098`.
+
+| Token | Meaning for a plugin author |
+|-------|-----------------------------|
+| `customs90260` | The personal-offset cache is live. First-party plumbing between `[QS]offset` and sitA — see [Personal Pose Offsets](personal-pose-offsets.html) if you need to interoperate. |
+| `dump90098` | `[QS]boot` owns the DUMP cascade. A plugin that stores its own AVpos-relevant settings can join the dump via QSDUMP (90094/90095) — see [Boot Sequence](boot-sequence.html). |
+| `offsetlsd_v1` | `[QS]offset` persists offsets in LSD (instead of RAM only). A migration gate for offset-aware tooling; irrelevant to most plugins. |
 
 ## Who answers, when, and on which link
 
