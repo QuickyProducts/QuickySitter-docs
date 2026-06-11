@@ -57,7 +57,6 @@ integer QS_SITTERS = 0;
 probe_qs()
 {
     llMessageLinked(LINK_SET, 90096, "", "");
-    llSetTimerEvent(1.0); // fallback after 1 s
 }
 
 default
@@ -76,28 +75,13 @@ default
             list d = llParseString2List(msg, ["|"], []);
             QS_ALIVE   = (llList2String(d, 0) == "QuickySitter");
             QS_SITTERS = (integer)llList2String(d, 2);
-            llSetTimerEvent(0.0);
             // ... wire up plugin state knowing sitA is here ...
-        }
-    }
-
-    timer()
-    {
-        llSetTimerEvent(0.0);
-        if (!QS_ALIVE)
-        {
-            // Fallback: stock inventory probe. Try the QS name first
-            // (cheap), then the AV name for backward compat with stock
-            // furniture.
-            if (llGetInventoryType("[QS]sitA") == INVENTORY_SCRIPT
-             || llGetInventoryType("[AV]sitA") == INVENTORY_SCRIPT)
-            {
-                // ... legacy slot-count loop here ...
-            }
         }
     }
 }
 ```
+
+The pattern is deliberately QS-native: no 90097 reply simply means "no QuickySitter here", and the plugin stays dormant. Whether to *also* support stock AVsitter — e.g. by treating a missing reply after a short timer as the cue to fall back to the legacy `[AV]sitA` inventory probe — is the plugin author's own product decision, out of scope for this page.
 
 `changed(CHANGED_INVENTORY)` is a good place to re-run `probe_qs()` if the plugin needs to react to sitter-count changes. Slot 0 also re-emits 90097 on its own reset and after every notecard re-seed (each ends in a fresh LSD load), so the plugin can rely on either trigger.
 
@@ -145,7 +129,7 @@ The two protocols complement each other:
 
 A plugin with UI typically uses **both**:
 
-1. **QSALIVE** at startup to confirm QuickySitter is present (falls back to legacy AVsitter inventory probe if not — see boilerplate above).
+1. **QSALIVE** at startup to confirm QuickySitter is present (see boilerplate above).
 2. **QSPLUG_REGISTER** to claim its `[OPTIONS]` menu slot.
 
 The most important cross-wiring: **listen to 90097 and trigger your QSPLUG_REGISTER re-announce on it**. Every event that can empty sitB's button registry ends in a 90097 broadcast: a full pack reset reloads sitA (unsolicited 90097), and after a sitB-only reset sitB probes 90096 itself, so sitA's reply reaches every plugin. Re-announcing is idempotent (sitB dedupes by script name), so one line in your `link_message` handler keeps the registry consistent for free.
