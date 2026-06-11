@@ -17,7 +17,7 @@ QSALIVE is the replacement: a **count / version / capabilities** query that **do
 | Num    | Direction              | `msg`                                    | `id` | Meaning |
 |--------|------------------------|------------------------------------------|------|---------|
 | 90096  | plugin → `[QS]sitA`    | `""`                                     | `""` | "How many sitters, what version, what caps?" |
-| 90097  | `[QS]sitA` → plugin    | `<product>\|<ver>\|<sitters>\|<caps>`    | `""` | Count/version/caps reply. Also broadcast unsolicited from slot 0's `state_entry` once boot finishes. |
+| 90097  | `[QS]sitA` → plugin    | `<product>\|<ver>\|<sitters>\|<caps>`    | `""` | Count/version/caps reply. Also broadcast unsolicited by slot 0 after every LSD (re)load — fresh boot, own reset, notecard re-seed. |
 
 ## Reply payload
 
@@ -42,7 +42,7 @@ Pipe-delimited. **Use `llParseString2List`, not `llParseStringKeepNulls`** — e
 
 - Only the **slot-0** `[QS]sitA` answers 90096 (`if (SCRIPT_CHANNEL == 0)`), so a multi-sitter prim sends exactly one 90097 per probe — plugins don't have to deduplicate.
 - Both probe and reply use `LINK_SET` so plugins in child prims see them.
-- On boot, slot 0 emits one unsolicited 90097 at the end of `state_entry` (after `boot_done = TRUE`). Plugins that came up before sitA missed any earlier replies; this lets them latch onto QS without sending a probe. Plugins that come up *after* sitA get their answer via the normal probe path.
+- Slot 0 emits one unsolicited 90097 at the end of every `qs_load_from_lsd()` — reached from `state_entry` when the linkset is already seeded (own reset), and from boot's `QS_BOOT_RELOAD` broadcast on a fresh boot and on every notecard re-seed. Plugins that came up before sitA missed any earlier replies; this lets them latch onto QS without sending a probe. Plugins that come up *after* sitA get their answer via the normal probe path.
 
 ## Adoption pattern for plugin authors
 
@@ -95,7 +95,7 @@ default
 }
 ```
 
-`changed(CHANGED_INVENTORY)` is a good place to re-run `probe_qs()` if the plugin needs to react to sitter-count changes. Slot 0 also re-emits 90097 on its own reset (state_entry runs again), so the plugin can rely on either trigger.
+`changed(CHANGED_INVENTORY)` is a good place to re-run `probe_qs()` if the plugin needs to react to sitter-count changes. Slot 0 also re-emits 90097 on its own reset and after every notecard re-seed (each ends in a fresh LSD load), so the plugin can rely on either trigger.
 
 ## Sibling presence
 
@@ -105,18 +105,18 @@ Each optional plugin writes a flag in its `state_entry`:
 
 | Flag | Plugin | Gates |
 |------|--------|-------|
-| `qs:alive:prop` | `[QS]prop` | the `[PROP]` button in adjuster's menu. |
-| `qs:alive:faces` | `[QS]faces` | the `[FACES]` / `[EXPRESSION]` menu items in sitA and adjuster. |
-| `qs:alive:adjuster` | `[QS]adjuster` | the `[HELPER]` menu item in sitB. |
+| `qs:alive:prop` | `[QS]prop` | the `[PROP]` action in adjuster's menu; also read by `[QS]boot`'s self-check (missing-plugin warning). |
+| `qs:alive:faces` | `[QS]faces` | the `[FACES]` item in sitB's `[ADJUST]` menu and the `[FACE]` action in adjuster. |
+| `qs:alive:adjuster` | `[QS]adjuster` | the `[HELPER]` and `[QUICKYHUD]` menu items in sitB. |
 | `qs:alive:select` | `[QS]select` | select-driven menu routing in sitB (sitB also keeps an `[AV]select` inventory fallback for stock-AVsitter compat). |
-| `qs:alive:rlv` | `[QS]root-RLV` | the RLV `Control…` gate in sitB. |
+| `qs:alive:rlv` | `[QS]root-RLV` | the RLV `Control…` gate in sitB (with an `[AV]root-RLV` inventory fallback for stock-AVsitter compat). |
 | `qs:offset:alive` | `[QS]offset` | personal-offset storage (note the **inverted** flag name). |
 
 Menu builders read these flags **on demand** at menu-build time and never cache them. Removal is handled by `QS_ALIVE_CENSUS` (90079): `[QS]boot` wipes every `qs:alive:*` flag and broadcasts the census; surviving plugins re-stamp their flag, so a removed plugin simply fails to re-appear.
 
 This mechanism is name-independent: a fork could rename `[QS]prop` to `[FOO]prop` and the `[PROP]` button still appears, because gating reads the `qs:alive:prop` flag the plugin wrote, not `llGetInventoryType`.
 
-> **Retired (0.9951).** The per-plugin HELLO broadcasts `90088`–`90092` (`QS_OFFSET/PROP/FACES/ADJUSTER/SELECT_HELLO`) were the *old* presence mechanism and were replaced by these flags. Those numbers are reserved, not reused. The only remaining live HELLO is hudproxy's `90093`.
+> **Retired (0.9951).** The per-plugin HELLO broadcasts `90088`–`90092` (`QS_OFFSET/PROP/FACES/ADJUSTER/SELECT_HELLO`) were the *old* presence mechanism and were replaced by these flags. Those numbers are reserved, not reused. The only remaining live *plugin-presence* HELLO is hudproxy's `90093` — sitB's boot self-check HELLO (`90078`) and the QSDUMP announce (`90095`) are different mechanisms and unaffected.
 
 A couple of related link-messages are still presence-adjacent but are **not** plugin-alive flags:
 
@@ -146,7 +146,7 @@ A plugin with UI typically uses **both**:
 1. **QSALIVE** at startup to confirm QuickySitter is present (falls back to legacy AVsitter inventory probe if not — see boilerplate above).
 2. **QSPLUG_REGISTER** to claim its `[OPTIONS]` menu slot.
 
-The most important cross-wiring: **listen to 90097 and trigger your QSPLUG_REGISTER re-announce on it**. sitA's unsolicited 90097 broadcast is the cheapest possible "host just rebooted" signal — sitB likely went through its own `QS_BOOT_RELOAD` cascade and dropped your entry. One line in your `link_message` handler keeps the registry consistent for free.
+The most important cross-wiring: **listen to 90097 and trigger your QSPLUG_REGISTER re-announce on it**. Every event that can empty sitB's button registry ends in a 90097 broadcast: a full pack reset reloads sitA (unsolicited 90097), and after a sitB-only reset sitB probes 90096 itself, so sitA's reply reaches every plugin. Re-announcing is idempotent (sitB dedupes by script name), so one line in your `link_message` handler keeps the registry consistent for free.
 
 A plugin **without UI** (logger, analytics, state mirror) only needs QSALIVE.
 
