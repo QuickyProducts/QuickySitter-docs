@@ -18,14 +18,14 @@ LSL scripts compiled with Mono have a hard 64 KB cap on combined code + stack + 
 
 ## LSD storage limits
 
-Each prim has a Linkset Data cap of **128 KB** total and **256 keys** maximum. Values are stored as strings.
+Each linkset has a Linkset Data cap of **128 KiB** total. Keys and values both count toward that byte budget — there is no separate key-count limit. Values are stored as strings. A typical `qs:p:*` pose row costs ~75–80 bytes (key + value), so the pool holds roughly **1,700 poses** if nothing else competes for it.
 
 **What QS does:**
 
 - `[QS]boot` writes the bulk of `qs:*` keys exactly once per fresh seed, so the writes are batched and don't hit the per-second write throttle.
 - `[QS]offset` checks `llLinksetDataAvailable()` against `QPP_CFG:RESERVE` and `LSD_MIN_FREE_POSES × LSD_BYTES_PER_ENTRY` before each LSD write; if free space is too tight, the offset goes into the RAM tier instead. See [Personal Pose Offsets](personal-pose-offsets.html).
 
-**What it can't fix:** A prim with 5000 poses in `qs:p:*` plus a thousand `QSO:*` personal offsets plus QuickyHUD's `QPP_CFG:*` keys can still exceed the cap. The 200-poses-of-headroom default for personal offsets is the practical safety margin.
+**What it can't fix:** The pool is shared — `qs:p:*` pose rows, `qs:prop:*` prop records, `QSO:*` personal offsets and QuickyHUD's `QPP_CFG:*` keys all draw from the same 128 KiB, so a pose-heavy build leaves less room for everything else. The 200-poses-of-headroom default for personal offsets is the practical safety margin.
 
 ## Notecard read limit (64 KiB) and editor cutoff (~48 KB)
 

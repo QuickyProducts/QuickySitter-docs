@@ -13,7 +13,7 @@ Welcome to the documentation for QuickySitter&trade; — a furniture pose system
 
 QuickySitter keeps full compatibility with stock AVsitter 2 (notecard format, MENU/POSE/PROP syntax, plugin LinkMsg contracts) and adds:
 
-- **LinkSet Data storage** — pose defaults and channel settings live in LSD instead of script memory, so complex furniture stays stable past Mono's 64 KB cap. Current capacity per furniture: up to ~550 poses per sitter slot and 100 props (vs. stock AVsitter's ~200 poses per slot before hitting the heap limit).
+- **LinkSet Data storage** — pose data, channel settings and the prop database live in LSD instead of script memory, so complex furniture stays stable past Mono's 64 KB cap. The practical limit is the linkset's shared **128 KiB LSD pool** (poses, props, settings and personal offsets all draw from it): room for roughly **1,700 poses** with typical entry sizes — and the pool is per furniture, not per slot, so a multi-sitter holds far more than stock AVsitter's ~200 poses per script-heap ever could.
 - **HUD addon API** — QuickyHUD attaches as a seamless adjustment addon over the standard LinkMsg surface; removable at any time without side effects.
 - **SYNC re-sync trigger** — LinkMsg `90271` restarts every sitter's main loop in the same Sim frame so couple poses re-phase on demand.
 - **Module discovery via presence protocol** — plugins announce themselves on `90096`/`90097` instead of script-name inventory probes; scripts can be renamed without breaking third-party plugins.
