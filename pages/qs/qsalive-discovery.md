@@ -120,8 +120,6 @@ Menu builders read these flags **on demand** at menu-build time and never cache 
 
 This mechanism is name-independent: a fork could rename `[QS]prop` to `[FOO]prop` and the `[PROP]` button still appears, because gating reads the `qs:alive:prop` flag the plugin wrote, not `llGetInventoryType`.
 
-> **Retired (0.9951).** The per-plugin HELLO broadcasts `90088`–`90092` (`QS_OFFSET/PROP/FACES/ADJUSTER/SELECT_HELLO`) were the *old* presence mechanism and were replaced by these flags. Those numbers are reserved, not reused. The only remaining live *plugin-presence* HELLO is hudproxy's `90093` — sitB's boot self-check HELLO (`90078`) and the QSDUMP announce (`90095`) are different mechanisms and unaffected.
-
 A couple of related link-messages are still presence-adjacent but are **not** plugin-alive flags:
 
 | Num   | Sender | Purpose |
