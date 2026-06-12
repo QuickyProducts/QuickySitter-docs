@@ -8,7 +8,7 @@ toc: true
 
 This manual is for **creators** who build and sell QuickySitter furniture — setting up QuickyHUD in a piece and configuring how it looks and behaves. For everyday use of the HUD while sitting, see the [User Manual](quickyhud-manual.html).
 
-> **Note:** This page is the *creator* side — preparing and configuring furniture you sell. Getting the HUD running for an end customer on a finished product is a separate process and is not covered here.
+> **Note:** This page is the *creator* side — preparing and configuring furniture you sell. What you build here is a **product combination of QuickyHUD and QuickySitter**: this creator edition of QuickyHUD is **no longer compatible with stock AVsitter** — it requires the QuickySitter engine as its base.
 
 ## Setting up a piece
 
