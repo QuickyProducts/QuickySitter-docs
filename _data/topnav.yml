@@ -14,7 +14,7 @@ topnav_dropdowns:
   folders:
     - title: Links
       folderitems:
-        - title: QuickyHUD Manual
+        - title: QuickyHUD AVsitter Manual
           url: /quickyhud-manual.html
         - title: QuickyHUD Creator Manual
           url: /quickyhud-creator-manual.html
