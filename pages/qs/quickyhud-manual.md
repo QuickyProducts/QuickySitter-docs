@@ -6,7 +6,7 @@ keywords: quicky hud, pose hud, manual, help, adjustmode, sync
 toc: true
 ---
 
-QuickyHUD is a tool designed to simplify and speed up positioning on furniture that uses AVsitter 2 (and QuickySitter). It allows creators and users to quickly fine-tune avatar positions directly while sitting, without navigating complex menus.
+QuickyHUD is a tool designed to simplify and speed up positioning on QuickySitter furniture. It allows creators and users to quickly fine-tune avatar positions directly while sitting, without navigating complex menus.
 
 ## Key Features
 
