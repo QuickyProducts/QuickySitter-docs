@@ -29,8 +29,8 @@ Three components, three message numbers, plus the offset-storage protocol shared
 | Component | Role | Talks via |
 |-----------|------|-----------|
 | `[QS]hudproxy` | In-prim presence + ADJUSTMODE state owner. Receives `90266`; **sends** `90271` (Re-Sync to sitA) and `90262` (save offset to `[QS]offset`); writes `QPP_CFG:ADJUSTMODE` LSD. | LinkMsg 90093 (presence), 90266 (mode flip), 90262 (save offset), 90271 (Re-Sync). |
-| `[QS]hudadmin` | In-prim dynamic-prop attacher. Rezzes the Quicky-Pose-HUD on sit / on manual "Quicky HUD" button. | LinkMsg 90280 (`QSPROP_ATTACH`). |
-| Quicky-Pose-HUD | The wearable. Talks to the in-prim hudproxy on its own comm channel. | Out-of-band; not part of this protocol. |
+| `[QS]hudadmin` | In-prim dynamic-prop attacher. Rezzes the QuickyHUD on sit / on manual "Quicky HUD" button. | LinkMsg 90280 (`QSPROP_ATTACH`). |
+| QuickyHUD | The wearable. Talks to the in-prim hudproxy on its own comm channel. | Out-of-band; not part of this protocol. |
 
 ## HUDPROXY presence — 90093
 
@@ -114,7 +114,7 @@ Sent from the `[HELPER]` choice dialog's "Quicky HUD" button (→ `"On"`), from 
 
 ## Dynamic prop attach — `QSPROP_ATTACH` 90280
 
-`[QS]prop` is a minimally-invasive fork of stock `[AV]prop` with one new link-message: a way to register and rez a prop **dynamically** without writing it into the `AVpos` notecard. Used by `[QS]hudadmin` to attach the Quicky-Pose-HUD on sit / on the manual "Quicky HUD" button.
+`[QS]prop` is a minimally-invasive fork of stock `[AV]prop` with one new link-message: a way to register and rez a prop **dynamically** without writing it into the `AVpos` notecard. Used by `[QS]hudadmin` to attach the QuickyHUD on sit / on the manual "Quicky HUD" button.
 
 | Num | Direction | `msg` | `id` | Meaning |
 |-----|-----------|-------|------|---------|
@@ -128,7 +128,7 @@ Sent from the `[HELPER]` choice dialog's "Quicky HUD" button (→ `"On"`), from 
 | 1 | Stock `[AV]prop` type: `0` = ground prop (COPY-OK NEXT), `1` = attachment prop (COPY-TRANSFER NEXT), `2` = attachment prop personal, `3` = special. The HUD case is type `1`. |
 | 2 | Attachment-point name (case-insensitive substring match into `ATTACH_POINTS` table). Empty string falls through to point `0` = "avatar center". For HUDs use e.g. `"HUD center"`. |
 | 3 | Sitter slot index (0-based). Must be `< llGetListLength(SITTERS)`; out-of-range messages are silently dropped. |
-| 4 | **Optional post-rez say.** Verbatim string `[QS]prop` will `llSay` on its `comm_channel` once the rezzed prop reports `REZ` back via the same channel. Empty = no extra message. hudadmin uses it to push `"*QUICKYTEXTURE*\|<uuid>"` to a freshly-rezzed Quicky-Pose-HUD. |
+| 4 | **Optional post-rez say.** Verbatim string `[QS]prop` will `llSay` on its `comm_channel` once the rezzed prop reports `REZ` back via the same channel. Empty = no extra message. hudadmin uses it to push `"*QUICKYTEXTURE*\|<uuid>"` to a freshly-rezzed QuickyHUD. |
 
 The dynamic-prop entry is **stored** in the same `prop_triggers` / `prop_types` / `prop_objects` parallel lists that stock loads from `AVpos`. The trigger string is `<sitter>|<object>`, the prop group is `<sitter>|QSDYN`. Dedup is by trigger: re-issuing 90280 for the same `(sitter, object)` pair replaces the mutable fields and re-rezzes via the existing `rez_prop(idx)` path — no growth in the registry.
 

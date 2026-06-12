@@ -6,7 +6,7 @@ keywords: prop, plugin, attachment, dynamic, QSPROP_ATTACH
 toc: true
 ---
 
-`[QS]prop` is a minimally-invasive fork of stock `[AV]prop` (AVsitter 2 / 2.2p04) that adds one new link-message — `QSPROP_ATTACH` (90280) — to register and rez a prop dynamically without writing it into the AVpos notecard. Used by `[QS]hudadmin` to attach the wearable Quicky-Pose-HUD on sit.
+`[QS]prop` is a minimally-invasive fork of stock `[AV]prop` (AVsitter 2 / 2.2p04) that adds one new link-message — `QSPROP_ATTACH` (90280) — to register and rez a prop dynamically without writing it into the AVpos notecard. Used by `[QS]hudadmin` to attach the wearable QuickyHUD on sit.
 
 Everything else matches stock semantics exactly. Drop a stock `[AV]prop` into a QS prim and it works; drop `[QS]prop` into a stock-AVsitter prim and stock paths work — the QS-specific 90280 handler is dormant when no one sends to it.
 

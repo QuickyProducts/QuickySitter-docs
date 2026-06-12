@@ -1,12 +1,12 @@
 ---
-title: Quicky Pose HUD — Creator Manual
+title: QuickyHUD QuickySitter — Creator Manual
 sidebar: home_sidebar
 permalink: quickyhud-creator-manual.html
 keywords: quicky hud, creator, configuration, hudconfig, design, adjustmode, attach mode, hud offset, verbose
 toc: true
 ---
 
-This manual is for **creators** who build and sell QuickySitter furniture — setting up the Quicky Pose HUD in a piece and configuring how it looks and behaves. For everyday use of the HUD while sitting, see the [User Manual](quickyhud-manual.html).
+This manual is for **creators** who build and sell QuickySitter furniture — setting up QuickyHUD in a piece and configuring how it looks and behaves. For everyday use of the HUD while sitting, see the [User Manual](quickyhud-manual.html).
 
 > **Note:** This page is the *creator* side — preparing and configuring furniture you sell. Getting the HUD running for an end customer on a finished product is a separate process and is not covered here.
 
