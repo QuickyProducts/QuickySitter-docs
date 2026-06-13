@@ -112,15 +112,16 @@ QuickySitter keeps the AVsitter 2 plugin protocol, so protocol-driven stock **AV
 | Plugin | Adds |
 |--------|------|
 | **Camera** (`[AV]camera`) | A custom camera view per pose. |
-| **Control / RLV** (`[AV]control` — LockMeister, LockGuard, Xcite!, RLV) | RLV restraints and lock / adult interaction. |
+| **Locks & adult** (`[AV]LockMeister`, `[AV]LockGuard`, `[AV]Xcite!`) | Lock and adult interaction — stock, work unchanged. |
+| **RLV & access** (`[QS]root-RLV`, `[QS]root-control`, `[QS]root-security`) | RLV restraints and sit/menu access — use the QS forks (see below). |
 | **Favourites** (`[AV]favs`) | Sitters can save and recall favourite poses. |
 | **Expressions** (`[QS]faces`) | Facial expressions per pose. |
 | **Sequences** (`[QS]sequence`) | Auto-advancing pose sequences. |
 | **Helper** (`[AV]helperscript`) | The classic stock pose-adjust helper — QuickySitter's HUD + ADJUSTMODE already cover this, so you rarely need it. |
 
-QuickySitter ships its own take on some of these (expressions, sequences, props, the seat picker) with extra integration — where a Quicky version is included, use that.
+QuickySitter ships its own take on some of these (expressions, sequences, props, RLV, the seat picker) with extra integration — where a Quicky version is included, use that.
 
-For **camera, control and favourites** the stock plugin works either way. **Expressions, sequences and props need the Quicky versions:** stock `[AV]faces` / `[AV]sequence` / `[AV]prop` detect the engine by probing `[AV]sitA` script names, which a QS linkset doesn't have. Props have a second reason: the HUD's auto-attach is wired to `[QS]prop` (it listens for the `90280 QSPROP_ATTACH` hook that `[QS]prop` publishes) — a prop dropped in as `[AV]prop` would rez, but the HUD won't auto-attach to its sitter.
+For **camera, favourites and the lock/adult plugins** the stock version works either way. **Expressions, sequences, props and RLV need the Quicky versions:** stock `[AV]faces` / `[AV]sequence` / `[AV]prop` / `[AV]root-RLV` find the engine by probing `[AV]sitA` script names that a QS linkset doesn't have, so they mis-read the sitter count (RLV drops to a single seat on multi-sitter pieces). Props have a second reason: the HUD's auto-attach is wired to `[QS]prop` (it listens for the `90280 QSPROP_ATTACH` hook that `[QS]prop` publishes) — a prop dropped in as `[AV]prop` would rez, but the HUD won't auto-attach to its sitter. If you take `[QS]root-RLV`, run `[QS]root-control` and `[QS]root-security` with it: the control-suite scripts address each other by name, so don't mix `[QS]` and `[AV]` there.
 
 Full plugin-by-plugin detail: [Compatibility Matrix](compatibility-matrix.html).
 
