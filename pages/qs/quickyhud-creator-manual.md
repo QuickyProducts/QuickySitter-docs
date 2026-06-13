@@ -34,7 +34,7 @@ Before you sell a finished piece, set the Quicky scripts inside to **copy-only**
 
 The two are separate jobs handled by different scripts:
 
-- **Installing / converting / repairing** is the one-shot installer's job. `[QS]install` (customer) and `[QS]installWithLicense` (creator) do a fresh build, an AVsitter-to-Quicky migration, or a repair, then **remove themselves**. The `WithLicense` variant runs an **HTTP license check** before it proceeds; the plain `[QS]install` does not.
+- **Installing / converting / repairing** is the one-shot installer's job. `[QS]installWithLicense` does a fresh build, an AVsitter-to-Quicky migration, or a repair, runs an **HTTP license check** before it proceeds, then **removes itself**.
 - **Routine updates** don't go through the installer at all. They're driven by the resident **`[QS]hudadmin`** script that stays in the piece — the Quicky Updater HUD's region-wide push talks to it, so you don't drop anything into the prim to update an already-installed piece.
 
 ## Configuration
