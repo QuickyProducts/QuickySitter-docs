@@ -16,7 +16,7 @@ From your Quicky creator kit you only handle two things: the **installer** (a sc
 
 ### Converting an existing AVsitter piece
 
-This is the one that matters most: take a finished AVsitter piece and convert it to Quicky in place. Drop the **creator installer** in and click your **Quicky Updater HUD** — it migrates the piece and clears out the old parts. (The same path also repairs or updates an older Quicky piece.)
+Take a finished AVsitter piece and convert it to Quicky in place. Drop the **creator installer** in and click your **Quicky Updater HUD** — it migrates the piece and clears out the old parts. (The same path also repairs or updates an older Quicky piece.)
 
 The payoff goes beyond the QuickyHUD adjustment workflow: conversion moves the pose data out of script memory into Linkset Data, lifting the piece past AVsitter's **stack-heap collision** ceiling — the Mono memory limit that makes large pose sets (roughly 1,000+ poses) crash on stock AVsitter. A converted piece stays slim no matter how many poses you add. See [Known Limits](known-limits.html) for the detail.
 
