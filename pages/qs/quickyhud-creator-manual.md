@@ -14,6 +14,12 @@ This manual is for **creators** who build and sell QuickySitter furniture — se
 
 From your Quicky creator kit you only handle two things: the **installer** (a script object you drop into the furniture) and the **Quicky Updater HUD** (the in-world HUD you wear and click).
 
+### Converting an existing AVsitter piece
+
+This is the one that matters most: take a finished AVsitter piece and convert it to Quicky in place. Drop the **creator installer** in and click your **Quicky Updater HUD** — it migrates the piece and clears out the old parts. (The same path also repairs or updates an older Quicky piece.)
+
+The payoff goes beyond the QuickyHUD adjustment workflow: conversion moves the pose data out of script memory into Linkset Data, lifting the piece past AVsitter's **stack-heap collision** ceiling — the Mono memory limit that makes large pose sets (roughly 1,000+ poses) crash on stock AVsitter. A converted piece stays slim no matter how many poses you add. See [Known Limits](known-limits.html) for the detail.
+
 ### A brand-new piece
 
 1. Drop the **creator installer** into the furniture's root prim.
@@ -21,10 +27,6 @@ From your Quicky creator kit you only handle two things: the **installer** (a sc
 3. Click your **Quicky Updater HUD**.
 
 The complete pose system is installed for you and the installer removes itself. The piece is now Quicky-enabled — add your poses with an **AVpos** notecard as usual.
-
-### Converting an existing AVsitter or older Quicky piece
-
-Drop the **creator installer** in and click your **Quicky Updater HUD** — it converts the piece in place and clears out the old parts.
 
 ### Before you sell: script permissions
 
