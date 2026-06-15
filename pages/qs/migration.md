@@ -12,14 +12,14 @@ If you already have a working AVsitter 2 furniture and want to move it to Quicky
 
 1. Keep the existing `AVpos` notecard — no edits needed. (It is mandatory: boot ERRORs without it.)
 2. Delete `[AV]sitA` + `[AV]sitB`. Add `[QS]boot`, `[QS]sitA`, `[QS]sitB`. These three plus the notecard are the only required ingredients.
-3. Strongly recommended: also swap `[AV]select` → `[QS]select`, `[AV]adjuster` → `[QS]adjuster`, `[AV]prop` → `[QS]prop`, `[AV]faces` → `[QS]faces`, `[AV]sequence` → `[QS]sequence` — the stock versions rely on `[AV]sitA` name probes and degrade in a QS linkset. Add `[QS]offset` for personal-offset persistence.
+3. Swap the feature plugins your piece uses — `[AV]adjuster` → `[QS]adjuster`, `[AV]prop` → `[QS]prop`, `[AV]faces` → `[QS]faces`, `[AV]sequence` → `[QS]sequence`. **Required for those features to work**, not just tidy-up: the stock versions probe `[AV]sitA` names that don't exist here, so multi-sitter playback fails and the `qs:alive:*`-gated menu entries (`[FACES]`, `[HELPER]`) never appear. For seat-picking use `[QS]select` or sitB's built-in picker — don't leave stock `[AV]select` in. Add `[QS]offset` for personal-offset persistence.
 4. Reset the prim. Boot reads the existing AVpos and seeds LSD.
 
-Stock `[AV]camera`, `[AV]favs`, `[AV]helperscript`, and the LockGuard / LockMeister / Xcite! plugins all work unchanged inside a QS linkset and don't need to be replaced. QS forks its own root family (`[QS]root`, `[QS]root-control`, `[QS]root-security`, `[QS]root-RLV`), but the stock `[AV]root-*` scripts also keep working if you leave them in.
+Stock `[AV]camera`, `[AV]favs`, `[AV]helperscript`, and the LockGuard / LockMeister / Xcite! plugins all work unchanged inside a QS linkset and don't need to be replaced. QS forks its own root family (`[QS]root`, `[QS]root-control`, `[QS]root-security`, `[QS]root-RLV`); stock `[AV]root-control` / `[AV]root-security` keep working, but stock `[AV]root-RLV` name-probes the sitter and drops to one seat on multi-sitter pieces — use `[QS]root-RLV` there.
 
 ## What changes for the end user
 
-Nothing user-visible if you swap only the base scripts. The pose menu, sit-target, animation sequences, and props all behave identically — QS is structurally different inside but presents the same surface to sitters.
+Swap the base scripts **and** the matching `[QS]` plugins and nothing is user-visible — the pose menu, sit-target, sequences, faces and props behave identically; QS is structurally different inside but presents the same surface to sitters. Swap only the base and leave stock plugins, and those plugin features degrade (see the swap step above).
 
 Differences become visible if you add `[QS]offset` (personal-offset persistence across reset) or `[QS]adjuster` plus the QuickyHUD addon (`[QS]hudproxy`/`[QS]hudadmin` from the separate QuickyHUD project) for HUD-driven adjustment with live `[SAVE]` writing into LSD.
 
@@ -41,7 +41,7 @@ QuickySitter's `[QS]sitB` reads `qs:p:<ch>:<i>` from LSD on demand via `qs_pose_
 
 ### Which stock plugins keep working
 
-Purely protocol-driven stock plugins (camera, the control family, favs, texture, helperscript) work unchanged in a QS prim. Stock plugins that **find the engine by script name** do not: `llGetInventoryType("[AV]sitA")` presence probes and `[AV]sitA N` sitter-count walks come up empty in a QS linkset (the scripts are named `[QS]sitA`), so `[AV]faces`, `[AV]select`, `[AV]adjuster`, `[AV]sequence` and `[AV]prop` degrade to single-sitter behavior at best. Their QS menu entries also never appear — the gates read `qs:alive:<name>` presence flags (`qs:alive:prop`, `qs:alive:faces`, …) that only the `[QS]` variants publish. Swap those five (step 3 below); see the [Compatibility Matrix](compatibility-matrix.html) for the per-plugin detail.
+Purely protocol-driven stock plugins (camera, the lock/adult plugins, favs, texture, helperscript) work unchanged in a QS prim. Stock plugins that **find the engine by script name** do not: `llGetInventoryType("[AV]sitA")` presence probes and `[AV]sitA N` sitter-count walks come up empty in a QS linkset (the scripts are named `[QS]sitA`), so `[AV]faces`, `[AV]select`, `[AV]adjuster`, `[AV]sequence`, `[AV]prop` and `[AV]root-RLV` degrade to single-sitter behavior at best. Their QS menu entries also never appear — the gates read `qs:alive:<name>` presence flags (`qs:alive:prop`, `qs:alive:faces`, …) that only the `[QS]` variants publish. Swap those five (step 3 below); see the [Compatibility Matrix](compatibility-matrix.html) for the per-plugin detail.
 
 ## Step-by-step migration
 
@@ -52,8 +52,8 @@ Purely protocol-driven stock plugins (camera, the control family, favs, texture,
    - Add `[QS]boot` (one instance, no slot suffix).
    - Add `[QS]sitA`, `[QS]sitA 2`, `[QS]sitA 3`, … (same count as before).
    - Add `[QS]sitB`, `[QS]sitB 2`, `[QS]sitB 3`, … (same count).
-3. **Swap the name-probing plugins.** Replace `[AV]select`, `[AV]adjuster`, `[AV]prop`, `[AV]faces`, `[AV]sequence` with their `[QS]` counterparts — these five detect the engine via `[AV]sitA` script names and degrade in a QS linkset. (`[QS]select` itself is optional — sitB has a built-in picker.) Add `[QS]offset` if you want personal-offset persistence; if you want the forked root family, swap in `[QS]root-control`, `[QS]root-security`, `[QS]root-RLV`.
-4. **Leave stock plugins alone.** Keep `[AV]camera`, `[AV]LockGuard`, `[AV]LockMeister`, `[AV]Xcite!`, `[AV]favs`, `[AV]texture`, and any stock `[AV]root-*` scripts if present. They work as-is.
+3. **Swap the name-probing plugins.** Replace `[AV]adjuster`, `[AV]prop`, `[AV]faces`, `[AV]sequence` with their `[QS]` counterparts — these detect the engine via `[AV]sitA` script names and degrade in a QS linkset, so their features (props, faces, sequences, the `[HELPER]`/`[SAVE]` flow) won't work without the swap. (`[QS]select` is optional — sitB has a built-in picker — but remove stock `[AV]select` rather than leaving it.) Add `[QS]offset` if you want personal-offset persistence. For RLV furniture swap in `[QS]root-RLV` (stock `[AV]root-RLV` drops to one seat on multi-sitter pieces) together with `[QS]root-control` / `[QS]root-security` — the control suite addresses its members by name, so don't mix `[QS]` and `[AV]`.
+4. **Leave the protocol-driven stock plugins alone.** Keep `[AV]camera`, `[AV]LockGuard`, `[AV]LockMeister`, `[AV]Xcite!`, `[AV]favs`, `[AV]texture` — they work as-is. Stock `[AV]root-control` / `[AV]root-security` are fine too; only `[AV]root-RLV` needs the `[QS]` fork on multi-sitter pieces (see step 3).
 5. **Keep the AVpos notecard.** No edits needed — same syntax.
 6. **Reset.** Right-click the prim, edit, contents, hit "Reset Scripts in Selection" (or just `llResetScript` on `[QS]boot`). Boot detects no prior `qs:boot:asset`, parses AVpos, seeds LSD, broadcasts reload. Total time ~1 – 5 s depending on AVpos size.
 
@@ -66,7 +66,7 @@ You should see `llOwnerSay` chatter from boot reporting parsed channels. Sit on 
 - **`[AV]favs`** — favourites are user-state, stored in sitA via 90401/90402/90403. Stock favs works unchanged.
 - **`[AV]helperscript`** — only relevant during the import workflow, not at runtime.
 
-QS **does** fork the root family — `[QS]root`, `[QS]root-control`, `[QS]root-security`, `[QS]root-RLV` (the last publishes `qs:alive:rlv`). The stock `[AV]root-*` scripts still work if you leave them, so swapping them is optional. There is no `[AV]root-RLV-extra` in the set.
+QS **does** fork the root family — `[QS]root`, `[QS]root-control`, `[QS]root-security`, `[QS]root-RLV` (the last publishes `qs:alive:rlv`). Stock `[AV]root-control` / `[AV]root-security` still work if you leave them; stock `[AV]root-RLV`, though, name-probes the sitter and drops to one seat on multi-sitter pieces — swap it for `[QS]root-RLV` there. There is no `[AV]root-RLV-extra` in the set.
 
 ## What does NOT migrate
 
