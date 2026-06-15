@@ -49,7 +49,7 @@ If you want the full QS feature set:
 | `[AV]camera` | ✅ | none planned | Stock camera's only name-bound code path is dead code; all working paths are protocol-based. |
 | `[AV]sequence` | ⚠️ single-sitter only | `[QS]sequence` | Stock counts sitters via `[AV]sitA N` names → slots ≥ 1 lose sequences. `[QS]sequence` takes the count from QSALIVE; reads its own `[AV]sequence_settings` notecard. |
 | LockGuard / LockMeister / Xcite! | ✅ | none | All stock lock/Xcite controls work unchanged. |
-| `[AV]root-RLV` | ⚠️ single-sitter only | `[QS]root-RLV` | Stock RLV name-probes `[AV]sitA N` for multi-sitter → finds one seat. `[QS]root-RLV` is name-agnostic and publishes `qs:alive:rlv`. (sitB's `Control…` button itself has an `[AV]root-RLV` inventory fallback, so it still shows.) |
+| `[AV]root-RLV` | ⚠️ multi-sitter degraded | `[QS]root-RLV` | Stock RLV gates its multi-sitter capture and seat-relocation on a `[AV]sitA 1` name probe that fails here, so those misfire on multi-sitter pieces (basic RLV restraints still work). `[QS]root-RLV` uses the role count instead and publishes `qs:alive:rlv`. (sitB's `Control…` button has an `[AV]root-RLV` inventory fallback, so it still shows.) |
 | `[AV]root-control` / `[AV]root-security` | ✅ | `[QS]root-control` / `[QS]root-security` | Logic works stock; the QS forks just retarget the suite's inter-script name couplings. Run all `[QS]` or all `[AV]` — don't mix. |
 | `[AV]favs` | ✅ | none | Stock favs works unchanged. |
 | `[AV]helperscript` | ✅ | none (not packaged for QS) | Use the standard import flow. |
