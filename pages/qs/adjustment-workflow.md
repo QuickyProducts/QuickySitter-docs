@@ -61,7 +61,7 @@ When QuickyHUD is in the linkset (hudproxy + hudadmin), the user gets a wearable
 
 The HUD writes per-user offsets via 90262 directly to `[QS]offset`, with no menu round-trip. This is much faster than the dialog-driven approach for fine-tuning. See [HUD Integration](hud-integration.html).
 
-When the HUD's ADJUSTMODE is `On`, the regular sitB menu replaces `[NEW]`/`[DUMP]` with `[ADJUST OFF]`, since the user is now in HUD-driven adjustment and the dialog adjustment isn't needed. Click `[ADJUST OFF]` to flip back to dialog mode.
+When the HUD's ADJUSTMODE is `On`, the regular sitB pose menu gains a `[DONE]` button (alongside `[NEW]`/`[DUMP]`/`[SAVE]`), since the user is now in HUD-driven adjustment. Click `[DONE]` to leave HUD adjustment — it switches ADJUSTMODE off and opens the dialog adjust submenu.
 
 ## Why `[HELPER] [SAVE]` triggers 90263
 

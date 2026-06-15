@@ -37,9 +37,9 @@ Three components, three message numbers, plus the offset-storage protocol shared
 QuickyHUD's `[QS]hudproxy` writes the `QPP_CFG:ADJUSTMODE` LSD key unprotected on its `state_entry`. `[QS]sitB` gates QuickyHUD-aware UI on key existence and value:
 
 - sitB appends the `[QUICKYHUD]` button to the Adjust-dialog tail for the owner (gated on `qs:alive:adjuster` present and `qs:hud:unlicensed` not set).
-- sitB enriches the main pose menu (`[NEW]`/`[DUMP]`/`[ADJUST OFF]`) if `value == "On"`.
+- sitB enriches the main pose menu (`[NEW]`/`[DUMP]`/`[SAVE]`/`[DONE]`) if `value == "On"`.
 
-**Problem.** LSD outlives script removal. If the creator removes hudproxy + hudadmin from the linkset after first install, the LSD key persists with whatever value it last had. sitB keeps showing `[QUICKYHUD]` (clicks no-op because nobody handles 90266) and stays stuck in the qh_on-enriched menu forever if the key happened to be `"On"` at removal time — including a non-functional `[ADJUST OFF]` button.
+**Problem.** LSD outlives script removal. If the creator removes hudproxy + hudadmin from the linkset after first install, the LSD key persists with whatever value it last had. sitB keeps showing `[QUICKYHUD]` (clicks no-op because nobody handles 90266) and stays stuck in the qh_on-enriched menu forever if the key happened to be `"On"` at removal time — including a `[DONE]` exit that can't clear the orphaned `"On"` state.
 
 **Fix.** 90093 active-presence probe.
 

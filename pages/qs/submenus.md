@@ -59,7 +59,7 @@ For plugin authors: menu choices are reported via LinkMsg 90050 (pose selection)
 
 - **`[NEW]` button appears** when `[QS]adjuster` is present and the user is in HELPER mode (or in QuickyHUD ADJUSTMODE). Click → enter a name → fresh pose stub gets written to LSD.
 - **`[QUICKYHUD]` button** in the Adjust dialog appears only if `QPP_CFG:ADJUSTMODE` exists (set by hudproxy). See [HUD Integration](hud-integration.html).
-- **`[ADJUST OFF]`** in the main pose menu appears only when `QPP_CFG:ADJUSTMODE == "On"`. Clicking sends 90266 `"Off"` to hudproxy.
+- **`[DONE]`** in the main pose menu appears in HELPER mode or QuickyHUD ADJUSTMODE (`QPP_CFG:ADJUSTMODE == "On"`). Clicking exits the mode — sitB broadcasts 90100 `[DONE]`, `[QS]adjuster` does the tear-down (including 90266 `"Off"` to hudproxy) — and opens the adjust submenu.
 
 ## See also
 
