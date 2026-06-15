@@ -8,7 +8,7 @@ toc: true
 
 If you already have a working AVsitter 2 furniture and want to move it to QuickySitter, this page covers the procedure and what to expect.
 
-## TL;DR
+## At a glance
 
 1. Keep the existing `AVpos` notecard — no edits needed. (It is mandatory: boot ERRORs without it.)
 2. Delete `[AV]sitA` + `[AV]sitB`. Add `[QS]boot`, `[QS]sitA`, `[QS]sitB`. These three plus the notecard are the only required ingredients.
