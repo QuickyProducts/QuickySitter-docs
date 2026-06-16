@@ -28,7 +28,7 @@ QuickySitter keeps full compatibility with stock AVsitter 2 (notecard format, ME
 
 ## Source & License
 
-QuickySitter LSL scripts are available on [GitHub]({{ site.script_github }}) under the [Mozilla Public License 2.0](https://www.mozilla.org/en-US/MPL/2.0/).
+QuickySitter LSL scripts are available on [GitHub]({{ site.script_github }}) under the [Mozilla Public License 2.0](https://www.mozilla.org/en-US/MPL/2.0/). See the [Changelog]({{ site.script_github }}/blob/master/CHANGELOG.md) for customer-facing changes.
 
 This documentation site re-uses portions of the [AVsitter documentation](https://avsitter.github.io) by Avcode Technologies under the [Creative Commons Attribution-ShareAlike 4.0 International License](https://creativecommons.org/licenses/by-sa/4.0/). QuickySitter additions are also CC-BY-SA 4.0.
 
