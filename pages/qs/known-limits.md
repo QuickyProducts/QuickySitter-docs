@@ -2,7 +2,7 @@
 title: Known Limits
 sidebar: home_sidebar
 permalink: known-limits.html
-keywords: limits, limitations, second life, mono, notecard
+keywords: limits, limitations, second life, mono, notecard, http, dump
 toc: true
 ---
 
@@ -66,7 +66,15 @@ A region restart preserves LSD for prims in the region. A re-rez of a saved prim
 
 `llSay` / `llOwnerSay` / `llShout` are rate-limited per script per frame. `[DUMP]` of a large config can hit the limit and lose lines if dumped in a tight loop.
 
-**What QS does:** `[QS]boot`'s dump cascade self-throttles via 90099 self-trigger between iterations, letting the Sim drain queued chat between batches. The output is also POST-uploaded to the AVsitter settings service (URL in the chat) for reliable retrieval of large dumps.
+**What QS does:** `[QS]boot`'s dump cascade self-throttles via 90099 self-trigger between iterations, letting the Sim drain queued chat between batches. The output is also POST-uploaded to the AVsitter settings service (URL in the chat) so a large dump can be fetched from a URL instead of scraped out of chat — subject to its own HTTP throttle (next section).
+
+## HTTP request throttle (the `[DUMP]` upload)
+
+`[DUMP]` POSTs the rebuilt notecard to the AVsitter settings service so a large config can be fetched from a URL instead of scraped out of chat. Outbound `llHTTPRequest` is throttled to **25 requests per 20 s per object** (and 1000 per 20 s per owner).
+
+**What QS does:** `[QS]boot` streams the upload in ~1 KB chunks — `web()` flushes once the escaped cache passes 1024 characters, one `llHTTPRequest` each — paced by the same 90099 self-trigger that drains chat, so an ordinary config's handful of chunks stays well under the cap. boot reads only the HTTP **status** (it sets `dump_failed` on any non-200), never the response body, so the 2 KB response-body limit doesn't apply: the retrieval URL is built from the upload key, not parsed from the reply.
+
+**What it can't fix:** A very large dump is many chunks and can approach or exceed 25 requests / 20 s. A throttled request returns `NULL_KEY` and is never sent — no `http_response` fires, so `dump_failed` won't notice, and the uploaded copy can end up silently incomplete. The loud `[HELPER]` `[DUMP]` also streams every line to local chat, so that path still hands you the full text even when the HTTP upload falls short; the quiet (QuickyHUD) path relies on the URL alone. For very large configs, re-running the dump or editing the `AVpos` notecard externally is the dependable route.
 
 ## SitTarget bone offsets
 
@@ -80,3 +88,4 @@ SL's `llSitTarget` accepts an offset relative to the prim's pivot. The offset is
 - [Personal Pose Offsets](personal-pose-offsets.html) — the LSD-vs-RAM tier decision.
 - [Re-Sync Protocol](resync-protocol.html) — the 90271 trigger for SYNC-drift.
 - [In-repo design docs](https://github.com/QuickyProducts/QuickySitter/tree/master/qs) — `PROTOCOL.md`, `STORAGE.md`, `test/TESTPLAN.md`.
+- [llHTTPRequest (SL Wiki)](https://wiki.secondlife.com/wiki/LlHTTPRequest) — the authoritative outbound HTTP throttle and body limits.
