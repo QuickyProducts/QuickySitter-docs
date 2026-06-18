@@ -18,8 +18,6 @@ topnav_dropdowns:
           url: /quickyhud-manual.html
         - title: QuickyHUD — Creator Manual
           url: /quickyhud-creator-manual.html
-        - title: Changelog
-          external_url: https://github.com/QuickyProducts/QuickySitter/blob/master/CHANGELOG.md
         - title: QuickySitter on GitHub
           external_url: https://github.com/QuickyProducts/QuickySitter
         - title: AVsitter (upstream)
