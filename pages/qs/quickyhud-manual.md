@@ -54,14 +54,14 @@ The HUD provides quick access to the most important positioning functions for AV
 5. **Move X / Y** — shift forward/back and left/right in three step sizes (0.01 / 0.05 / 0.1 m).
 6. **Move up / down (Z)** — raise and lower height in the same three steps.
 7. **Position ↔ rotation** — switch the arrows to rotation control (RX/RY/RZ) and back.
-8. **Settings** — opens RESET, ADJUSTMODE, AUTOSYNC and CLEAR (owner only).
+8. **Settings** — opens RESET (any sitter), plus ADJUSTMODE, AUTOSYNC and CLEAR (owner only).
 9. **HUD size +/−** — scale the on-screen HUD larger or smaller.
 10. **Minimize** — collapse the HUD to the bolt icon; tap it again to restore.
 11. **Help** — links to this manual, the Marketplace page and the support group.
 
 > **Personal vs. permanent:** Move and rotate (5–7, including Z) normally adjust your *personal offset* — saved per avatar and per pose, and restored the next time you sit. Only in **ADJUSTMODE** do they change the pose permanently for all sitters.
 
-**Inside the Settings menu (8):** RESET (reset the selected target to its default pose), the ADJUSTMODE toggle, AUTOSYNC (off / 60 / 120 / 180 s), CLEAR offset storage, and the texture/design picker.
+**Inside the Settings menu (8):** RESET (reset the selected target to its default pose) is available to any sitter; the ADJUSTMODE toggle, AUTOSYNC (off / 60 / 120 / 180 s) and CLEAR offset storage are owner only. The texture/design picker sets the HUD look.
 
 **Automatic / background:** offsets are saved and restored per avatar and pose, the HUD attaches on sit (or from a menu button in menu mode), and with RLV active the hover height is set to 0 on attach and restored on detach.
 
