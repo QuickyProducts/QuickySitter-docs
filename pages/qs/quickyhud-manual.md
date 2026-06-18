@@ -117,7 +117,7 @@ ADJUSTMODE is a working mode for furniture creators. While ADJUSTMODE is active,
 
 1. Enable ADJUSTMODE from the Settings menu (a confirmation dialog appears).
 2. Sit on the furniture and adjust poses with the HUD as usual.
-3. When finished, use AVsitter's standard `[DUMP]` function to write the new values into a fresh AVpos notecard.
+3. When finished, use QuickySitter's `[DUMP]` function to write the new values into a fresh AVpos notecard.
 4. Disable ADJUSTMODE again from the Settings menu.
 
 **Notes:**
