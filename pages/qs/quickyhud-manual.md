@@ -49,7 +49,7 @@ The HUD provides quick access to the most important positioning functions for AV
 
 1. **Menu** — opens the furniture's pose menu (the glowing bolt in the center).
 2. **Select sitter** — choose whom you adjust: normally only sitters in your own pose group, in ADJUSTMODE everyone.
-3. **Sync** — reloads the poses fresh from the notecards and realigns drifted animations.
+3. **Sync** — realigns drifted animations.
 4. **Swap seat** — switch seat: direct with two seats, via a picker with more.
 5. **Move X / Y** — shift forward/back and left/right in three step sizes (0.01 / 0.05 / 0.1 m).
 6. **Move up / down (Z)** — raise and lower height in the same three steps.
