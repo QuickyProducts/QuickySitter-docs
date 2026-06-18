@@ -10,7 +10,7 @@ QuickyHUD is a tool designed to simplify and speed up positioning on QuickySitte
 
 ## HUD quick overview
 
-The HUD provides quick access to the most important positioning functions for AVsitter adjustments. The control map below labels every button — the numbers match the list that follows.
+The HUD provides quick access to the most important positioning functions for QuickySitter adjustments. The control map below labels every button — the numbers match the list that follows.
 
 <figure class="hud-map" style="max-width:640px;margin:1.5rem auto">
 <svg width="100%" viewBox="0 0 760 430" role="img" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
@@ -59,7 +59,7 @@ The HUD provides quick access to the most important positioning functions for AV
 10. **Minimize** — collapse the HUD to the bolt icon; tap it again to restore.
 11. **Help** — links to this manual, the Marketplace page and the support group.
 
-> **Personal vs. permanent:** Move and rotate (5–7, including Z) normally adjust your *personal offset* — saved per avatar and per pose, and restored the next time you sit. In **ADJUSTMODE** they instead edit the pose's *default values* (the AVsitter pose data, not offsets) — the way a creator re-adjusts the base poses for everyone.
+> **Personal vs. permanent:** Move and rotate (5–7, including Z) normally adjust your *personal offset* — saved per avatar and per pose, and restored the next time you sit. In **ADJUSTMODE** they instead edit the pose's *default values* (the QuickySitter pose data, not offsets) — the way a creator re-adjusts the base poses for everyone.
 
 **Inside the Settings menu (8):** RESET (reset the selected target to its default pose) is available to any sitter; the ADJUSTMODE toggle, AUTOSYNC (off / 60 / 120 / 180 s) and CLEAR offset storage are owner only.
 
@@ -111,7 +111,7 @@ See also: [Re-Sync Protocol](resync-protocol.html) for the technical detail behi
 
 ### ADJUSTMODE for Creators (Owner Only)
 
-ADJUSTMODE is a working mode for furniture creators. While ADJUSTMODE is active, every position and rotation change made with the HUD is written directly into AVsitter's pose data instead of being stored as a per-avatar offset.
+ADJUSTMODE is a working mode for furniture creators. While ADJUSTMODE is active, every position and rotation change made with the HUD is written directly into QuickySitter's pose data instead of being stored as a per-avatar offset.
 
 **Workflow:**
 
