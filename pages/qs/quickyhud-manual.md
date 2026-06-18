@@ -92,15 +92,6 @@ On furniture set up for **auto-attach** (the default mode), the HUD uses the AVs
 
 Some pieces are instead configured for **menu mode**, where the HUD does not attach on its own. On those, attach it yourself by pressing the **Quicky HUD** button the creator added to the menu.
 
-### Quicky Design HUD
-
-The HUD texture can be changed without editing the script. Two ways to set the texture:
-
-- Tap the design button on the HUD to choose one of the included designs.
-- Drop a texture UUID into the HUD via the texture changer to apply a custom design.
-
-The selected texture is stored in the HUD and is reapplied automatically after rez or attach.
-
 ### Animation Re-Sync
 
 When several avatars share a multi-person pose, their looped animations can drift out of phase — for example, when one person sits down later than the others. The SYNC button on the HUD realigns all running animations on the furniture to a shared beat, so the cycle starts at the same moment for everyone.
