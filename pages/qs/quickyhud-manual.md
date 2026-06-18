@@ -92,14 +92,6 @@ On furniture set up for **auto-attach** (the default mode), the HUD uses the AVs
 
 Some pieces are instead configured for **menu mode**, where the HUD does not attach on its own. On those, attach it yourself by pressing the **Quicky HUD** button the creator added to the menu.
 
-### One-Time Installation
-
-The automatic attachment requires a one-time installation. Please follow the steps described in the Installation Manual to enable the Experience and prepare the furniture.
-
-After the installation is completed, the HUD will attach and detach automatically whenever someone sits or stands up — on pieces left in the default auto-attach mode. (A creator can switch a piece to menu mode, where the HUD is attached from a button instead.)
-
-Future updates work without inventory drop. You just attach the Quicky Updater HUD and click it — it broadcasts the update region-wide to every matching Quicky piece you own in the region. The update is owner-gated (only your own furniture answers) and version-gated (a piece is only touched if the HUD carries a newer version).
-
 ### Quicky Design HUD
 
 The HUD texture can be changed without editing the script. Two ways to set the texture:
