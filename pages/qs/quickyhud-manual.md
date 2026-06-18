@@ -100,11 +100,60 @@ See also: [Personal Pose Offsets](personal-pose-offsets.html) for the technical 
 
 ## HUD Layout
 
-The HUD provides quick access to the most important positioning functions for AVsitter adjustments. Each section of the HUD is designed for a specific category of action:
+The HUD provides quick access to the most important positioning functions for AVsitter adjustments. The control map below labels every button — the numbers match the list that follows.
 
-- **Directional control pad** — the X/Y/Z nudge buttons with step-size selection.
-- **Action buttons** — SYNC, MENU, SWAP (seat-swap picker), SELECT (sitter picker — choose whom you adjust), SETTINGS, HELP.
-- **Settings menu** — RESET (reset your SELECT target to its default position), ADJUSTMODE toggle, AUTOSYNC interval, CLEAR offset storage, texture/design.
+<figure class="hud-map" style="max-width:640px;margin:1.5rem auto">
+<svg width="100%" viewBox="0 0 760 430" role="img" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<title>QuickyHUD pose-mode control map</title>
+<desc>The HUD in pose mode with numbered callouts pointing to each control.</desc>
+<defs><marker id="hudarrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+<image href="images/QuickyHUD.png" xlink:href="images/QuickyHUD.png" x="118" y="24" width="525" height="383"/>
+<g stroke="#5b6b7e" stroke-width="1.2" fill="none">
+<line x1="52" y1="64" x2="156" y2="64" marker-end="url(#hudarrow)"/>
+<line x1="52" y1="199" x2="156" y2="199" marker-end="url(#hudarrow)"/>
+<line x1="52" y1="369" x2="156" y2="369" marker-end="url(#hudarrow)"/>
+<line x1="262" y1="406" x2="316" y2="300" marker-end="url(#hudarrow)"/>
+<line x1="258" y1="48" x2="312" y2="96" marker-end="url(#hudarrow)"/>
+<line x1="460" y1="24" x2="503" y2="42" marker-end="url(#hudarrow)"/>
+<line x1="600" y1="24" x2="560" y2="42" marker-end="url(#hudarrow)"/>
+<line x1="703" y1="119" x2="523" y2="119" marker-end="url(#hudarrow)"/>
+<line x1="703" y1="216" x2="545" y2="216" marker-end="url(#hudarrow)"/>
+<line x1="703" y1="300" x2="528" y2="300" marker-end="url(#hudarrow)"/>
+</g>
+<g font-family="Arial,Helvetica,sans-serif" font-size="13" text-anchor="middle">
+<circle cx="401" cy="182" r="11" fill="#1f80c0"/><text x="401" y="182" fill="#fff" dominant-baseline="central">1</text>
+<circle cx="40" cy="64" r="12" fill="#1f80c0"/><text x="40" y="64" fill="#fff" dominant-baseline="central">3</text>
+<circle cx="40" cy="199" r="12" fill="#1f80c0"/><text x="40" y="199" fill="#fff" dominant-baseline="central">6</text>
+<circle cx="40" cy="369" r="12" fill="#1f80c0"/><text x="40" y="369" fill="#fff" dominant-baseline="central">4</text>
+<circle cx="250" cy="415" r="12" fill="#1f80c0"/><text x="250" y="415" fill="#fff" dominant-baseline="central">2</text>
+<circle cx="250" cy="40" r="12" fill="#1f80c0"/><text x="250" y="40" fill="#fff" dominant-baseline="central">11</text>
+<circle cx="455" cy="14" r="12" fill="#1f80c0"/><text x="455" y="14" fill="#fff" dominant-baseline="central">9</text>
+<circle cx="610" cy="14" r="12" fill="#1f80c0"/><text x="610" y="14" fill="#fff" dominant-baseline="central">10</text>
+<circle cx="715" cy="119" r="12" fill="#1f80c0"/><text x="715" y="119" fill="#fff" dominant-baseline="central">7</text>
+<circle cx="715" cy="216" r="12" fill="#1f80c0"/><text x="715" y="216" fill="#fff" dominant-baseline="central">5</text>
+<circle cx="715" cy="300" r="12" fill="#1f80c0"/><text x="715" y="300" fill="#fff" dominant-baseline="central">8</text>
+</g>
+</svg>
+<figcaption>QuickyHUD in pose mode — tap the glowing bolt (1) to open the menu.</figcaption>
+</figure>
+
+1. **Menu** — opens the furniture's pose menu (the glowing bolt in the center).
+2. **Select sitter** — choose whom you adjust: normally only sitters in your own pose group, in ADJUSTMODE everyone.
+3. **Sync** — reloads the poses fresh from the notecards and realigns drifted animations.
+4. **Swap seat** — switch seat: direct with two seats, via a picker with more.
+5. **Move X / Y** — shift forward/back and left/right in three step sizes (0.01 / 0.05 / 0.1 m).
+6. **Move up / down (Z)** — raise and lower height in the same three steps.
+7. **Position ↔ rotation** — switch the arrows to rotation control (RX/RY/RZ) and back.
+8. **Settings** — opens RESET, ADJUSTMODE, AUTOSYNC and CLEAR (owner only).
+9. **HUD size +/−** — scale the on-screen HUD larger or smaller.
+10. **Minimize** — collapse the HUD to the bolt icon; tap it again to restore.
+11. **Help** — links to this manual, the Marketplace page and the support group.
+
+> **Personal vs. permanent:** Move and rotate (5–7, including Z) normally adjust your *personal offset* — saved per avatar and per pose, and restored the next time you sit. Only in **ADJUSTMODE** do they change the pose permanently for all sitters.
+
+**Inside the Settings menu (8):** RESET (reset the selected target to its default pose), the ADJUSTMODE toggle, AUTOSYNC (off / 60 / 120 / 180 s), CLEAR offset storage, and the texture/design picker.
+
+**Automatic / background:** offsets are saved and restored per avatar and pose, the HUD attaches on sit (or from a menu button in menu mode), and with RLV active the hover height is set to 0 on attach and restored on detach.
 
 ## See also
 
