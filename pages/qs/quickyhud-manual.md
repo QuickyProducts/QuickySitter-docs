@@ -44,7 +44,7 @@ The HUD provides quick access to the most important positioning functions for AV
 <circle cx="715" cy="300" r="12" fill="#1f80c0"/><text x="715" y="300" fill="#fff" dominant-baseline="central">8</text>
 </g>
 </svg>
-<figcaption>QuickyHUD in pose mode — tap the glowing bolt (1) to open the menu.</figcaption>
+<figcaption>QuickyHUD in pose mode</figcaption>
 </figure>
 
 1. **Menu** — opens the furniture's pose menu (the glowing bolt in the center).
