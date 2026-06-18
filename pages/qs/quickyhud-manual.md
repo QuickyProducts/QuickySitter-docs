@@ -59,7 +59,7 @@ The HUD provides quick access to the most important positioning functions for AV
 10. **Minimize** — collapse the HUD to the bolt icon; tap it again to restore.
 11. **Help** — links to this manual, the Marketplace page and the support group.
 
-> **Personal vs. permanent:** Move and rotate (5–7, including Z) normally adjust your *personal offset* — saved per avatar and per pose, and restored the next time you sit. Only in **ADJUSTMODE** do they change the pose permanently for all sitters.
+> **Personal vs. permanent:** Move and rotate (5–7, including Z) normally adjust your *personal offset* — saved per avatar and per pose, and restored the next time you sit. In **ADJUSTMODE** they instead edit the pose's *default values* (the AVsitter pose data, not offsets) — the way a creator re-adjusts the base poses for everyone.
 
 **Inside the Settings menu (8):** RESET (reset the selected target to its default pose) is available to any sitter; the ADJUSTMODE toggle, AUTOSYNC (off / 60 / 120 / 180 s) and CLEAR offset storage are owner only. The texture/design picker sets the HUD look.
 
