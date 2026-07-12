@@ -8,6 +8,8 @@ toc: true
 
 A couples furniture has two sitter slots and at least one SYNC pose pair so the two avatars animate in lockstep. QuickySitter handles couples setups identically to stock AVsitter 2 — this page summarises the per-slot considerations and the QS-specific gotchas. For the tutorial walkthrough, see the [upstream AVsitter Couples page](https://avsitter.github.io/avsitter2_home.html).
 
+> **Working alone?** The QuickyHUD creator bundle's [Animesh Adjust Dummies](quickyhud-animesh.html) stand in for the missing partner while you set up and adjust SYNC poses — no second avatar needed.
+
 ## Script set
 
 For a 2-sitter prim:
