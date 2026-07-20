@@ -1,5 +1,5 @@
 ---
-title: QuickyHUD Animesh Adjust Dummies
+title: QuickySitter Pro Animesh Adjust Dummies
 sidebar: home_sidebar
 permalink: quickyhud-animesh.html
 keywords: animesh, dummy, adjust, partner, couples, group poses, solo setup, creator
@@ -8,7 +8,7 @@ toc: true
 
 Set up and adjust **couples and group poses without a second avatar**: the Animesh plugin rezzes a posable dummy onto any empty seat of the current pose. The dummy plays that seat's animation and sits at its pose position. You adjust it through the QuickyHUD exactly like a real partner, and the result saves through the normal adjust workflow.
 
-> **Note:** This is a **creator tool**, delivered with the QuickyHUD/QuickySitter creator bundle only. It is license-gated: on a piece without a valid creator license the plugin stays idle and the `[ANIMESH]` entry never appears. Finished customer furniture never receives it, and `[FINALIZE]` strips it off a piece before you sell.
+> **Note:** This is a **creator tool**, delivered with QuickySitter Pro only. It is license-gated: on a piece without a valid creator license the plugin stays idle and the `[ANIMESH]` entry never appears. Finished customer furniture never receives it, and `[FINALIZE]` strips it off a piece before you sell.
 
 ## Quick start
 

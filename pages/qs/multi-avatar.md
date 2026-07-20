@@ -8,7 +8,7 @@ toc: true
 
 QuickySitter supports any number of sitter slots, and the limit is SL's per-prim script-count cap, not anything in QS itself. The setup is a direct extension of the [Couples Setup](couples-setup.html) procedure.
 
-> **Working alone?** The QuickyHUD creator bundle's [Animesh Adjust Dummies](quickyhud-animesh.html) fill the empty seats of a group pose while you set it up: one posable dummy per seat, no extra avatars needed.
+> **Working alone?** QuickySitter Pro's [Animesh Adjust Dummies](quickyhud-animesh.html) fill the empty seats of a group pose while you set it up: one posable dummy per seat, no extra avatars needed.
 
 ## Adding more sitters
 

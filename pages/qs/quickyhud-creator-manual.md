@@ -1,18 +1,18 @@
 ---
-title: QuickyHUD Creator Manual
+title: QuickySitter Pro Manual
 sidebar: home_sidebar
 permalink: quickyhud-creator-manual.html
-keywords: quicky hud, creator, configuration, hudconfig, design, adjustmode, attach mode, hud offset, verbose
+keywords: quickysitter pro, creator, toolset, quicky hud, configuration, hudconfig, design, adjustmode, attach mode, hud offset, verbose
 toc: true
 ---
 
-This manual is for **creators** who build and sell QuickySitter furniture: setting up QuickyHUD in a piece and configuring how it looks and behaves. For everyday use of the HUD while sitting, see the [User Manual](quickyhud-manual.html). For setting up couples / group poses without a second avatar, see [Animesh Adjust Dummies](quickyhud-animesh.html).
+**QuickySitter Pro** is the creator toolset: the plugins and tools that make building and selling QuickySitter furniture easier. The HUD is one of those plugins, the Animesh Adjust Dummies are another. This manual covers the creator side: getting Pro into a piece and configuring how it behaves. For everyday use of the HUD while sitting, see the [User Manual](quickyhud-manual.html). For setting up couples / group poses without a second avatar, see [Animesh Adjust Dummies](quickyhud-animesh.html).
 
-> **Note:** This page is the *creator* side: preparing and configuring furniture you sell. What you build here is a **product combination of QuickyHUD and QuickySitter**: QuickyHUD is **no longer compatible with stock AVsitter** and requires the QuickySitter engine as its base.
+> **Note:** This page is the *creator* side: preparing and configuring furniture you sell. QuickySitter Pro sits on top of the **QuickySitter engine** and needs it as its base. Its plugins, the HUD included, are **no longer compatible with stock AVsitter**.
 
 ## Setting up a piece
 
-From your Quicky creator kit you only handle two things: the **installer** (a script object you drop into the furniture) and the **Quicky Updater HUD** (the in-world HUD you wear and click).
+From your QuickySitter Pro kit you only handle two things: the **installer** (a script object you drop into the furniture) and the **Quicky Updater HUD** (the in-world HUD you wear and click).
 
 ### Converting an existing AVsitter piece
 
