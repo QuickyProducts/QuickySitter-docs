@@ -8,6 +8,15 @@ toc: true
 
 Customer-facing changes only. Each entry is tagged **Fix** (bug fix), **Feature** (new), or **Base** (groundwork shipped ahead of a separate feature). Routine internal/technical changes aren't listed. Newest version on top.
 
+## Version 1.25
+
+*The creator product is now called **QuickySitter Pro** (formerly "QuickyHUD Creator"). The HUD itself keeps its name and is one tool in the kit among others. From this release the kit and the QuickySitter engine share one version number: QuickySitter jumps from 1.04 to 1.25 to meet the kit.*
+
+- **Feature**: Showcase mode for the Animesh dummies (owner only): switch `[SHOWCASE]` on in the seat list and the staged dummies stay put when you get up, which turns a staged pose into a store display. They also survive a visitor sitting down or swapping seats — the avatar visibly shares the seat instead of the display being torn down. Note that updating or resetting the furniture clears a staged display, so re-stage after an update.
+- **Feature**: Prop scale & worn fit: the new `[QS]propadjust` companion script goes into your prop and makes it resizable from the editor, or fittable directly on the body for attachment props, and QuickySitter's `[SAVE]` persists it. End users can fine-tune a rezzed prop by touch (±1/5/10 % menu, `[RESTORE]`).
+- **Feature**: New creator tool `scripttime-probe`: it measures the script time of any object by UUID from a distance.
+- **Fix**: Bundled QuickySitter update: the new "Adjust" access level lets chosen non-owners use the adjust tools (build from your personal account while a store account owns the furniture), the `[DUMP]` settings link works again on QuickySitter's own service, and its web page now shows the classic AVsitter layout.
+
 ## Version 1.24
 
 - **Feature**: Animesh partner-dummy plugin is here (creator tool): set up couples / group poses without a second avatar. `[ADJUST]` → `[ANIMESH]` rezzes a posable dummy onto any empty seat of the current pose; position it through the HUD like a real partner. Click a dummy to change or remove it, even while adjusting.
