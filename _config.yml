@@ -36,10 +36,7 @@ exclude:
   - Dockerfile
   - Gemfile
   - Gemfile.lock
-  - pdf-*.sh
   - update.sh
-  - pdfconfigs/
-  - pdf/
 # these are the files and directories that jekyll will exclude from the build
 
 feedback_subject_line: QuickySitter documentation
@@ -79,8 +76,6 @@ collections:
     output: true
   avsitter2_lsl_examples_avprop:
     output: true
-  releases:
-    output: false
 # collections are declared here. this renders the content in _xxxx and processes it, but doesn't output it as actual files in the output unless you change output to true
 
 defaults:
@@ -104,35 +99,13 @@ defaults:
       search: true
       tooltip: true
 
-  -
-    scope:
-      path: ""
-      type: "posts"
-    values:
-      layout: "post"
-      comments: false
-      search: true
-      sidebar: home_sidebar
-      topnav: topnav
-  -
-    scope:
-      path: ""
-      type: "releases"
-    values:
-      layout: "post"
-      comments: false
-      search: true
-      sidebar: home_sidebar
-      topnav: topnav
 
 # these are defaults used for the frontmatter for these file types
 
 sidebars:
 - home_sidebar
-- mydoc_sidebar
 - avsitter2_sidebar
 - avsitter1_sidebar
-- other
 
 description: "QuickySitter documentation: a fork of AVsitter 2 with LSD storage, HUD integration, and a SYNC re-sync API."
 # the description is used in the feed.xml file

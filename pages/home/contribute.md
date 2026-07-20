@@ -20,7 +20,7 @@ folder: contribute
 ## Documentation contributions
 
 - Documentation improvements should be submitted via pull request on the [GitHub repository for AVsitter Documentation](https://github.com/AVsitter/avsitter.github.io).
-- AVsitter Documentation uses the [Jekyll Documentation Theme](http://idratherbewriting.com/documentation-theme-jekyll/mydoc_pages.html) ([see template guidelines](/mydoc_introduction.html)).
+- AVsitter Documentation uses the [Jekyll Documentation Theme](http://idratherbewriting.com/documentation-theme-jekyll/mydoc_pages.html).
 - AVsitter Documentation is released under the [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/) license.
 - LSL example scripts provided in the AVsitter Documentation are released under the [CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/) license.
 

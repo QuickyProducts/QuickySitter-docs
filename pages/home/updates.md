@@ -26,7 +26,7 @@ If you have purchased AVsitter in Second Life, please collect the latest package
 - Scripts in the SL package updated to sync with <a href="https://github.com/AVsitter/AVsitter/releases/tag/2.2-01">first GitHub release</a>.
 
 ### AVsitter2, box 2.2 - 31 Jul 2017
-- Scripts have been made full-perm in this latest release. For details click <a href="/news-2017-07-31.html">here</a>.
+- Scripts have been made full-perm in this latest release.
 
 ### AVsitter2, box 2.1-14.04 - 20 Apr 2017
 - [AV]adjuster, [AV]prop - pose and prop position data always appears in chat when clicking [SAVE] (removed the /5 info option from <a href="/avsitter2_home.html#chat-commands">chat commands</a>).
