@@ -69,8 +69,6 @@ kramdown:
 # filter used to process markdown. note that kramdown differs from github-flavored markdown in some subtle ways
 
 collections:
-  qs_lsl_examples:
-    output: true
   avsitter1_lsl_examples_beginner:
     output: true
   avsitter1_lsl_examples_advanced:
@@ -80,8 +78,6 @@ collections:
   avsitter2_lsl_examples_advanced:
     output: true
   avsitter2_lsl_examples_avprop:
-    output: true
-  avsitter2_lsl_examples_avcontrol:
     output: true
   releases:
     output: false
