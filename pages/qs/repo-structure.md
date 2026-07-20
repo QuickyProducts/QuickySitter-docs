@@ -14,7 +14,7 @@ The QuickySitter source tree is laid out so that fork-specific code (`qs/`) and 
 |------|--------------|
 | [QuickyProducts/QuickySitter](https://github.com/QuickyProducts/QuickySitter) | LSL scripts, build helper, vendored AVsitter snapshot, in-repo design docs. |
 | [QuickyProducts/QuickySitter-docs](https://github.com/QuickyProducts/QuickySitter-docs) | Jekyll documentation site (this site). |
-| QuickyProducts/QuickyHUD *(private)* | HUD addon scripts (hudproxy, hudadmin, the wearable QuickyHUD). Sibling project — source not public. |
+| QuickyProducts/QuickyHUD *(private)* | HUD addon scripts (hudproxy, hudadmin, the wearable QuickyHUD). Sibling project, source not public. |
 
 ## QuickySitter source tree
 
@@ -59,9 +59,9 @@ QuickySitter/
 └── .gitignore
 ```
 
-## qs/ — fork-specific code
+## qs/: fork-specific code
 
-Each `[QS]*.lsl` is a self-contained script. Convention: file header starts with a short comment block (purpose, key inputs/outputs, dependencies), followed by `string version = "X.YYY";` and any other top-level constants. Every shipped script is currently version-locked at `0.999`. Only `[QS]sitA`'s version reaches other scripts — it is exposed in the QSALIVE (90097) payload; the rest are read directly from the file headers. Bumps follow the [version-bump convention](version-bump.html) (currently +0.00001 per change).
+Each `[QS]*.lsl` is a self-contained script. Convention: file header starts with a short comment block (purpose, key inputs/outputs, dependencies), followed by `string version = "X.YYY";` and any other top-level constants. Every shipped script is currently version-locked at `0.999`. Only `[QS]sitA`'s version reaches other scripts, because it is exposed in the QSALIVE (90097) payload; the rest are read directly from the file headers. Bumps follow the [version-bump convention](version-bump.html) (currently +0.00001 per change).
 
 ### Script-by-script summary
 
@@ -76,8 +76,8 @@ Each `[QS]*.lsl` is a self-contained script. Convention: file header starts with
 | `[QS]faces` | Face / expression animations. Publishes the `qs:alive:faces` presence flag. |
 | `[QS]offset` | Personal pose offsets. Two-tier store (LSD `QSO:*` + RAM `CUSTOMS`). Single source of truth. |
 | `[QS]sequence` | Animation sequences (fork of `[AV]sequence`). Reads its own `[AV]sequence_settings` notecard. |
-| `[QS]root` | Root-prim touch forwarder — forwards menu touches when no sitA/menu lives in the touched prim. |
-| `[QS]root-control` | "Allow others to control the menu" — couples sitters by name. |
+| `[QS]root` | Root-prim touch forwarder: forwards menu touches when no sitA/menu lives in the touched prim. |
+| `[QS]root-control` | "Allow others to control the menu": couples sitters by name. |
 | `[QS]root-security` | Sit/menu access control (ALL / OWNER / GROUP). |
 | `[QS]root-RLV` | RLV capture/relay. Publishes `qs:alive:rlv`. |
 | `[QS]debug` | Owner-only `/88` LSD inspector and stress-traffic generator. |
@@ -86,15 +86,15 @@ Each `[QS]*.lsl` is a self-contained script. Convention: file header starts with
 
 The design docs in `qs/` are the source of truth for many pages on this docs site:
 
-- [`qs/PROTOCOL.md`](https://github.com/QuickyProducts/QuickySitter/blob/master/qs/PROTOCOL.md) — link-message contracts, fork-specific number ranges, capability tokens.
-- [`qs/STORAGE.md`](https://github.com/QuickyProducts/QuickySitter/blob/master/qs/STORAGE.md) — LSD key layout, state per script, reset behavior.
-- [`qs/test/TESTPLAN.md`](https://github.com/QuickyProducts/QuickySitter/blob/master/qs/test/TESTPLAN.md) — sync-drift test scenarios and design decisions for Re-Sync.
+- [`qs/PROTOCOL.md`](https://github.com/QuickyProducts/QuickySitter/blob/master/qs/PROTOCOL.md): link-message contracts, fork-specific number ranges, capability tokens.
+- [`qs/STORAGE.md`](https://github.com/QuickyProducts/QuickySitter/blob/master/qs/STORAGE.md): LSD key layout, state per script, reset behavior.
+- [`qs/test/TESTPLAN.md`](https://github.com/QuickyProducts/QuickySitter/blob/master/qs/test/TESTPLAN.md): sync-drift test scenarios and design decisions for Re-Sync.
 
 When these documents disagree with the docs site, the in-repo files are canonical. PRs that modify protocol behavior should update PROTOCOL.md/STORAGE.md in the same change.
 
-## avstock/ — vendored AVsitter snapshot
+## avstock/: vendored AVsitter snapshot
 
-`avstock/` contains a pinned copy of the AVsitter 2 upstream — kept verbatim, never edited, refreshed by running `avstock/build-aux.py` against a specific upstream commit SHA. The SHA is recorded in `avstock/README.md`.
+`avstock/` contains a pinned copy of the AVsitter 2 upstream, kept verbatim, never edited, refreshed by running `avstock/build-aux.py` against a specific upstream commit SHA. The SHA is recorded in `avstock/README.md`.
 
 Two purposes:
 
@@ -108,10 +108,10 @@ Two purposes:
 Long-running Claude sessions often spawn worktrees under `.claude/worktrees/<name>/` to keep work isolated. Each worktree is a full checkout of the repo at a feature branch. Two conventions matter:
 
 - **Edit paths must live under the active worktree root.** A worktree session shouldn't touch a sibling worktree's files.
-- **Coordinate version bumps.** Before bumping a script in your worktree, check sibling worktrees for the same script with an in-flight bump — two parallel `0.99901 → 0.99902` bumps will both look correct in isolation but collide on merge. See [Version Bump Convention](version-bump.html).
+- **Coordinate version bumps.** Before bumping a script in your worktree, check sibling worktrees for the same script with an in-flight bump. Two parallel `0.99901 → 0.99902` bumps will both look correct in isolation but collide on merge. See [Version Bump Convention](version-bump.html).
 
 ## See also
 
-- [Getting Started](getting-started.html) — installing the scripts in an in-world prim.
-- [Contributing](contributing.html) — PR / commit workflow.
-- [Version Bump Convention](version-bump.html) — the per-change increment rule (currently +0.00001).
+- [Getting Started](getting-started.html): installing the scripts in an in-world prim.
+- [Contributing](contributing.html): PR / commit workflow.
+- [Version Bump Convention](version-bump.html): the per-change increment rule (currently +0.00001).

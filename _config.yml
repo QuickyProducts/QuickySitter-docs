@@ -134,7 +134,7 @@ sidebars:
 - avsitter1_sidebar
 - other
 
-description: "QuickySitter documentation — fork of AVsitter 2 with LSD storage, HUD integration, and a SYNC re-sync API."
+description: "QuickySitter documentation: a fork of AVsitter 2 with LSD storage, HUD integration, and a SYNC re-sync API."
 # the description is used in the feed.xml file
 
 # needed for sitemap.xml file only

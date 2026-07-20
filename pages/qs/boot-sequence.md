@@ -21,19 +21,19 @@ After seeding completes, boot broadcasts `QS_BOOT_RELOAD` (90023) so any already
 
 `qs:boot:asset` stores the notecard's UUID string as returned by `llGetInventoryKey("AVpos")`. Two properties make it the right primitive for "have we seeded this content already?":
 
-- Re-uploading a notecard with **the same content** yields the **same asset-key** in Second Life — the viewer dedups identical assets. Skip-seed works.
+- Re-uploading a notecard with **the same content** yields the **same asset-key** in Second Life, because the viewer dedups identical assets. Skip-seed works.
 - Editing the notecard and saving yields a **new asset-key**. The skip-check fails, boot re-seeds, and live `[HELPER] [SAVE]` edits applied to LSD between boots are deliberately overwritten by the notecard's current text.
 
-`changed(CHANGED_INVENTORY)` clears `qs:*` and re-runs the seed path. Manual script reset / region restart hits the same code without the LSD wipe — if the marker survived, skip-seed runs.
+`changed(CHANGED_INVENTORY)` clears `qs:*` and re-runs the seed path. Manual script reset / region restart hits the same code without the LSD wipe. If the marker survived, skip-seed runs.
 
-## Boot self-check — 90077 / 90078
+## Boot self-check: 90077 / 90078
 
 `[QS]boot` verifies the minimum base ingredients are present in the linkset right after seeding. Failure modes get surfaced as `llOwnerSay` errors so the creator catches a broken install before the first sit attempt instead of seeing a silent no-menu / no-animation furniture:
 
-1. **Hard-fail.** `[QS]sitA` missing, `[QS]sitB` missing, **or** the `AVpos` notecard missing ([`[QS]boot.lsl:725-732`](https://github.com/QuickyProducts/QuickySitter/blob/master/qs/%5BQS%5Dboot.lsl)) — no animation, no menu, or nothing to seed. Sets `llSetText` red so the prim is visibly broken in-world. These three plus `[QS]boot` itself are the only mandatory ingredients; everything else is optional and presence-gated.
-2. **Conditional warn.** AVpos has `PROP*` directives but `[QS]prop` is not installed — props won't be rezzed.
+1. **Hard-fail.** `[QS]sitA` missing, `[QS]sitB` missing, **or** the `AVpos` notecard missing ([`[QS]boot.lsl:725-732`](https://github.com/QuickyProducts/QuickySitter/blob/master/qs/%5BQS%5Dboot.lsl)): no animation, no menu, or nothing to seed. Sets `llSetText` red so the prim is visibly broken in-world. These three plus `[QS]boot` itself are the only mandatory ingredients; everything else is optional and presence-gated.
+2. **Conditional warn.** AVpos has `PROP*` directives but `[QS]prop` is not installed, so props won't be rezzed.
 
-Adjuster presence is deliberately **not** treated as a failure. The `[HELPER]` / `[QUICKYHUD]` menu gate lives in `[QS]sitB`, keyed on the `qs:alive:adjuster` LSD flag, so an end-user (read-only) install just doesn't expose the Adjust path — nothing is broken from the user's view.
+Adjuster presence is deliberately **not** treated as a failure. The `[HELPER]` / `[QUICKYHUD]` menu gate lives in `[QS]sitB`, keyed on the `qs:alive:adjuster` LSD flag, so an end-user (read-only) install just doesn't expose the Adjust path. Nothing is broken from the user's view.
 
 ### Probes
 
@@ -59,26 +59,26 @@ Boot writes the `qs:cfg` / `qs:sitter` / `qs:p:*` keys during seed, so reading t
 
 State lives in two boot globals: `qs_dump_ch` (the channel being streamed, `-1` when idle) and `qs_dump_pi` (next entry index). Only one channel streams at a time.
 
-## QSDUMP — plugin announce for the DUMP cascade
+## QSDUMP: plugin announce for the DUMP cascade
 
-`[QS]boot`'s DUMP cascade used to hardcode the participating plugin script names. Once `[AV]prop` was forked into `[QS]prop`, that constant had to be edited too — and any third-party DUMP-capable plugin would still be invisible to the cascade without a boot patch. QSDUMP turns plugin discovery dynamic: plugins announce themselves, boot collects.
+`[QS]boot`'s DUMP cascade used to hardcode the participating plugin script names. Once `[AV]prop` was forked into `[QS]prop`, that constant had to be edited too, and any third-party DUMP-capable plugin would still be invisible to the cascade without a boot patch. QSDUMP turns plugin discovery dynamic: plugins announce themselves, boot collects.
 
 | Num   | Direction | `msg` | `id` | Meaning |
 |-------|-----------|-------|------|---------|
-| 90094 | `[QS]boot` → all plugins | `""` | `""` | QSDUMP probe — "if you're DUMP-capable, announce yourself now." Sent once from boot's `state_entry`. |
-| 90095 | DUMP plugin → `[QS]boot` | `""` | `<script_name>` | QSDUMP hello — "I respond to 90020 DUMP messages addressed to my script name." Sent unsolicited from the plugin's `state_entry` and `on_rez`, and in response to 90094. |
+| 90094 | `[QS]boot` → all plugins | `""` | `""` | QSDUMP probe: "if you're DUMP-capable, announce yourself now." Sent once from boot's `state_entry`. |
+| 90095 | DUMP plugin → `[QS]boot` | `""` | `<script_name>` | QSDUMP hello: "I respond to 90020 DUMP messages addressed to my script name." Sent unsolicited from the plugin's `state_entry` and `on_rez`, and in response to 90094. |
 
-Boot maintains `list dump_plugins` — a deduped list of announced plugin names. The 90021 cascade iterates `dump_plugins + [camera_script]` per channel; the stock `[AV]camera` script name stays hardcoded because there is no `[QS]camera` fork to announce itself via QSDUMP. Boot still `llGetInventoryType`-checks each name before sending 90020, so a stale announce (plugin script deleted from inventory) is silently skipped rather than hanging the cascade waiting for a 90021 echo that never comes.
+Boot maintains `list dump_plugins`, a deduped list of announced plugin names. The 90021 cascade iterates `dump_plugins + [camera_script]` per channel; the stock `[AV]camera` script name stays hardcoded because there is no `[QS]camera` fork to announce itself via QSDUMP. Boot still `llGetInventoryType`-checks each name before sending 90020, so a stale announce (plugin script deleted from inventory) is silently skipped rather than hanging the cascade waiting for a 90021 echo that never comes.
 
 A plugin that never announces still works in stock-AVsitter furniture (no boot → no listener); QSDUMP is purely additive on top of stock's 90020/90021/90022 contract.
 
 ### Joining the cascade, step by step
 
-Your plugin needs this if it keeps **its own directive lines in the AVpos notecard**: without joining the cascade, those lines are missing from the `[DUMP]` settings copy — and silently lost the next time the creator replaces AVpos with that dump. A plugin without notecard directives can skip all of this.
+Your plugin needs this if it keeps **its own directive lines in the AVpos notecard**: without joining the cascade, those lines are missing from the `[DUMP]` settings copy, and silently lost the next time the creator replaces AVpos with that dump. A plugin without notecard directives can skip all of this.
 
-1. **Announce.** Send `90095` with your script name in `id` — from `state_entry`, from `on_rez`, and again whenever the `90094` probe arrives. Boot dedupes, so repeat announces are harmless.
+1. **Announce.** Send `90095` with your script name in `id`: from `state_entry`, from `on_rez`, and again whenever the `90094` probe arrives. Boot dedupes, so repeat announces are harmless.
 2. **Answer `90020`.** During a dump, boot walks the announced scripts once per sitter channel, addressing each by name: `num == 90020`, `id` = your script name, `msg` = the channel. Emit the AVpos lines belonging to that sitter's section as `90022` link messages (`msg` = the line, `id` = the channel).
-3. **Always echo `90021`** (`msg` = the channel, `id` = your script name) when you're done — even if you emitted nothing for that channel. Boot waits for the echo before moving on and uses your `id` to find its place in the walk.
+3. **Always echo `90021`** (`msg` = the channel, `id` = your script name) when you're done, even if you emitted nothing for that channel. Boot waits for the echo before moving on and uses your `id` to find its place in the walk.
 
 ```lsl
 integer QSDUMP_PROBE = 90094;
@@ -101,25 +101,25 @@ default
             // during the channel-0 pass.
             if ((integer)msg == 0)
                 llMessageLinked(LINK_THIS, 90022, "SWING SPEED|2.0", msg);
-            // ALWAYS echo — boot waits for this before moving on.
+            // ALWAYS echo: boot waits for this before moving on.
             llMessageLinked(LINK_THIS, 90021, msg, llGetScriptName());
         }
     }
 }
 ```
 
-Emitting many lines? Throttle (`llSleep(0.2)` between `90022` sends, like `[QS]faces` does) so boot's collector queue keeps up. Everything except the announce is the stock AVsitter dump round-trip — the `dump90098` capability token in the [QSALIVE reply](qsalive-discovery.html) just tells you the announce will actually be heard.
+Emitting many lines? Throttle (`llSleep(0.2)` between `90022` sends, like `[QS]faces` does) so boot's collector queue keeps up. Everything except the announce is the stock AVsitter dump round-trip. The `dump90098` capability token in the [QSALIVE reply](qsalive-discovery.html) just tells you the announce will actually be heard.
 
 ### Plugin participation
 
-- `[QS]prop` — announces via QSDUMP ✅. Separately publishes the `qs:alive:prop` LSD flag so the `[PROP]` menu item can be gated without an inventory probe.
-- `[QS]faces` — announces via QSDUMP ✅. Separately publishes the `qs:alive:faces` LSD flag so the `[FACES]` (sitB) / `[FACE]` (adjuster) menu items can be gated.
-- `[AV]camera` — stock, hardcoded in boot's cascade. No `[QS]camera` fork planned: stock `[AV]camera`'s only name-bound code is dead, and all working paths are protocol-based and script-name-agnostic.
+- `[QS]prop`: announces via QSDUMP ✅. Separately publishes the `qs:alive:prop` LSD flag so the `[PROP]` menu item can be gated without an inventory probe.
+- `[QS]faces`: announces via QSDUMP ✅. Separately publishes the `qs:alive:faces` LSD flag so the `[FACES]` (sitB) / `[FACE]` (adjuster) menu items can be gated.
+- `[AV]camera`: stock, hardcoded in boot's cascade. No `[QS]camera` fork planned: stock `[AV]camera`'s only name-bound code is dead, and all working paths are protocol-based and script-name-agnostic.
 
-The old HELLO presence broadcasts (90088–90092: QS_OFFSET / PROP / FACES / ADJUSTER / SELECT_HELLO) were **retired in 0.9951** and replaced by the `qs:alive:<name>` LSD-flag model — flags are written in `state_entry`, re-stamped on the `QS_ALIVE_CENSUS` (90079) sweep, and read on demand at menu-build time. The retired numbers are reserved, not reused. See [QSALIVE Discovery](qsalive-discovery.html).
+The old HELLO presence broadcasts (90088–90092: QS_OFFSET / PROP / FACES / ADJUSTER / SELECT_HELLO) were **retired in 0.9951** and replaced by the `qs:alive:<name>` LSD-flag model: flags are written in `state_entry`, re-stamped on the `QS_ALIVE_CENSUS` (90079) sweep, and read on demand at menu-build time. The retired numbers are reserved, not reused. See [QSALIVE Discovery](qsalive-discovery.html).
 
 ## See also
 
-- [LSD Storage](lsd-storage.html) — full layout of what boot writes.
-- [QSALIVE Discovery](qsalive-discovery.html) — the sitA-side handshake boot also uses for its self-check.
-- [LinkMessage Numbers](linkmessage-numbers.html) — complete fork link-message map.
+- [LSD Storage](lsd-storage.html): full layout of what boot writes.
+- [QSALIVE Discovery](qsalive-discovery.html): the sitA-side handshake boot also uses for its self-check.
+- [LinkMessage Numbers](linkmessage-numbers.html): complete fork link-message map.

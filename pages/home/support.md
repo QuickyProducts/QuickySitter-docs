@@ -11,7 +11,7 @@ toc: false
 If you're stuck:
 
 - Read the documentation on this site, especially [Getting Started](getting-started.html), [Migration from AVsitter](migration.html), and the [FAQ](faq.html).
-- For underlying AVsitter behavior that QS keeps intact, the [upstream AVsitter documentation](https://avsitter.github.io) is the canonical reference — sit-target setup, AVpos notecard syntax, etc.
+- For underlying AVsitter behavior that QS keeps intact, the [upstream AVsitter documentation](https://avsitter.github.io) is the canonical reference for sit-target setup, AVpos notecard syntax, etc.
 - Check [Known Limits](known-limits.html) for hard SL limits QS can't work around.
 
 ## Reporting bugs
@@ -21,7 +21,7 @@ If you're stuck:
 
 For a bug report to be actionable, include:
 
-- QS script versions involved (from each `[QS]*.lsl`'s `string version = "X.YYY";` line, or from chat — boot logs versions on `state_entry`).
+- QS script versions involved (from each `[QS]*.lsl`'s `string version = "X.YYY";` line, or from chat, where boot logs versions on `state_entry`).
 - Steps to reproduce.
 - Expected vs observed behavior.
 - Relevant chat output, especially anything `bDebug` produced.

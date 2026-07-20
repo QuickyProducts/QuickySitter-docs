@@ -8,7 +8,7 @@ toc: true
 
 `[QS]sequence` is a very thin fork of stock `[AV]sequence`. Its **only** fork-specific change is that it learns the sitter count over QSALIVE (90096/90097) instead of probing for sitter scripts by name. It does **not** participate in the `[DUMP]` cascade, does not publish a `qs:alive:*` presence flag, and its product string is still the upstream `AVsitter(TM) sequence`.
 
-Behaviour is otherwise identical to stock from the user's perspective. Animation sequences (chained pose / animation runs with timing) are defined the same way. Note that `[QS]sequence` reads its own separate `[AV]sequence_settings` notecard — **not** the main `AVpos` notecard — and SEQUENCE lines are therefore **not** part of the `[DUMP]` output.
+Behaviour is otherwise identical to stock from the user's perspective. Animation sequences (chained pose / animation runs with timing) are defined the same way. Note that `[QS]sequence` reads its own separate `[AV]sequence_settings` notecard, **not** the main `AVpos` notecard, and SEQUENCE lines are therefore **not** part of the `[DUMP]` output.
 
 ## Notecard syntax (unchanged from stock)
 
@@ -40,11 +40,11 @@ The single fork change is sitter-count discovery over QSALIVE (90096/90097) in p
 
 ## Sound and music
 
-`[QS]sequence` handles the `SOUND` directive too — toggling music playback per pose. See [upstream AVsequence](https://avsitter.github.io/avsitter2_sequence.html) for the syntax.
+`[QS]sequence` handles the `SOUND` directive too, toggling music playback per pose. See [upstream AVsequence](https://avsitter.github.io/avsitter2_sequence.html) for the syntax.
 
 ## Link messages
 
-All stock-AVsitter numbers, used unchanged — `[QS]sequence` adds no link-messages of its own:
+All stock-AVsitter numbers, used unchanged, and `[QS]sequence` adds no link-messages of its own:
 
 | Num | Direction | Use |
 |-----|-----------|-----|
@@ -55,5 +55,5 @@ All stock-AVsitter numbers, used unchanged — `[QS]sequence` adds no link-messa
 ## See also
 
 - [Upstream AVsequence documentation](https://avsitter.github.io/avsitter2_sequence.html).
-- [Animation Sequences](animation-sequences.html) — using sequences in multi-avatar setups.
-- [QSALIVE Discovery](qsalive-discovery.html) — the sitter-count discovery sequence's one fork change relies on.
+- [Animation Sequences](animation-sequences.html): using sequences in multi-avatar setups.
+- [QSALIVE Discovery](qsalive-discovery.html): the sitter-count discovery sequence's one fork change relies on.

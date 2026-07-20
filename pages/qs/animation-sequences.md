@@ -6,13 +6,13 @@ keywords: sequence, animation, chain, multi-step, plugin
 toc: true
 ---
 
-Animation sequences are multi-step animation chains — e.g., a "lovescene" that plays one pose for 30 s, then transitions to a second pose for 25 s, then loops. Implemented by the `[QS]sequence` plugin (or stock `[AV]sequence`, which is interchangeable).
+Animation sequences are multi-step animation chains, e.g., a "lovescene" that plays one pose for 30 s, then transitions to a second pose for 25 s, then loops. Implemented by the `[QS]sequence` plugin (or stock `[AV]sequence`, which is interchangeable).
 
 This page focuses on the QS-specific aspects. For the tutorial walk-through see the [upstream AVsequence page](https://avsitter.github.io/avsitter2_sequence.html).
 
 ## Notecard syntax (unchanged from stock)
 
-Sequence definitions live in a dedicated **`[AV]sequence_settings`** notecard, read by `[QS]sequence` directly — not in the AVpos notecard. A sequence is a series of `SEQUENCE <pose_or_label>` lines, each followed by a `WAIT <seconds>` (and optionally a `SOUND <name>|<flag>` line). Each `SEQUENCE` line names the pose (or label) to play for that step; `WAIT` gives the step's duration.
+Sequence definitions live in a dedicated **`[AV]sequence_settings`** notecard, read by `[QS]sequence` directly, not in the AVpos notecard. A sequence is a series of `SEQUENCE <pose_or_label>` lines, each followed by a `WAIT <seconds>` (and optionally a `SOUND <name>|<flag>` line). Each `SEQUENCE` line names the pose (or label) to play for that step; `WAIT` gives the step's duration.
 
 ```
 SEQUENCE Lovescene
@@ -26,7 +26,7 @@ WAIT 60
 
 The sequence plays steps in order. After the final step, the last pose continues to loop until something else changes the sitter's animation. `SOUND <name>|<flag>` (where `flag = 1` loops) is optional per step.
 
-`SEQUENCE`, `WAIT`, and `SOUND` are three independent directives — each on its own line. There is no `NAME` or `STEP` directive.
+`SEQUENCE`, `WAIT`, and `SOUND` are three independent directives, each on its own line. There is no `NAME` or `STEP` directive.
 
 ## How it works
 
@@ -44,7 +44,7 @@ The sequence pointer is per-slot in sitA's per-sitter globals. A sit-down resets
 LinkMsg 90271 re-phases the **main** pose animation. For sequences, this means:
 
 - The current STEP animation (whatever's playing now) gets the Stop+Start cycle.
-- Steps that are about to play continue normally — the timer wasn't interrupted.
+- Steps that are about to play continue normally, because the timer wasn't interrupted.
 
 In practice, sequences with short steps (< 1 s) are visible-loop fast enough that drift between sitters is dominated by within-step phase, which 90271 handles. Long-step sequences (e.g., a 30-second slow-dance loop) benefit more from re-sync.
 
@@ -52,15 +52,15 @@ See [Re-Sync Protocol](resync-protocol.html).
 
 ## Configuration notecard
 
-`[QS]sequence` does **not** participate in the `[DUMP]` cascade — it has no QSDUMP announce, and `SEQUENCE` lines are not reconstructed in `[DUMP]` output. Instead, the plugin reads its own separate **`[AV]sequence_settings`** notecard (not the AVpos notecard) for sequence definitions. Its only fork change from stock `[AV]sequence` is the sitter-count query via QSALIVE (90096/90097); the product string is still the un-rebranded `"AVsitter™ sequence"`.
+`[QS]sequence` does **not** participate in the `[DUMP]` cascade: it has no QSDUMP announce, and `SEQUENCE` lines are not reconstructed in `[DUMP]` output. Instead, the plugin reads its own separate **`[AV]sequence_settings`** notecard (not the AVpos notecard) for sequence definitions. Its only fork change from stock `[AV]sequence` is the sitter-count query via QSALIVE (90096/90097); the product string is still the un-rebranded `"AVsitter™ sequence"`.
 
 ## Sound and music sequences
 
-`[QS]sequence` also handles sound/music playback tied to poses — toggle via LinkMsg 90205, or via the `SOUND` directive in AVpos. See the upstream docs for the audio-related syntax.
+`[QS]sequence` also handles sound/music playback tied to poses: toggle via LinkMsg 90205, or via the `SOUND` directive in AVpos. See the upstream docs for the audio-related syntax.
 
 ## See also
 
-- [`[QS]sequence`](plugin-sequence.html) — plugin details.
-- [Multi-Avatar Setups](multi-avatar.html) — sequences across many sitters.
-- [Re-Sync Protocol](resync-protocol.html) — how 90271 interacts with running sequences.
+- [`[QS]sequence`](plugin-sequence.html): plugin details.
+- [Multi-Avatar Setups](multi-avatar.html): sequences across many sitters.
+- [Re-Sync Protocol](resync-protocol.html): how 90271 interacts with running sequences.
 - [Upstream AVsequence documentation](https://avsitter.github.io/avsitter2_sequence.html).

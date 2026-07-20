@@ -6,7 +6,7 @@ keywords: chat, commands, slash, slash command, channel
 toc: true
 ---
 
-QuickySitter inherits the user-facing chat commands from stock AVsitter 2 (the `/1 …` family below behaves the same). It also adds its own owner-only diagnostics channel — `/88`, served by the optional `[QS]debug` script; see [Debug Flags](debug-flags.html). This page is a quick-reference; for the conceptual tutorial see the [upstream AVsitter chat commands page](https://avsitter.github.io/avsitter2_home.html).
+QuickySitter inherits the user-facing chat commands from stock AVsitter 2 (the `/1 …` family below behaves the same). It also adds its own owner-only diagnostics channel: `/88`, served by the optional `[QS]debug` script; see [Debug Flags](debug-flags.html). This page is a quick-reference; for the conceptual tutorial see the [upstream AVsitter chat commands page](https://avsitter.github.io/avsitter2_home.html).
 
 ## Public commands (chat channel 0)
 
@@ -35,7 +35,7 @@ These shortcuts are documented in the upstream adjuster tutorial.
 
 ## Listen channel layout
 
-Each script listens on a channel derived from its slot and purpose. Plugin authors don't usually need to know these — link-messages are the public API — but for debugging:
+Each script listens on a channel derived from its slot and purpose. Plugin authors don't usually need to know these (link-messages are the public API), but for debugging:
 
 | Script | Listen channel | Purpose |
 |--------|----------------|---------|
@@ -48,12 +48,12 @@ Each script listens on a channel derived from its slot and purpose. Plugin autho
 
 Most user interaction goes through `llDialog` blue-popup menus, not chat. The `[HELPER]` menu is the main entry point; from there:
 
-- `[NEW]` — create a new pose stub.
-- `[SAVE]` — commit current adjustments to LSD.
-- `[SAVE ALL]` — set the `M#T!` all-poses fallback for this user/slot. See [Personal Pose Offsets](personal-pose-offsets.html).
-- `[DUMP]` — kick the `90098` cascade in boot, then chat or upload the LSD-formatted AVpos text.
-- `[CANCEL]` — exit without saving.
-- `[STOP HELP]` — leave helper mode entirely.
+- `[NEW]`: create a new pose stub.
+- `[SAVE]`: commit current adjustments to LSD.
+- `[SAVE ALL]`: set the `M#T!` all-poses fallback for this user/slot. See [Personal Pose Offsets](personal-pose-offsets.html).
+- `[DUMP]`: kick the `90098` cascade in boot, then chat or upload the LSD-formatted AVpos text.
+- `[CANCEL]`: exit without saving.
+- `[STOP HELP]`: leave helper mode entirely.
 
 ## RLV commands (with `[AV]root-RLV`)
 
@@ -61,6 +61,6 @@ When the stock `[AV]root-RLV` plugin is in the prim, additional RLV-style comman
 
 ## See also
 
-- [Adjustment Workflow](adjustment-workflow.html) — full `[HELPER]` menu walkthrough.
-- [Submenus](submenus.html) — menu navigation model.
-- [LinkMessage Numbers](linkmessage-numbers.html) — what each menu click sends internally.
+- [Adjustment Workflow](adjustment-workflow.html): full `[HELPER]` menu walkthrough.
+- [Submenus](submenus.html): menu navigation model.
+- [LinkMessage Numbers](linkmessage-numbers.html): what each menu click sends internally.

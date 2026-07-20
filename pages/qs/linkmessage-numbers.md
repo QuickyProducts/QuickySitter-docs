@@ -6,7 +6,7 @@ keywords: link message, linkmsg, reference, 90000, 90500
 toc: true
 ---
 
-QuickySitter uses link-message numbers in the range **90000 – 90500**, identical to stock AVsitter 2. Stock numbers are unchanged from a sender's perspective — a stock plugin's link-message traffic works as-is in QuickySitter furniture. (Script-**name** probes are another matter: see [Compatibility Matrix](compatibility-matrix.html).)
+QuickySitter uses link-message numbers in the range **90000 – 90500**, identical to stock AVsitter 2. Stock numbers are unchanged from a sender's perspective: a stock plugin's link-message traffic works as-is in QuickySitter furniture. (Script-**name** probes are another matter: see [Compatibility Matrix](compatibility-matrix.html).)
 
 This page lists the **fork-specific numbers** QuickySitter adds (in stock-unused ranges) and notes the stock numbers whose handler script moved or whose semantics changed slightly. For the complete stock AVsitter 2 reference, see [`avsitter2_link_message_reference.md`](https://github.com/QuickyProducts/QuickySitter/blob/master/avstock/avsitter2_link_message_reference.md) in the QS repo (vendored copy of upstream).
 
@@ -19,8 +19,8 @@ This page lists the **fork-specific numbers** QuickySitter adds (in stock-unused
 | Num | Stock home | QuickySitter home | Why |
 |-----|-----------|-------------------|-----|
 | `90020` | sent to scripts asking for `[DUMP]` | sent **from `[QS]boot`** instead of adjuster | `[DUMP]` ownership moved to boot |
-| `90021` | handled by `[AV]adjuster` | handled by **`[QS]boot`** | same — boot owns the cascade |
-| `90022` | handled by `[AV]adjuster` | handled by **`[QS]boot`** | same — boot owns the receiver |
+| `90021` | handled by `[AV]adjuster` | handled by **`[QS]boot`** | same: boot owns the cascade |
+| `90022` | handled by `[AV]adjuster` | handled by **`[QS]boot`** | same: boot owns the receiver |
 
 Plugins still send `90022`/`90021` to `LINK_THIS` exactly like in stock; the listener just lives in a different script in the same prim.
 
@@ -39,7 +39,7 @@ Plugins still send `90022`/`90021` to `LINK_THIS` exactly like in stock; the lis
 
 ## Fork-specific numbers
 
-All in stock-unused ranges. A stock-AVsitter plugin sending or receiving in these ranges would have collided with something — but the stock reference shows these slots as unused.
+All in stock-unused ranges. A stock-AVsitter plugin sending or receiving in these ranges would have collided with something, but the stock reference shows these slots as unused.
 
 ### Boot self-check + reload (9002x)
 
@@ -64,8 +64,8 @@ Plugin presence is **not** a link-message handshake. Each plugin writes a `qs:al
 |-----|-----------|-----|
 | `90079` | `[QS]boot` → all | `QS_ALIVE_CENSUS`. boot wipes every `qs:alive:*` flag and broadcasts this; surviving plugins re-stamp their flag in response, so a removed plugin drops out without an inventory probe. |
 | `90093` | bidirectional | hudproxy presence probe (the only live HELLO). See [HUD Integration](hud-integration.html). |
-| `90094` | `[QS]boot` → all plugins | QSDUMP probe — "if you're DUMP-capable, announce yourself now." |
-| `90095` | DUMP plugin → `[QS]boot` | QSDUMP hello — "I respond to 90020 DUMP messages." |
+| `90094` | `[QS]boot` → all plugins | QSDUMP probe: "if you're DUMP-capable, announce yourself now." |
+| `90095` | DUMP plugin → `[QS]boot` | QSDUMP hello: "I respond to 90020 DUMP messages." |
 | `90096` | plugin → `[QS]sitA` | QSALIVE count/version/caps probe (**not** a presence handshake). See [QSALIVE Discovery](qsalive-discovery.html). |
 | `90097` | `[QS]sitA` (slot 0) → plugin | QSALIVE count/version/caps reply, plus one unsolicited boot-announce. |
 
@@ -73,20 +73,20 @@ Plugin presence is **not** a link-message handshake. Each plugin writes a `qs:al
 
 | Num | Direction | Use |
 |-----|-----------|-----|
-| `90098` | `[QS]adjuster` → `[QS]boot` | "Start dump for channel." Replaces stock adjuster-owned `[DUMP]`. `id` is a mode marker — `"quiet"` for the silent self-check dump, `""` (or `"loud"`) for the operator-visible `[DUMP]`. |
-| `90099` | `[QS]boot` → self | Dump tick — self-trigger between dump-line iterations. |
+| `90098` | `[QS]adjuster` → `[QS]boot` | "Start dump for channel." Replaces stock adjuster-owned `[DUMP]`. `id` is a mode marker: `"quiet"` for the silent self-check dump, `""` (or `"loud"`) for the operator-visible `[DUMP]`. |
+| `90099` | `[QS]boot` → self | Dump tick: self-trigger between dump-line iterations. |
 
 ### Quiet swap (9003x)
 
 | Num | Direction | Use |
 |-----|-----------|-----|
-| `90031` | menu source → `[QS]sitA` | Quiet SWAP — like stock `90030` SWAP but suppresses the swap announcement. Fork addition; stock furniture has no 90031 sender. |
+| `90031` | menu source → `[QS]sitA` | Quiet SWAP, like stock `90030` SWAP but suppresses the swap announcement. Fork addition; stock furniture has no 90031 sender. |
 
 ### Plug-and-play plugin registry (9021x)
 
 | Num | Direction | Use |
 |-----|-----------|-----|
-| `90212` | plugin → `[QS]sitB` | QSPLUG_REGISTER — `msg = "<label>\|<click_chan>\|<scriptName>"`. Registers a runtime button into the `[OPTIONS]` top-level menu. sitB dedupes by `scriptName`. Click dispatch lands on `<click_chan>` with `msg = <label>`, `id = <controller-key>`. See [Options Menu Plugins](options-menu-plugins.html). |
+| `90212` | plugin → `[QS]sitB` | QSPLUG_REGISTER: `msg = "<label>\|<click_chan>\|<scriptName>"`. Registers a runtime button into the `[OPTIONS]` top-level menu. sitB dedupes by `scriptName`. Click dispatch lands on `<click_chan>` with `msg = <label>`, `id = <controller-key>`. See [Options Menu Plugins](options-menu-plugins.html). |
 
 ### Personal pose offsets (9026x)
 
@@ -98,7 +98,7 @@ Plugin presence is **not** a link-message handshake. Each plugin writes a `qs:al
 | `90263` | `[QS]adjuster` → `[QS]sitA` + `[QS]offset` | "Drop stale customs after `[HELPER] [SAVE]`." |
 | `90264` | hudproxy → `[QS]offset` | "Wipe ALL personal offsets." |
 | `90265` | `[QS]offset` → all `[QS]sitA` | "Clear your RAM-tier mirror." Paired with 90264. |
-| `90266` | `[QS]adjuster` → hudproxy | "Flip QuickyHUD ADJUSTMODE remotely" — `"On"` / `"Off"`. |
+| `90266` | `[QS]adjuster` → hudproxy | "Flip QuickyHUD ADJUSTMODE remotely": `"On"` / `"Off"`. |
 
 See [Personal Pose Offsets](personal-pose-offsets.html).
 
@@ -108,22 +108,22 @@ These per-plugin HELLO broadcasts were the original (pre-0.9951) presence mechan
 
 | Num | Was | Replaced by |
 |-----|-----|-------------|
-| `90088` | `QS_OFFSET_HELLO` — offset presence | `qs:offset:alive` LSD flag (inverted name). |
-| `90089` | `QS_PROP_HELLO` — prop presence (gated `[PROP]`) | `qs:alive:prop` LSD flag. |
-| `90090` | `QS_FACES_HELLO` — faces presence (gated `[FACES]`/`[EXPRESSION]`) | `qs:alive:faces` LSD flag. |
-| `90091` | `QS_ADJUSTER_HELLO` — adjuster presence (gated `[HELPER]`) | `qs:alive:adjuster` LSD flag. |
-| `90092` | `QS_SELECT_HELLO` — select presence (gated select routing) | `qs:alive:select` LSD flag (sitB also keeps an `[AV]select` inventory fallback for stock-AVsitter compat). |
+| `90088` | `QS_OFFSET_HELLO`: offset presence | `qs:offset:alive` LSD flag (inverted name). |
+| `90089` | `QS_PROP_HELLO`: prop presence (gated `[PROP]`) | `qs:alive:prop` LSD flag. |
+| `90090` | `QS_FACES_HELLO`: faces presence (gated `[FACES]`/`[EXPRESSION]`) | `qs:alive:faces` LSD flag. |
+| `90091` | `QS_ADJUSTER_HELLO`: adjuster presence (gated `[HELPER]`) | `qs:alive:adjuster` LSD flag. |
+| `90092` | `QS_SELECT_HELLO`: select presence (gated select routing) | `qs:alive:select` LSD flag (sitB also keeps an `[AV]select` inventory fallback for stock-AVsitter compat). |
 
 ### Re-Sync and dynamic props (9027x – 9028x)
 
 | Num | Direction | Use |
 |-----|-----------|-----|
 | `90271` | any in-prim source → `[QS]sitA` | SYNC-pose Re-Sync trigger. See [Re-Sync Protocol](resync-protocol.html). |
-| `90280` | any in-prim source → `[QS]prop` | `QSPROP_ATTACH` — dynamic prop register + rez without notecard entry. See [HUD Integration](hud-integration.html). |
+| `90280` | any in-prim source → `[QS]prop` | `QSPROP_ATTACH`: dynamic prop register + rez without notecard entry. See [HUD Integration](hud-integration.html). |
 
 ## Compatibility summary
 
-- **Stock plugin in QuickySitter furniture:** ✅ link-message traffic works unchanged; plugins relying on `[AV]sitA` script-name probes degrade — see [Compatibility Matrix](compatibility-matrix.html).
-- **QuickySitter scripts in stock-AVsitter furniture:** ❌ doesn't work — sitA/sitB expect `qs:cfg`/`qs:sitter`/`qs:p:*` LSD keys that boot writes during seed; stock furniture has no `[QS]boot`. This is intentional, not a goal of the fork.
+- **Stock plugin in QuickySitter furniture:** ✅ link-message traffic works unchanged; plugins relying on `[AV]sitA` script-name probes degrade. See [Compatibility Matrix](compatibility-matrix.html).
+- **QuickySitter scripts in stock-AVsitter furniture:** ❌ doesn't work, because sitA/sitB expect `qs:cfg`/`qs:sitter`/`qs:p:*` LSD keys that boot writes during seed; stock furniture has no `[QS]boot`. This is intentional, not a goal of the fork.
 
 See also: [Compatibility Matrix](compatibility-matrix.html), [LSD Keys](lsd-keys.html).

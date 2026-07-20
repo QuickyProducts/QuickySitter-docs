@@ -8,7 +8,7 @@ toc: true
 
 `[QS]faces` is a minimal fork of stock `[AV]faces` that takes the sitter count from QSALIVE (90096/90097) instead of walking `[AV]sitA N` script names, and publishes the QS presence flag `qs:alive:faces` so `[QS]sitB` and `[QS]adjuster` can gate the `[FACES]` / `[FACE]` menu items without an inventory probe.
 
-Behavior is otherwise identical to stock — drop `[QS]faces` into a stock-AVsitter prim and it works too. The reverse is degraded: a stock `[AV]faces` in a QS prim finds no `[AV]sitA N` scripts to count (faces play for sitter 0 at best, nothing on the other slots), and without the `qs:alive:faces` flag the `[FACES]` / `[FACE]` menu entries never appear.
+Behavior is otherwise identical to stock: drop `[QS]faces` into a stock-AVsitter prim and it works too. The reverse is degraded: a stock `[AV]faces` in a QS prim finds no `[AV]sitA N` scripts to count (faces play for sitter 0 at best, nothing on the other slots), and without the `qs:alive:faces` flag the `[FACES]` / `[FACE]` menu entries never appear.
 
 ## Notecard syntax (unchanged from stock)
 
@@ -38,9 +38,9 @@ Full reference in the [upstream AVfaces page](https://avsitter.github.io/avsitte
 
 ## QS addition: presence via `qs:alive:faces`
 
-`[QS]faces` advertises its presence by writing the LSD flag `qs:alive:faces` early in `state_entry` (the offset uses the inverted `qs:offset:alive`; faces uses the plain `qs:alive:faces`). It re-stamps the flag whenever boot broadcasts `QS_ALIVE_CENSUS` (90079), and removes nothing on its own — boot wipes all `qs:alive:*` on a census and only the survivors re-write, so a removed faces script simply stops re-stamping.
+`[QS]faces` advertises its presence by writing the LSD flag `qs:alive:faces` early in `state_entry` (the offset uses the inverted `qs:offset:alive`; faces uses the plain `qs:alive:faces`). It re-stamps the flag whenever boot broadcasts `QS_ALIVE_CENSUS` (90079), and removes nothing on its own, because boot wipes all `qs:alive:*` on a census and only the survivors re-write, so a removed faces script simply stops re-stamping.
 
-`[QS]sitB` and `[QS]adjuster` read the flag **on demand at menu-build time** — never cached — and gate menu items on it:
+`[QS]sitB` and `[QS]adjuster` read the flag **on demand at menu-build time** (never cached) and gate menu items on it:
 
 ```lsl
 // at menu build, on demand:
@@ -55,12 +55,12 @@ The HELLO presence broadcasts (the retired `90088`–`90092` band, which once in
 
 Total changes from stock `[AV]faces`:
 
-1. **Presence via the `qs:alive:faces` LSD flag** — written in `state_entry`, re-stamped on `QS_ALIVE_CENSUS` (90079), read on demand. Same pattern as `[QS]prop`.
-2. **QSDUMP integration** — announces on 90095 so face entries are included in `[DUMP]` output.
+1. **Presence via the `qs:alive:faces` LSD flag**: written in `state_entry`, re-stamped on `QS_ALIVE_CENSUS` (90079), read on demand. Same pattern as `[QS]prop`.
+2. **QSDUMP integration**: announces on 90095 so face entries are included in `[DUMP]` output.
 3. Version string + header comment block.
 
 ## See also
 
-- [Upstream AVfaces documentation](https://avsitter.github.io/avsitter2_faces.html) — `ANIM` section syntax.
-- [QSALIVE Discovery](qsalive-discovery.html) — sibling presence broadcasts.
-- [LinkMessage Numbers](linkmessage-numbers.html) — fork-specific number map.
+- [Upstream AVfaces documentation](https://avsitter.github.io/avsitter2_faces.html): `ANIM` section syntax.
+- [QSALIVE Discovery](qsalive-discovery.html): sibling presence broadcasts.
+- [LinkMessage Numbers](linkmessage-numbers.html): fork-specific number map.

@@ -6,9 +6,9 @@ keywords: multi-avatar, group, threesomes, more sitters
 toc: true
 ---
 
-QuickySitter supports any number of sitter slots — the limit is SL's per-prim script-count cap, not anything in QS itself. The setup is a direct extension of the [Couples Setup](couples-setup.html) procedure.
+QuickySitter supports any number of sitter slots, and the limit is SL's per-prim script-count cap, not anything in QS itself. The setup is a direct extension of the [Couples Setup](couples-setup.html) procedure.
 
-> **Working alone?** The QuickyHUD creator bundle's [Animesh Adjust Dummies](quickyhud-animesh.html) fill the empty seats of a group pose while you set it up — one posable dummy per seat, no extra avatars needed.
+> **Working alone?** The QuickyHUD creator bundle's [Animesh Adjust Dummies](quickyhud-animesh.html) fill the empty seats of a group pose while you set it up: one posable dummy per seat, no extra avatars needed.
 
 ## Adding more sitters
 
@@ -43,7 +43,7 @@ LinkMsg 90271 broadcasts to all sitA slots simultaneously via `LINK_SET`. Each s
 
 ## Memory considerations
 
-At 1000+ poses across N slots, QuickySitter's LSD-backed menu storage becomes a noticeable improvement over stock — sitB stays slim while stock would push past the 64 KB Mono cap. The old in-RAM `MENU_LIST` was retired (0.9954); menu state is now built from paged LSD reads of `qs:p:<ch>:<i>`, windowed by the `qs:nm` sidecar. See [LSD Storage](lsd-storage.html).
+At 1000+ poses across N slots, QuickySitter's LSD-backed menu storage becomes a noticeable improvement over stock, because sitB stays slim while stock would push past the 64 KB Mono cap. The old in-RAM `MENU_LIST` was retired (0.9954); menu state is now built from paged LSD reads of `qs:p:<ch>:<i>`, windowed by the `qs:nm` sidecar. See [LSD Storage](lsd-storage.html).
 
 The other scaling concern is `[QS]offset`'s RAM tier (200-entry LRU cap). With N users × N slots × M poses of personal offsets, persistent LSD storage (`QSO:*`) is the durable place; RAM is the volatile fallback. See [Personal Pose Offsets](personal-pose-offsets.html).
 
@@ -55,12 +55,12 @@ See [Submenus](submenus.html) for navigation design.
 
 ## Common gotchas
 
-- **`[QS]select`.** Optional and presence-gated — sitB has a built-in seat picker, so multi-sitter menu routing works without it. When `[QS]select` is present (sitB reads the `qs:alive:select` flag, with a `[AV]select` inventory probe as fallback), it provides the dedicated seat-select picker.
+- **`[QS]select`.** Optional and presence-gated, since sitB has a built-in seat picker, so multi-sitter menu routing works without it. When `[QS]select` is present (sitB reads the `qs:alive:select` flag, with a `[AV]select` inventory probe as fallback), it provides the dedicated seat-select picker.
 - **Sit-target clamp.** SL clamps sit-target offsets to ±1.7 m for ground prims. For very long furniture (e.g., banquet table with 8 sitters), you'll need linked child prims with their own sit-targets, not stretched offsets from a single root.
 
 ## See also
 
-- [Couples Setup](couples-setup.html) — the 2-sitter case.
-- [Animation Sequences](animation-sequences.html) — multi-step sequences across multiple sitters.
-- [Re-Sync Protocol](resync-protocol.html) — N-sitter sync.
-- [SitTargets](sittargets.html) — per-slot offsets.
+- [Couples Setup](couples-setup.html): the 2-sitter case.
+- [Animation Sequences](animation-sequences.html): multi-step sequences across multiple sitters.
+- [Re-Sync Protocol](resync-protocol.html): N-sitter sync.
+- [SitTargets](sittargets.html): per-slot offsets.

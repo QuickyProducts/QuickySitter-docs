@@ -6,9 +6,9 @@ keywords: couples, two sitters, SYNC, sit target
 toc: true
 ---
 
-A couples furniture has two sitter slots and at least one SYNC pose pair so the two avatars animate in lockstep. QuickySitter handles couples setups identically to stock AVsitter 2 — this page summarises the per-slot considerations and the QS-specific gotchas. For the tutorial walkthrough, see the [upstream AVsitter Couples page](https://avsitter.github.io/avsitter2_home.html).
+A couples furniture has two sitter slots and at least one SYNC pose pair so the two avatars animate in lockstep. QuickySitter handles couples setups identically to stock AVsitter 2. This page summarises the per-slot considerations and the QS-specific gotchas. For the tutorial walkthrough, see the [upstream AVsitter Couples page](https://avsitter.github.io/avsitter2_home.html).
 
-> **Working alone?** The QuickyHUD creator bundle's [Animesh Adjust Dummies](quickyhud-animesh.html) stand in for the missing partner while you set up and adjust SYNC poses — no second avatar needed.
+> **Working alone?** The QuickyHUD creator bundle's [Animesh Adjust Dummies](quickyhud-animesh.html) stand in for the missing partner while you set up and adjust SYNC poses, so no second avatar is needed.
 
 ## Script set
 
@@ -27,11 +27,11 @@ Optional (all presence-gated; add only what you need):
 - `[QS]select` (dedicated seat-select picker; sitB already has a built-in picker, so this is not required)
 - `[QS]offset`, `[QS]prop`, `[QS]faces`, `[QS]sequence`
 
-The script name suffix matches stock — space + number for instances beyond the first.
+The script name suffix matches stock: space + number for instances beyond the first.
 
 ## Sit-targets
 
-Each slot has its own sit-target. The `SET` directive declares how many sit-target sets the furniture has (couples on a sofa might have one set; a sofa with both "facing each other" and "lying down" arrangements has two). `SET` is a plain channel-level directive — there is no `SETUP` section.
+Each slot has its own sit-target. The `SET` directive declares how many sit-target sets the furniture has (couples on a sofa might have one set; a sofa with both "facing each other" and "lying down" arrangements has two). `SET` is a plain channel-level directive, and there is no `SETUP` section.
 
 See [SitTargets](sittargets.html) for the per-slot offset model.
 
@@ -51,13 +51,13 @@ SYNC Cuddle|cuddle_right
 
 When the menu selects "Cuddle," both sitA scripts play their respective `cuddle_left` / `cuddle_right` animations at their per-slot offsets.
 
-The `{<name>}<pos><rot>` lines are normally written by `[HELPER] [SAVE]` / `[DUMP]` after you adjust positions in-world — you don't usually type them by hand. See [AVpos Reference](avpos-reference.html) for the full grammar.
+The `{<name>}<pos><rot>` lines are normally written by `[HELPER] [SAVE]` / `[DUMP]` after you adjust positions in-world, so you don't usually type them by hand. See [AVpos Reference](avpos-reference.html) for the full grammar.
 
 QS stores SYNC poses without the `P:` prefix in `qs:p:<ch>:<i>` LSD keys. `POSE` (solo) entries get the `P:` prefix to distinguish them. See [LSD Keys](lsd-keys.html).
 
 ## Re-Sync between viewers
 
-The main couples-specific issue: SYNC poses drift between viewers over time, especially after camera operations. QuickySitter's solution is LinkMsg 90271 — sent by a HUD or any in-prim script to re-phase all sitters in the same Sim frame. See [Re-Sync Protocol](resync-protocol.html).
+The main couples-specific issue: SYNC poses drift between viewers over time, especially after camera operations. QuickySitter's solution is LinkMsg 90271, sent by a HUD or any in-prim script to re-phase all sitters in the same Sim frame. See [Re-Sync Protocol](resync-protocol.html).
 
 For QuickyHUD users, the HUD has a SYNC button that fires 90271 on demand. For non-HUD setups, the trigger can be sent from a custom script:
 
@@ -69,21 +69,21 @@ llMessageLinked(LINK_SET, 90271, "", "");
 
 A user might want their seated position shifted forward when sitting on slot 0 (e.g., the left side of the couch) but not when sitting on slot 1. `[QS]offset` keys are per-(user, slot, pose), so saves on slot 0 don't affect slot 1.
 
-The all-poses fallback `M#T!` is also per-slot — a user can have a different "global" offset for each side of the couch.
+The all-poses fallback `M#T!` is also per-slot: a user can have a different "global" offset for each side of the couch.
 
 See [Personal Pose Offsets](personal-pose-offsets.html).
 
 ## Common gotchas
 
-- **Mismatched sitA/sitB counts.** `[QS]sitA` instances should match `[QS]sitB` instances. Boot's self-check hard-fails (ERROR) only when sitA or sitB is missing entirely — it does not raise a dedicated warning for a count mismatch, so double-check the instance counts yourself.
-- **Same pose name in both slots.** Required — both slots have a pose named `Cuddle` so the menu can pick it as a single entry that triggers both. Different pose names in each slot don't pair up.
+- **Mismatched sitA/sitB counts.** `[QS]sitA` instances should match `[QS]sitB` instances. Boot's self-check hard-fails (ERROR) only when sitA or sitB is missing entirely. It does not raise a dedicated warning for a count mismatch, so double-check the instance counts yourself.
+- **Same pose name in both slots.** Required: both slots have a pose named `Cuddle` so the menu can pick it as a single entry that triggers both. Different pose names in each slot don't pair up.
 - **Animation drift after region restart.** Region restart preserves LSD, but viewer-side animation phase resets to `t=0`. A re-sync after sit-down restores phase coherence.
 - **SWAP behavior.** The `SWAP` directive controls whether the menu allows users to swap positions (slot 0 ↔ slot 1). Stock semantics unchanged in QS.
 
 ## See also
 
-- [3+ Avatars](multi-avatar.html) — for setups with more than two sitters.
-- [Re-Sync Protocol](resync-protocol.html) — the SYNC drift fix.
-- [Personal Pose Offsets](personal-pose-offsets.html) — per-slot offset model.
-- [AVpos Reference](avpos-reference.html) — `SYNC` vs `POSE`.
+- [3+ Avatars](multi-avatar.html): for setups with more than two sitters.
+- [Re-Sync Protocol](resync-protocol.html): the SYNC drift fix.
+- [Personal Pose Offsets](personal-pose-offsets.html): per-slot offset model.
+- [AVpos Reference](avpos-reference.html): `SYNC` vs `POSE`.
 - [Upstream AVsitter Couples](https://avsitter.github.io/avsitter2_home.html).

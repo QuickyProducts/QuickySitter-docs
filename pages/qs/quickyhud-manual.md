@@ -1,5 +1,5 @@
 ---
-title: QuickyHUD — User Manual
+title: QuickyHUD User Manual
 sidebar: home_sidebar
 permalink: quickyhud-manual.html
 keywords: quicky hud, pose hud, manual, help, adjustmode, sync
@@ -10,7 +10,7 @@ QuickyHUD is a tool designed to simplify and speed up positioning on QuickySitte
 
 ## HUD quick overview
 
-The HUD provides quick access to the most important positioning functions for QuickySitter adjustments. The control map below labels every button — the numbers match the list that follows.
+The HUD provides quick access to the most important positioning functions for QuickySitter adjustments. The control map below labels every button, and the numbers match the list that follows.
 
 <figure class="hud-map" style="max-width:640px;margin:1.5rem auto">
 <svg width="100%" viewBox="0 0 760 430" role="img" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
@@ -47,19 +47,19 @@ The HUD provides quick access to the most important positioning functions for Qu
 <figcaption>QuickyHUD in pose mode</figcaption>
 </figure>
 
-1. **Menu** — opens the furniture's pose menu (the glowing bolt in the center).
-2. **Select sitter** — choose whom you adjust: normally only sitters in your own pose group; in ADJUSTMODE you can select any sitter.
-3. **Sync** — realigns drifted animations.
-4. **Swap seat** — switch seat: direct with two seats, via a picker with more.
-5. **Move X / Y** — shift forward/back and left/right in three step sizes (0.01 / 0.05 / 0.1 m).
-6. **Move up / down (Z)** — raise and lower height in the same three steps.
-7. **Position ↔ rotation** — switch the arrows to rotation control (RX/RY/RZ) and back.
-8. **Settings** — opens RESET (any sitter), plus ADJUSTMODE, AUTOSYNC and CLEAR (owner only).
-9. **HUD size +/−** — scale the on-screen HUD larger or smaller.
-10. **Minimize** — collapse the HUD to the bolt icon; tap it again to restore.
-11. **Help** — links to this manual, the Marketplace page and the support group.
+1. **Menu**: opens the furniture's pose menu (the glowing bolt in the center).
+2. **Select sitter**: choose whom you adjust. Normally only sitters in your own pose group; in ADJUSTMODE you can select any sitter.
+3. **Sync**: realigns drifted animations.
+4. **Swap seat**: switch seat. Direct with two seats, via a picker with more.
+5. **Move X / Y**: shift forward/back and left/right in three step sizes (0.01 / 0.05 / 0.1 m).
+6. **Move up / down (Z)**: raise and lower height in the same three steps.
+7. **Position ↔ rotation**: switch the arrows to rotation control (RX/RY/RZ) and back.
+8. **Settings**: opens RESET (any sitter), plus ADJUSTMODE, AUTOSYNC and CLEAR (owner only).
+9. **HUD size +/−**: scale the on-screen HUD larger or smaller.
+10. **Minimize**: collapse the HUD to the bolt icon; tap it again to restore.
+11. **Help**: links to this manual, the Marketplace page and the support group.
 
-> **Personal vs. permanent:** Move and rotate (5–7, including Z) normally adjust your *personal offset* — saved per avatar and per pose, and restored the next time you sit. In **ADJUSTMODE** they instead edit the pose's *default values* (the QuickySitter pose data, not offsets) — the way a creator re-adjusts the base poses for everyone.
+> **Personal vs. permanent:** Move and rotate (5–7, including Z) normally adjust your *personal offset*, saved per avatar and per pose, and restored the next time you sit. In **ADJUSTMODE** they instead edit the pose's *default values* (the QuickySitter pose data, not offsets), the way a creator re-adjusts the base poses for everyone.
 
 **Inside the Settings menu (8):** RESET (reset the selected target to its default pose) is available to any sitter; the ADJUSTMODE toggle, AUTOSYNC (off / 60 / 120 / 180 s) and CLEAR offset storage are owner only.
 
@@ -71,9 +71,9 @@ The HUD provides quick access to the most important positioning functions for Qu
 
 The most commonly used adjustment steps are available directly on the control pad:
 
-- **0.01** — small step
-- **0.05** — middle step
-- **0.1** — large step
+- **0.01**: small step
+- **0.05**: middle step
+- **0.1**: large step
 
 These steps can be used immediately via the directional controls.
 
@@ -94,7 +94,7 @@ Some pieces are instead configured for **menu mode**, where the HUD does not att
 
 ### Animation Re-Sync
 
-When several avatars share a multi-person pose, their looped animations can drift out of phase — for example, when one person sits down later than the others. The SYNC button on the HUD realigns all running animations on the furniture to a shared beat, so the cycle starts at the same moment for everyone.
+When several avatars share a multi-person pose, their looped animations can drift out of phase, for example when one person sits down later than the others. The SYNC button on the HUD realigns all running animations on the furniture to a shared beat, so the cycle starts at the same moment for everyone.
 
 **Usage:**
 
@@ -140,7 +140,7 @@ See also: [Personal Pose Offsets](personal-pose-offsets.html) for the technical 
 
 ## See also
 
-- [Re-Sync Protocol](resync-protocol.html) — the LinkMsg 90271 trigger SYNC uses.
-- [HUD Integration](hud-integration.html) — the in-prim hudproxy/hudadmin contract.
-- [Personal Pose Offsets](personal-pose-offsets.html) — how offsets are stored and persisted.
-- [Adjustment Workflow](adjustment-workflow.html) — the creator-side `[HELPER]` workflow ADJUSTMODE replaces for live tuning.
+- [Re-Sync Protocol](resync-protocol.html): the LinkMsg 90271 trigger SYNC uses.
+- [HUD Integration](hud-integration.html): the in-prim hudproxy/hudadmin contract.
+- [Personal Pose Offsets](personal-pose-offsets.html): how offsets are stored and persisted.
+- [Adjustment Workflow](adjustment-workflow.html): the creator-side `[HELPER]` workflow ADJUSTMODE replaces for live tuning.

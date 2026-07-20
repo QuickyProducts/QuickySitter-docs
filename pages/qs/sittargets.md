@@ -6,7 +6,7 @@ keywords: sit target, sittarget, set, dflt, default position
 toc: true
 ---
 
-A **sit-target** is the position and rotation the SL physics engine places an avatar at when they right-click → Sit. QuickySitter handles sit-targets identically to stock AVsitter 2 — this page covers the QS-relevant aspects. For the conceptual tutorial, see the [upstream AVsitter SitTargets page](https://avsitter.github.io/avsitter2_sittargets.html).
+A **sit-target** is the position and rotation the SL physics engine places an avatar at when they right-click → Sit. QuickySitter handles sit-targets identically to stock AVsitter 2, and this page covers the QS-relevant aspects. For the conceptual tutorial, see the [upstream AVsitter SitTargets page](https://avsitter.github.io/avsitter2_sittargets.html).
 
 ## The model
 
@@ -22,7 +22,7 @@ The sit-target is **per-slot**, the pose POS is **per-pose**.
 
 ## SET sets
 
-The `SET <n>` directive declares how many sit-target *sets* the furniture has. It is a plain channel-level directive — there is no `SETUP` section wrapping it. Each set is a different physical seating arrangement (e.g., chair facing left, chair facing right, couples on a sofa, solo on a bench). The user picks the set via the `[SET]` button in the menu.
+The `SET <n>` directive declares how many sit-target *sets* the furniture has. It is a plain channel-level directive, and there is no `SETUP` section wrapping it. Each set is a different physical seating arrangement (e.g., chair facing left, chair facing right, couples on a sofa, solo on a bench). The user picks the set via the `[SET]` button in the menu.
 
 `DFLT <n>` sets which set is active by default (1-based).
 
@@ -38,7 +38,7 @@ With `[QS]adjuster` installed, the `[ADJUST]` → `[HELPER]` → `[SITTARGET]` m
 
 ## QS-specific: sit-target sync via 90150
 
-When slot-0's `[QS]sitA` resets — typically because boot re-seeded LSD — it broadcasts `90150` so all other sitA slots in the prim re-place their own sit-targets. Without this, a notecard re-save could leave sit-target offsets inconsistent across slots until a manual reset.
+When slot-0's `[QS]sitA` resets (typically because boot re-seeded LSD), it broadcasts `90150` so all other sitA slots in the prim re-place their own sit-targets. Without this, a notecard re-save could leave sit-target offsets inconsistent across slots until a manual reset.
 
 | Num | Direction | `msg` | `id` | Meaning |
 |-----|-----------|-------|------|---------|
@@ -53,7 +53,7 @@ SL clamps sit-target offsets relative to the prim:
 - **Ground prims (rezzed in-world):** ±1.7 m on any axis. Larger offsets are silently truncated.
 - **Attached prims (worn HUD / attachment):** different clamps depending on attachment point.
 
-The clamp is hard — there's no way around it from LSL except by linking additional prims at the position you want and setting the sit-target on those.
+The clamp is hard: there's no way around it from LSL except by linking additional prims at the position you want and setting the sit-target on those.
 
 ## Adjusting at the QS-extension level
 
@@ -61,7 +61,7 @@ Personal pose offsets ([Personal Pose Offsets](personal-pose-offsets.html)) sit 
 
 ## See also
 
-- [AVpos Reference](avpos-reference.html) — `SET` and `DFLT` directives.
-- [Adjustment Workflow](adjustment-workflow.html) — `[HELPER]` → `[SITTARGET]` mode.
-- [Personal Pose Offsets](personal-pose-offsets.html) — per-user offsets layered on top.
-- [Known Limits](known-limits.html) — sit-target clamp details.
+- [AVpos Reference](avpos-reference.html): `SET` and `DFLT` directives.
+- [Adjustment Workflow](adjustment-workflow.html): `[HELPER]` → `[SITTARGET]` mode.
+- [Personal Pose Offsets](personal-pose-offsets.html): per-user offsets layered on top.
+- [Known Limits](known-limits.html): sit-target clamp details.

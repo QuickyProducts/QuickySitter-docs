@@ -26,9 +26,9 @@ The step has shrunk over time as the fork settled and PR cadence rose. For readi
 
 So a fifth-decimal digit in a `version =` line is a current-era bump; trailing `0.99x`/`0.9xx` numbers in comments or old commits are change-history, not the live value.
 
-Because the set is locked, **every touched script gets the same new number in a PR** — you don't carry independent per-script counters. Bump them together.
+Because the set is locked, **every touched script gets the same new number in a PR**, so you don't carry independent per-script counters. Bump them together.
 
-> Don't hardcode `0.999` anywhere as if it were permanent — it's just today's baseline. Read the live value from the file header before bumping.
+> Don't hardcode `0.999` anywhere as if it were permanent. It's just today's baseline. Read the live value from the file header before bumping.
 
 ## Where the version lives
 
@@ -40,10 +40,10 @@ string version = "0.999";
 
 It appears in:
 
-- The QSALIVE reply (field 1) — only `[QS]sitA` answers QSALIVE, so this carries the sitter's version; consumers can substring-match for capability gating.
+- The QSALIVE reply (field 1): only `[QS]sitA` answers QSALIVE, so this carries the sitter's version; consumers can substring-match for capability gating.
 - The `Out(level, …)` diagnostic prefix (each line is tagged `[<version>]`). See [Debug Flags](debug-flags.html).
 - The `[DUMP]` output header.
-- Commit messages — see Commit message format below.
+- Commit messages: see Commit message format below.
 
 ## Commit message format
 
@@ -69,11 +69,11 @@ This makes review queues easy to skim for "which scripts changed, and to what." 
 
 ## Coordinated bumps across worktrees
 
-Several agents may be working in parallel on Claude worktrees. Before bumping, check sibling worktrees for an in-flight bump on the same script — two independent `0.999 → 0.99901` bumps in different worktrees both look correct in isolation but collide on merge.
+Several agents may be working in parallel on Claude worktrees. Before bumping, check sibling worktrees for an in-flight bump on the same script. Two independent `0.999 → 0.99901` bumps in different worktrees both look correct in isolation but collide on merge.
 
 The convention: scan sibling `.claude/worktrees/*` paths for the same `[QS]*.lsl` file with a newer `version =` line. If a sibling has already bumped to `0.99901`, use `0.99902` in your worktree.
 
 ## See also
 
-- [Repo Structure](repo-structure.html) — where scripts live in the repo.
-- [Contributing](contributing.html) — PR / commit-message workflow.
+- [Repo Structure](repo-structure.html): where scripts live in the repo.
+- [Contributing](contributing.html): PR / commit-message workflow.

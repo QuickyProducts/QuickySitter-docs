@@ -6,14 +6,14 @@ keywords: control, lockguard, lockmeister, xcite, rlv, plugin
 toc: true
 ---
 
-The control family splits two ways in QuickySitter. The **root-prim scripts** — `[QS]root`, `[QS]root-control`, `[QS]root-security`, `[QS]root-RLV` — are **forked** (all v0.999). The **restraint / sensation protocol plugins** — LockGuard, LockMeister, Xcite! — are **genuinely stock AVsitter**, unforked: drop them into a QS prim and they work as in a stock AVsitter prim.
+The control family splits two ways in QuickySitter. The **root-prim scripts** (`[QS]root`, `[QS]root-control`, `[QS]root-security`, `[QS]root-RLV`) are **forked** (all v0.999). The **restraint / sensation protocol plugins** (LockGuard, LockMeister, Xcite!) are **genuinely stock AVsitter**, unforked: drop them into a QS prim and they work as in a stock AVsitter prim.
 
 ## Forked root-prim scripts (`[QS]root*`)
 
 | Plugin | What it does |
 |--------|--------------|
-| `[QS]root` | Root-prim touch forwarder — forwards the touch (90005) when the touched prim has no sitA/menu of its own. |
-| `[QS]root-control` | "Allow others to control the menu" — couples controllers by name. |
+| `[QS]root` | Root-prim touch forwarder: forwards the touch (90005) when the touched prim has no sitA/menu of its own. |
+| `[QS]root-control` | "Allow others to control the menu": couples controllers by name. |
 | `[QS]root-security` | Sit/menu access gate (ALL / OWNER / GROUP); sends LinkMsg 90202 to sitA. |
 | `[QS]root-RLV` | RLV capture/relay; publishes the `qs:alive:rlv` presence flag. |
 
@@ -32,7 +32,7 @@ These (along with `[AV]camera` and `[AV]favs`) are shipped verbatim from upstrea
 
 ## Why the split
 
-The restraint/sensation plugins (LockGuard, LockMeister, Xcite!) don't read or write `qs:*` LSD keys and don't gate any sitter menu, so there's no functional benefit to forking them — QS treats them as a stable lower layer the fork cooperates with.
+The restraint/sensation plugins (LockGuard, LockMeister, Xcite!) don't read or write `qs:*` LSD keys and don't gate any sitter menu, so there's no functional benefit to forking them. QS treats them as a stable lower layer the fork cooperates with.
 
 The root-prim scripts were forked because they sit in the QS control path: `[QS]root-RLV` publishes `qs:alive:rlv` so `[QS]sitB` can gate the `Control...` RLV menu via `rlv_present()` (with a `[AV]root-RLV` inventory probe as the stock-AVsitter fallback), and `[QS]root-security` reaches sitA over LinkMsg 90202. Their menu items *do* appear in the adjuster/options menus, which is exactly why presence gating matters.
 
@@ -47,5 +47,5 @@ A few QS-specific behaviors worth noting:
 ## See also
 
 - [Upstream AVcontrol documentation](https://avsitter.github.io/avsitter2_control.html).
-- [Compatibility Matrix](compatibility-matrix.html) — plugin compatibility table.
+- [Compatibility Matrix](compatibility-matrix.html): plugin compatibility table.
 - [LinkMessage Numbers](linkmessage-numbers.html).

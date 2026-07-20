@@ -8,7 +8,7 @@ toc: true
 
 QuickySitter is designed so that **HUD addons attach as seamless adjustment modules over the same LinkMsg surface that the built-in helper uses**. QuickyHUD is the reference HUD; third-party HUDs can speak the same protocol.
 
-This page covers the integration contract — the message numbers, the presence-detection handshake, and the lifecycle. The HUD code itself lives in the separate QuickyHUD project.
+This page covers the integration contract: the message numbers, the presence-detection handshake, and the lifecycle. The HUD code itself lives in the separate QuickyHUD project.
 
 ## Why a HUD addon at all
 
@@ -18,7 +18,7 @@ Stock AVsitter's `[HELPER]` is a notecard-driven menu accessed by the creator vi
 - Chat-channel typing for unsigned-integer offsets
 - Repeated `[SAVE]` / `[CANCEL]` pressing
 
-A wearable HUD with X+/Y+/Z+ buttons, Save/Reset, and a single visible offset display is dramatically faster for fine-tuning poses — especially when adjusting couple poses where both partners' positions matter and the creator wants live feedback.
+A wearable HUD with X+/Y+/Z+ buttons, Save/Reset, and a single visible offset display is dramatically faster for fine-tuning poses, especially when adjusting couple poses where both partners' positions matter and the creator wants live feedback.
 
 QuickyHUD attaches non-destructively: on uninstall the prim falls back to the stock `[HELPER]` flow with no leftover state, and no end user ever sees evidence the HUD was there.
 
@@ -32,14 +32,14 @@ Three components, three message numbers, plus the offset-storage protocol shared
 | `[QS]hudadmin` | In-prim dynamic-prop attacher. Rezzes the QuickyHUD on sit / on manual "Quicky HUD" button. | LinkMsg 90280 (`QSPROP_ATTACH`). |
 | QuickyHUD | The wearable. Talks to the in-prim hudproxy on its own comm channel. | Out-of-band; not part of this protocol. |
 
-## HUDPROXY presence — 90093
+## HUDPROXY presence: 90093
 
 QuickyHUD's `[QS]hudproxy` writes the `QPP_CFG:ADJUSTMODE` LSD key unprotected on its `state_entry`. `[QS]sitB` gates QuickyHUD-aware UI on key existence and value:
 
 - sitB appends the `[QUICKYHUD]` button to the Adjust-dialog tail for the owner (gated on `qs:alive:adjuster` present and `qs:hud:unlicensed` not set).
 - sitB enriches the main pose menu (`[NEW]`/`[DUMP]`/`[SAVE]`/`[DONE]`) if `value == "On"`.
 
-**Problem.** LSD outlives script removal. If the creator removes hudproxy + hudadmin from the linkset after first install, the LSD key persists with whatever value it last had. sitB keeps showing `[QUICKYHUD]` (clicks no-op because nobody handles 90266) and stays stuck in the qh_on-enriched menu forever if the key happened to be `"On"` at removal time — including a `[DONE]` exit that can't clear the orphaned `"On"` state.
+**Problem.** LSD outlives script removal. If the creator removes hudproxy + hudadmin from the linkset after first install, the LSD key persists with whatever value it last had. sitB keeps showing `[QUICKYHUD]` (clicks no-op because nobody handles 90266) and stays stuck in the qh_on-enriched menu forever if the key happened to be `"On"` at removal time, including a `[DONE]` exit that can't clear the orphaned `"On"` state.
 
 **Fix.** 90093 active-presence probe.
 
@@ -102,9 +102,9 @@ link_message(integer s, integer num, string str, key id)
 }
 ```
 
-LSL suppresses self-delivery of `llMessageLinked` to the same script, so adjuster's own `"PROBE"` doesn't loop back into its 90093 handler. The `msg == "HELLO"` discriminator is defensive — if a future QuickyHUD script also writes to 90093, only HELLO messages set the flag.
+LSL suppresses self-delivery of `llMessageLinked` to the same script, so adjuster's own `"PROBE"` doesn't loop back into its 90093 handler. The `msg == "HELLO"` discriminator is defensive: if a future QuickyHUD script also writes to 90093, only HELLO messages set the flag.
 
-## ADJUSTMODE flip — 90266
+## ADJUSTMODE flip: 90266
 
 | Num   | Direction                | `msg`               | `id` | Meaning |
 |-------|--------------------------|---------------------|------|---------|
@@ -112,7 +112,7 @@ LSL suppresses self-delivery of `llMessageLinked` to the same script, so adjuste
 
 Sent from the `[HELPER]` choice dialog's "Quicky HUD" button (→ `"On"`), from `[STOP HELP]` (→ `"Off"`, routed back through `[HELPER]`), and from `end_helper_mode` auto-Off (→ `"Off"`, only when adjuster's local `helper_method == 1`). hudproxy mirrors the same `sAdjustmode` + LSD write its own settings menu performs; no confirmation dialog (the user already confirmed by clicking `[HELPER]`).
 
-## Dynamic prop attach — `QSPROP_ATTACH` 90280
+## Dynamic prop attach: `QSPROP_ATTACH` 90280
 
 `[QS]prop` is a minimally-invasive fork of stock `[AV]prop` with one new link-message: a way to register and rez a prop **dynamically** without writing it into the `AVpos` notecard. Used by `[QS]hudadmin` to attach the QuickyHUD on sit / on the manual "Quicky HUD" button.
 
@@ -130,11 +130,11 @@ Sent from the `[HELPER]` choice dialog's "Quicky HUD" button (→ `"On"`), from 
 | 3 | Sitter slot index (0-based). Must be `< llGetListLength(SITTERS)`; out-of-range messages are silently dropped. |
 | 4 | **Optional post-rez say.** Verbatim string `[QS]prop` will `llSay` on its `comm_channel` once the rezzed prop reports `REZ` back via the same channel. Empty = no extra message. hudadmin uses it to push `"*QUICKYTEXTURE*\|<uuid>"` to a freshly-rezzed QuickyHUD. |
 
-The dynamic-prop entry is **stored** in the same `prop_triggers` / `prop_types` / `prop_objects` parallel lists that stock loads from `AVpos`. The trigger string is `<sitter>|<object>`, the prop group is `<sitter>|QSDYN`. Dedup is by trigger: re-issuing 90280 for the same `(sitter, object)` pair replaces the mutable fields and re-rezzes via the existing `rez_prop(idx)` path — no growth in the registry.
+The dynamic-prop entry is **stored** in the same `prop_triggers` / `prop_types` / `prop_objects` parallel lists that stock loads from `AVpos`. The trigger string is `<sitter>|<object>`, the prop group is `<sitter>|QSDYN`. Dedup is by trigger: re-issuing 90280 for the same `(sitter, object)` pair replaces the mutable fields and re-rezzes via the existing `rez_prop(idx)` path, with no growth in the registry.
 
-No new linkmsg is needed for cleanup. Stock `[AV]prop`'s 90065 (stand-up) handler already calls `remove_props_by_sitter(msg, FALSE)`, which wipes all non-type-3 entries matching the standing sitter — including dynamic ones.
+No new linkmsg is needed for cleanup. Stock `[AV]prop`'s 90065 (stand-up) handler already calls `remove_props_by_sitter(msg, FALSE)`, which wipes all non-type-3 entries matching the standing sitter, including dynamic ones.
 
-## Re-Sync trigger — 90271
+## Re-Sync trigger: 90271
 
 The HUD also owns Re-Sync policy. `[QS]sitA` exposes a single trigger; the HUD decides when to fire it. See [Re-Sync Protocol](resync-protocol.html) for the full design.
 
@@ -145,10 +145,10 @@ The HUD also owns Re-Sync policy. `[QS]sitA` exposes a single trigger; the HUD d
 3. **Stand-up.** Stock 90065 sweeps dynamic props. ADJUSTMODE stays as last set.
 4. **Uninstall.** Creator removes hudproxy + hudadmin. Adjuster's next reset (via `CHANGED_INVENTORY`) probes 90093, gets no reply, deletes `QPP_CFG:ADJUSTMODE`. sitA / sitB stop offering QuickyHUD menu items.
 
-The fact that ADJUSTMODE is unprotected (no `LSD_PASS`) and adjuster can delete it is a key design decision — it makes uninstall fully reversible without coordinated removal scripts.
+The fact that ADJUSTMODE is unprotected (no `LSD_PASS`) and adjuster can delete it is a key design decision, because it makes uninstall fully reversible without coordinated removal scripts.
 
 ## See also
 
-- [QSALIVE Discovery](qsalive-discovery.html) — sibling presence protocol for plugin gating.
-- [Re-Sync Protocol](resync-protocol.html) — the SYNC trigger HUD policy owns.
-- [Personal Pose Offsets](personal-pose-offsets.html) — 90262 / 90264 lifecycle from the storage side.
+- [QSALIVE Discovery](qsalive-discovery.html): sibling presence protocol for plugin gating.
+- [Re-Sync Protocol](resync-protocol.html): the SYNC trigger HUD policy owns.
+- [Personal Pose Offsets](personal-pose-offsets.html): 90262 / 90264 lifecycle from the storage side.

@@ -14,7 +14,7 @@ Quick-reference table for every Linkset Data key QuickySitter writes or reads. F
 |--------|-------|---------|
 | `qs:cfg:*` | `[QS]boot` writes; sitA, sitB, boot read | Per-channel furniture settings (MTYPE, ETYPE, SWAP, BRAND, ADJUST_MENU, …). |
 | `qs:sitter:*` | `[QS]boot` writes; sitB reads | Per-channel sitter info row (names, gender). |
-| `qs:p:*` | `[QS]boot` (seed) and `[QS]adjuster` (live edits) write; sitB, boot read | Pose defaults — one key per pose entry. |
+| `qs:p:*` | `[QS]boot` (seed) and `[QS]adjuster` (live edits) write; sitB, boot read | Pose defaults: one key per pose entry. |
 | `qs:meta:*` | `[QS]boot` writes; sitA, sitB poll | Per-channel "seeded" marker. |
 | `qs:boot:*` | `[QS]boot` writes and reads | Boot orchestration markers (currently only `qs:boot:asset`). |
 | `qs:alive:*` | each optional plugin writes its own flag; sitA, sitB, adjuster read | Plugin-presence flags (`qs:alive:prop`, `…:faces`, `…:adjuster`, `…:select`, `…:rlv`). `[QS]offset` uses the **inverted** name `qs:offset:alive`. Read on demand at menu-build, re-stamped on `QS_ALIVE_CENSUS` (90079). |
@@ -35,14 +35,14 @@ Persistent across rerez. `<ch>` is the 0-based sitter slot.
 ### `qs:cfg:verbose`
 
 **Writer:** `[QS]boot.state_entry` (from the AVpos `VERBOSE n` directive).
-**Readers:** `[QS]sitA`, `[QS]sitB`, `[QS]adjuster`, `[QS]faces`, `[QS]offset`, `[QS]prop`, `[QS]select`, `[QS]sequence` — each reads it in `state_entry`.
+**Readers:** `[QS]sitA`, `[QS]sitB`, `[QS]adjuster`, `[QS]faces`, `[QS]offset`, `[QS]prop`, `[QS]select`, `[QS]sequence`: each reads it in `state_entry`.
 **Format:** `"0"`–`"3"`. Project-wide verbose ladder (0 = errors only, 1 = boot banner, 2 = runtime status, 3 = debug). Singleton, not per-channel.
 
 ### `qs:cfg:slots:<ch>`
 
 **Writer:** `[QS]boot` (`qs:cfg:slots:<ch>` written at seed); `[QS]sitB` rewrites it during sidecar rebuild.
 **Reader:** `[QS]sitB` (`SLOTS`, replaces `llGetListLength(MENU_LIST)`).
-**Format:** integer string — the channel's pose-entry count. Added in 0.9952.
+**Format:** integer string: the channel's pose-entry count. Added in 0.9952.
 
 ### `qs:sitter:<ch>`
 
@@ -72,7 +72,7 @@ Presence of this key = "channel has been seeded." sitA and sitB poll for it befo
 
 ### `qs:boot:asset`
 
-**Writer:** `[QS]boot` — written **last** in `finalize_boot`, after all `qs:meta:<ch>` keys, so the marker only exists if everything before it succeeded.
+**Writer:** `[QS]boot`, written **last** in `finalize_boot`, after all `qs:meta:<ch>` keys, so the marker only exists if everything before it succeeded.
 **Readers:** `[QS]boot` (skip-check in `state_entry`).
 **Format:** notecard asset-key as string.
 
@@ -82,7 +82,7 @@ See [Boot Sequence](boot-sequence.html) for the full skip-seed / fresh-seed deci
 
 ### `qs:alive:<name>` (and `qs:offset:alive`)
 
-**Writers:** each optional plugin writes its own flag in `state_entry` — `[QS]prop` → `qs:alive:prop`, `[QS]faces` → `qs:alive:faces`, `[QS]adjuster` → `qs:alive:adjuster`, `[QS]select` → `qs:alive:select`, `[QS]root-RLV` → `qs:alive:rlv`. `[QS]offset` writes the **inverted** name `qs:offset:alive`.
+**Writers:** each optional plugin writes its own flag in `state_entry`: `[QS]prop` → `qs:alive:prop`, `[QS]faces` → `qs:alive:faces`, `[QS]adjuster` → `qs:alive:adjuster`, `[QS]select` → `qs:alive:select`, `[QS]root-RLV` → `qs:alive:rlv`. `[QS]offset` writes the **inverted** name `qs:offset:alive`.
 **Readers:** `[QS]sitB` (`select_present()`, `rlv_present()`, `[FACES]`/`[HELPER]` gating), `[QS]adjuster` (`[PROP]`/`[FACE]`), `[QS]boot` (self-check), `[QS]sitA` + hudproxy read `qs:offset:alive`.
 **Format:** `"1"` when present (absent = plugin not loaded).
 
@@ -95,7 +95,7 @@ Read on demand at menu-build, never cached. `[QS]boot` wipes every `qs:alive:*` 
 
 | Key | Format |
 |-----|--------|
-| `qs:prop:meta` | `<notecard_key>\t<count>\t<warn>\t<groups_nl>` — lazy-load index header; a matching `notecard_key` means the parsed record is current. |
+| `qs:prop:meta` | `<notecard_key>\t<count>\t<warn>\t<groups_nl>` : lazy-load index header; a matching `notecard_key` means the parsed record is current. |
 | `qs:prop:<i>` | `<trig>\t<type>\t<obj>\t<grp>\t<pos>\t<rot>\t<pt>\t<prs>` (8 fields). One row per parsed prop entry. |
 | `qs:prop:trig:<trig>` | CSV of `qs:prop:<i>` indices matching this trigger string. |
 | `qs:prop:sit:<sit>` | CSV of `qs:prop:<i>` indices belonging to this sitter slot. |
@@ -105,7 +105,7 @@ The whole namespace is wiped (`^qs:prop:.*`) and re-parsed on `CHANGED_INVENTORY
 
 ### `qs:hud:unlicensed`
 
-**Writer:** `[QS]hudadmin` (QuickyHUD repo) — sets `"1"` when its license check fails.
+**Writer:** `[QS]hudadmin` (QuickyHUD repo), which sets `"1"` when its license check fails.
 **Readers:** `[QS]sitB` (`[HELPER]`/`[QUICKYHUD]` gate), `[QS]adjuster` (license gate).
 **Format:** `"1"` when unlicensed; absent otherwise. Singleton flag (since 0.9935).
 
@@ -127,7 +127,7 @@ See [Personal Pose Offsets](personal-pose-offsets.html).
 **Readers:** `[QS]sitA`, `[QS]sitB`, `[QS]adjuster` (capability detection via `llLinksetDataFindKeys`).
 **Format:** `"On"` / `"Off"` (or absent).
 
-Unprotected by design — adjuster needs delete rights for the uninstall path. See [HUD Integration](hud-integration.html).
+Unprotected by design, because adjuster needs delete rights for the uninstall path. See [HUD Integration](hud-integration.html).
 
 ### `QPP_CFG:RAM_TIER_COUNT`
 
@@ -147,7 +147,7 @@ The reserve hudprop expects to remain available for its own protected keys. `[QS
 
 ## See also
 
-- [LSD Storage](lsd-storage.html) — the rationale and tier breakdown.
-- [Boot Sequence](boot-sequence.html) — how boot populates the `qs:*` namespace.
-- [Personal Pose Offsets](personal-pose-offsets.html) — the `QSO:*` design.
-- [HUD Integration](hud-integration.html) — `QPP_CFG:*` boundaries.
+- [LSD Storage](lsd-storage.html): the rationale and tier breakdown.
+- [Boot Sequence](boot-sequence.html): how boot populates the `qs:*` namespace.
+- [Personal Pose Offsets](personal-pose-offsets.html): the `QSO:*` design.
+- [HUD Integration](hud-integration.html): `QPP_CFG:*` boundaries.

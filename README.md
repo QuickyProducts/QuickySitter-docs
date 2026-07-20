@@ -16,8 +16,8 @@ The site uses the [Documentation Theme for Jekyll](https://github.com/tomjoht/do
 
 ## Licensing
 
-- **Documentation text** (this repository's content): [Creative Commons Attribution-ShareAlike 4.0 International](licenses/LICENSE.txt). Adapted portions of the [AVsitter documentation](https://github.com/AVsitter/avsitter.github.io) by Avcode Technologies (also CC-BY-SA 4.0) — see in-line attribution where relevant.
-- **Jekyll theme** (`_layouts/`, `_includes/`, `css/`, `js/`, …): [MIT](licenses/LICENSE-THEME.txt) — Copyright (c) 2016 Tom Johnson.
+- **Documentation text** (this repository's content): [Creative Commons Attribution-ShareAlike 4.0 International](licenses/LICENSE.txt). Adapted portions of the [AVsitter documentation](https://github.com/AVsitter/avsitter.github.io) by Avcode Technologies (also CC-BY-SA 4.0); see in-line attribution where relevant.
+- **Jekyll theme** (`_layouts/`, `_includes/`, `css/`, `js/`, …): [MIT](licenses/LICENSE-THEME.txt), Copyright (c) 2016 Tom Johnson.
 - **Navgoco sidebar component**: [BSD](licenses/LICENSE-BSD-NAVGOCO.txt).
 
 QuickySitter&trade; is not affiliated with or sponsored by Linden Research or the AVsitter&trade; project.

@@ -6,9 +6,9 @@ keywords: prop, plugin, attachment, dynamic, QSPROP_ATTACH
 toc: true
 ---
 
-`[QS]prop` is a minimally-invasive fork of stock `[AV]prop` (AVsitter 2 / 2.2p04) that adds one new link-message — `QSPROP_ATTACH` (90280) — to register and rez a prop dynamically without writing it into the AVpos notecard. Used by `[QS]hudadmin` to attach the wearable QuickyHUD on sit.
+`[QS]prop` is a minimally-invasive fork of stock `[AV]prop` (AVsitter 2 / 2.2p04) that adds one new link-message, `QSPROP_ATTACH` (90280), to register and rez a prop dynamically without writing it into the AVpos notecard. Used by `[QS]hudadmin` to attach the wearable QuickyHUD on sit.
 
-Everything else matches stock semantics exactly. Drop a stock `[AV]prop` into a QS prim and it works; drop `[QS]prop` into a stock-AVsitter prim and stock paths work — the QS-specific 90280 handler is dormant when no one sends to it.
+Everything else matches stock semantics exactly. Drop a stock `[AV]prop` into a QS prim and it works; drop `[QS]prop` into a stock-AVsitter prim and stock paths work, because the QS-specific 90280 handler is dormant when no one sends to it.
 
 ## Notecard syntax (unchanged from stock)
 
@@ -23,12 +23,12 @@ Arguments:
 
 | Field | Content |
 |-------|---------|
-| 0 | `<trigger>` — pose name that triggers this prop. |
-| 1 | `<object>` — inventory object name to rez. |
-| 2 | `<group>` — prop group label (e.g. `G1`). Used to de-rez sibling props of the same group when the trigger changes. |
-| 3 | `<pos>` — position vector `<x, y, z>`. |
-| 4 | `<rot>` — rotation Euler `<x, y, z>` in degrees. |
-| 5 | `<attach_point>` *(optional)* — attachment point name for `PROP1` / `PROP2` / `PROP3`. Empty for ground props. |
+| 0 | `<trigger>`: pose name that triggers this prop. |
+| 1 | `<object>`: inventory object name to rez. |
+| 2 | `<group>`: prop group label (e.g. `G1`). Used to de-rez sibling props of the same group when the trigger changes. |
+| 3 | `<pos>`: position vector `<x, y, z>`. |
+| 4 | `<rot>`: rotation Euler `<x, y, z>` in degrees. |
+| 5 | `<attach_point>` *(optional)*: attachment point name for `PROP1` / `PROP2` / `PROP3`. Empty for ground props. |
 
 The directive name controls the prop-type semantic in `[QS]prop`:
 
@@ -37,7 +37,7 @@ The directive name controls the prop-type semantic in `[QS]prop`:
 | `PROP`  | `0` | Ground prop (rezzed at the prim's position; no attachment). |
 | `PROP1` | `1` | Attachment prop (auto-attaches to the sitter's `<attach_point>`). |
 | `PROP2` | `2` | Attachment prop, personal (COPY-TRANSFER NEXT). |
-| `PROP3` | `3` | Special — persists across pose changes. |
+| `PROP3` | `3` | Special: persists across pose changes. |
 
 Full directive reference in the [upstream AVprop page](https://avsitter.github.io/avsitter2_prop.html).
 
@@ -59,16 +59,16 @@ Sender:
 llMessageLinked(LINK_SET, 90280, "MyHUD|1|HUD center|0|*QUICKYTEXTURE*|" + (string)tex_uuid, sitter_uuid);
 ```
 
-Idempotent: re-issuing 90280 for the same `(sitter, object)` pair replaces the mutable fields (`point`, `post_rez_say`) and re-rezzes — no growth in the prop registry.
+Idempotent: re-issuing 90280 for the same `(sitter, object)` pair replaces the mutable fields (`point`, `post_rez_say`) and re-rezzes, with no growth in the prop registry.
 
-Full protocol details in [HUD Integration § QSPROP_ATTACH](hud-integration.html#dynamic-prop-attach--qsprop_attach-90280).
+Full protocol details in [HUD Integration § QSPROP_ATTACH](hud-integration.html#dynamic-prop-attach-qsprop_attach-90280).
 
 ## QS additions: presence + DUMP
 
 `[QS]prop` also:
 
-1. **Announces itself for QSDUMP** on 90095 — joins the DUMP cascade in `[QS]boot` so `[DUMP]` includes prop entries. See [Boot Sequence § QSDUMP](boot-sequence.html#qsdump--plugin-announce-for-the-dump-cascade).
-2. **Publishes the `qs:alive:prop` LSD flag** — written early in `state_entry`, re-stamped on `QS_ALIVE_CENSUS` (90079), read on demand at menu-build, so `[QS]sitB` / `[QS]adjuster` can gate the `[PROP]` menu item without an inventory probe.
+1. **Announces itself for QSDUMP** on 90095, which joins the DUMP cascade in `[QS]boot` so `[DUMP]` includes prop entries. See [Boot Sequence § QSDUMP](boot-sequence.html#qsdump-plugin-announce-for-the-dump-cascade).
+2. **Publishes the `qs:alive:prop` LSD flag**, written early in `state_entry`, re-stamped on `QS_ALIVE_CENSUS` (90079), read on demand at menu-build, so `[QS]sitB` / `[QS]adjuster` can gate the `[PROP]` menu item without an inventory probe.
 
 This is the script-name-independent presence pattern shared with `[QS]faces`, `[QS]adjuster`, `[QS]select` and `[QS]root-RLV`, all of which write their own `qs:alive:<name>` flag. (The earlier HELLO broadcasts on the `90088`–`90092` band were retired in 0.9951; the only live HELLO today is hudproxy's `90093`.) See [QSALIVE Discovery](qsalive-discovery.html).
 
@@ -89,11 +89,11 @@ Everything else verbatim from stock.
 
 ## Cleanup
 
-No new linkmsg needed for prop removal. Stock `[AV]prop`'s 90065 (stand-up) handler already calls `remove_props_by_sitter(msg, FALSE)`, which wipes all non-type-3 entries matching the standing sitter — including dynamic ones from 90280.
+No new linkmsg needed for prop removal. Stock `[AV]prop`'s 90065 (stand-up) handler already calls `remove_props_by_sitter(msg, FALSE)`, which wipes all non-type-3 entries matching the standing sitter, including dynamic ones from 90280.
 
 ## See also
 
-- [HUD Integration](hud-integration.html) — full QSPROP_ATTACH protocol with the QuickyHUD use case.
-- [Upstream AVprop documentation](https://avsitter.github.io/avsitter2_prop.html) — notecard syntax and behaviors.
-- [QSALIVE Discovery](qsalive-discovery.html) — sitter count/version discovery and the `qs:alive:*` presence model.
-- [Boot Sequence](boot-sequence.html) — QSDUMP cascade integration.
+- [HUD Integration](hud-integration.html): full QSPROP_ATTACH protocol with the QuickyHUD use case.
+- [Upstream AVprop documentation](https://avsitter.github.io/avsitter2_prop.html): notecard syntax and behaviors.
+- [QSALIVE Discovery](qsalive-discovery.html): sitter count/version discovery and the `qs:alive:*` presence model.
+- [Boot Sequence](boot-sequence.html): QSDUMP cascade integration.

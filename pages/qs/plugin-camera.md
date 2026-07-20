@@ -6,9 +6,9 @@ keywords: camera, plugin, view, llSetLinkCamera
 toc: true
 ---
 
-The camera plugin in QuickySitter is **stock `[AV]camera` from AVsitter 2** — not forked. Stock camera's only name-bound code (`get_number_of_scripts` via `main_script = "[AV]sitA"`) is dead code (never called anywhere in the file), and all working paths are protocol-based and script-name-agnostic.
+The camera plugin in QuickySitter is **stock `[AV]camera` from AVsitter 2**, not forked. Stock camera's only name-bound code (`get_number_of_scripts` via `main_script = "[AV]sitA"`) is dead code (never called anywhere in the file), and all working paths are protocol-based and script-name-agnostic.
 
-No `[QS]camera` is planned. The `camera_script` literal in `[QS]boot` stays as legitimate AVsitter-protocol surface — boot hardcodes the name only for the DUMP cascade (sending 90020 to ask camera to dump its CAMERA lines).
+No `[QS]camera` is planned. The `camera_script` literal in `[QS]boot` stays as legitimate AVsitter-protocol surface, because boot hardcodes the name only for the DUMP cascade (sending 90020 to ask camera to dump its CAMERA lines).
 
 ## Notecard syntax
 
@@ -52,5 +52,5 @@ If you're building a third-party camera plugin, follow the QSALIVE adoption patt
 ## See also
 
 - [Upstream AVcamera documentation](https://avsitter.github.io/avsitter2_camera.html).
-- [LinkMessage Numbers](linkmessage-numbers.html) — full link-message map.
-- [Boot Sequence § QSDUMP](boot-sequence.html#qsdump--plugin-announce-for-the-dump-cascade) — why camera stays hardcoded.
+- [LinkMessage Numbers](linkmessage-numbers.html): full link-message map.
+- [Boot Sequence § QSDUMP](boot-sequence.html#qsdump-plugin-announce-for-the-dump-cascade): why camera stays hardcoded.

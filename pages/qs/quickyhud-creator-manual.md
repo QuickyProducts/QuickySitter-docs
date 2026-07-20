@@ -1,14 +1,14 @@
 ---
-title: QuickyHUD — Creator Manual
+title: QuickyHUD Creator Manual
 sidebar: home_sidebar
 permalink: quickyhud-creator-manual.html
 keywords: quicky hud, creator, configuration, hudconfig, design, adjustmode, attach mode, hud offset, verbose
 toc: true
 ---
 
-This manual is for **creators** who build and sell QuickySitter furniture — setting up QuickyHUD in a piece and configuring how it looks and behaves. For everyday use of the HUD while sitting, see the [User Manual](quickyhud-manual.html). For setting up couples / group poses without a second avatar, see [Animesh Adjust Dummies](quickyhud-animesh.html).
+This manual is for **creators** who build and sell QuickySitter furniture: setting up QuickyHUD in a piece and configuring how it looks and behaves. For everyday use of the HUD while sitting, see the [User Manual](quickyhud-manual.html). For setting up couples / group poses without a second avatar, see [Animesh Adjust Dummies](quickyhud-animesh.html).
 
-> **Note:** This page is the *creator* side — preparing and configuring furniture you sell. What you build here is a **product combination of QuickyHUD and QuickySitter**: QuickyHUD is **no longer compatible with stock AVsitter** and requires the QuickySitter engine as its base.
+> **Note:** This page is the *creator* side: preparing and configuring furniture you sell. What you build here is a **product combination of QuickyHUD and QuickySitter**: QuickyHUD is **no longer compatible with stock AVsitter** and requires the QuickySitter engine as its base.
 
 ## Setting up a piece
 
@@ -16,28 +16,28 @@ From your Quicky creator kit you only handle two things: the **installer** (a sc
 
 ### Converting an existing AVsitter piece
 
-Take a finished AVsitter piece and convert it to Quicky in place. Drop the **creator installer** in and click your **Quicky Updater HUD** — it migrates the piece and clears out the old parts. (The same path also repairs or updates an older Quicky piece.)
+Take a finished AVsitter piece and convert it to Quicky in place. Drop the **creator installer** in and click your **Quicky Updater HUD**. It migrates the piece and clears out the old parts. (The same path also repairs or updates an older Quicky piece.)
 
-The payoff goes beyond the QuickyHUD adjustment workflow: conversion moves the pose data out of script memory into Linkset Data, lifting the piece past AVsitter's **stack-heap collision** ceiling — the Mono memory limit that makes large pose sets (roughly 1,000+ poses) crash on stock AVsitter. A converted piece stays slim no matter how many poses you add. See [Known Limits](known-limits.html) for the detail.
+The payoff goes beyond the QuickyHUD adjustment workflow: conversion moves the pose data out of script memory into Linkset Data, lifting the piece past AVsitter's **stack-heap collision** ceiling, the Mono memory limit that makes large pose sets (roughly 1,000+ poses) crash on stock AVsitter. A converted piece stays slim no matter how many poses you add. See [Known Limits](known-limits.html) for the detail.
 
 ### A brand-new piece
 
 1. Drop the **creator installer** into the furniture's root prim.
-2. It asks how many **seats** the piece has — pick the number.
+2. It asks how many **seats** the piece has, so pick the number.
 3. Click your **Quicky Updater HUD**.
 
-The complete pose system is installed for you and the installer removes itself. The piece is now Quicky-enabled — add your poses with an **AVpos** notecard as usual.
+The complete pose system is installed for you and the installer removes itself. The piece is now Quicky-enabled. Add your poses with an **AVpos** notecard as usual.
 
 ### Before you sell: script permissions
 
-Before you sell a finished piece, set the Quicky scripts inside to **copy-only** for the next owner — the buyer can copy and use the furniture, but the scripts can't be modified or transferred out.
+Before you sell a finished piece, set the Quicky scripts inside to **copy-only** for the next owner: the buyer can copy and use the furniture, but the scripts can't be modified or transferred out.
 
 ### Installing vs. updating
 
 The two are separate jobs handled by different scripts:
 
 - **Installing / converting / repairing** is the one-shot installer's job. `[QS]installWithLicense` does a fresh build, an AVsitter-to-Quicky migration, or a repair, runs an **HTTP license check** before it proceeds, then **removes itself**.
-- **Routine updates** don't go through the installer at all. They're driven by the resident **`[QS]hudadmin`** script that stays in the piece — the Quicky Updater HUD's region-wide push talks to it, so you don't drop anything into the prim to update an already-installed piece.
+- **Routine updates** don't go through the installer at all. They're driven by the resident **`[QS]hudadmin`** script that stays in the piece: the Quicky Updater HUD's region-wide push talks to it, so you don't drop anything into the prim to update an already-installed piece.
 
 ## Configuration
 
@@ -51,13 +51,13 @@ Drop a notecard named **`hudconfig`** into the furniture. Its **first line** hol
 RESERVE|ATTACHMODE|TEXTURE|HUDOFFSET
 ```
 
-For example — default reserve, auto-attach, the built-in design, and a small HUD screen offset:
+For example: default reserve, auto-attach, the built-in design, and a small HUD screen offset:
 
 ```
 0|auto||<0.45, -0.2, 0>
 ```
 
-(The empty third field — the `||` — keeps the built-in design.)
+(The empty third field, the `||`, keeps the built-in design.)
 
 | Field | Default | What it does |
 |-------|---------|--------------|
@@ -66,9 +66,9 @@ For example — default reserve, auto-attach, the built-in design, and a small H
 | `TEXTURE` | *(empty)* | The default HUD design, as a texture UUID. Leave empty to keep the built-in design. |
 | `HUDOFFSET` | `<0,0,0>` | Where the HUD sits on screen when attached (see below). |
 
-No `hudconfig` notecard — or a blank first line — leaves everything at its default. The config has to be on the very first line; comment lines above it aren't supported.
+No `hudconfig` notecard, or a blank first line, leaves everything at its default. The config has to be on the very first line; comment lines above it aren't supported.
 
-**Attaching by hand (`ATTACHMODE = menu`).** With auto-attach off, give users a way to attach the HUD by hand — add a button to your **AVpos** notecard:
+**Attaching by hand (`ATTACHMODE = menu`).** With auto-attach off, give users a way to attach the HUD by hand: add a button to your **AVpos** notecard:
 
 ```
 BUTTON Quicky HUD|90510|Quicky-HUD
@@ -82,15 +82,15 @@ Second Life resets a HUD's position every time it attaches, so the HUD re-applie
 
 ### HUD design / texture
 
-Set the shipped design in the `TEXTURE` field. Users can also switch designs live — tap the design button for a built-in one, or drop a texture UUID for a custom design. The chosen design sticks across re-attach. (See [User Manual → Quicky Design HUD](quickyhud-manual.html#quicky-design-hud).)
+Set the shipped design in the `TEXTURE` field. Users can also switch designs live: tap the design button for a built-in one, or drop a texture UUID for a custom design. The chosen design sticks across re-attach. (See the [User Manual](quickyhud-manual.html).)
 
-### ADJUSTMODE — authoring poses live
+### ADJUSTMODE: authoring poses live
 
 ADJUSTMODE is your working mode while building. With it on, every move and rotate you make with the HUD writes **straight into the pose data** instead of being stored as a personal offset. Tune your poses, then use the **`[DUMP]`** function to write the result into a fresh AVpos notecard. Toggle ADJUSTMODE (with a confirmation) from the HUD's Settings menu; it stays on until you turn it off. See [User Manual → ADJUSTMODE for Creators](quickyhud-manual.html#adjustmode-for-creators-owner-only) for the full workflow.
 
 On a piece in **menu mode** (no auto-attach on sit), turning ADJUSTMODE on also makes sure you have a HUD to drive it: the in-prim hudproxy fires `90274 ATTACH_FOR_ADJUST` to hudadmin, which attaches a HUD to the seated operator. So you can enter ADJUSTMODE on a menu-mode piece without first attaching the HUD by hand.
 
-You can also enter ADJUSTMODE from QuickySitter's own in-world adjust tool, **`[QS]adjuster`** — the `[HELPER]` bar in the pose menu (shown when `[QS]adjuster` is present, gated on the `qs:alive:adjuster` flag). Picking its *Quicky HUD* option flips ADJUSTMODE on through the same path.
+You can also enter ADJUSTMODE from QuickySitter's own in-world adjust tool, **`[QS]adjuster`**: the `[HELPER]` bar in the pose menu (shown when `[QS]adjuster` is present, gated on the `qs:alive:adjuster` flag). Picking its *Quicky HUD* option flips ADJUSTMODE on through the same path.
 
 ### Diagnostics (`VERBOSE`)
 
@@ -107,24 +107,24 @@ Leave it at `0` for anything you ship.
 
 ## Adding plugins
 
-QuickySitter keeps the AVsitter 2 plugin protocol, so protocol-driven stock **AVsitter plugins work unchanged** alongside the Quicky scripts — and QS ships its own variants where the stock plugin would mis-detect the engine. The ones you'd add yourself:
+QuickySitter keeps the AVsitter 2 plugin protocol, so protocol-driven stock **AVsitter plugins work unchanged** alongside the Quicky scripts, and QS ships its own variants where the stock plugin would mis-detect the engine. The ones you'd add yourself:
 
 | Plugin | Adds |
 |--------|------|
 | **Camera** (`[AV]camera`) | A custom camera view per pose. |
-| **Locks & adult** (`[AV]LockMeister`, `[AV]LockGuard`, `[AV]Xcite!`) | Lock and adult interaction — stock, work unchanged. |
-| **RLV & access** (`[QS]root-RLV`, `[QS]root-control`, `[QS]root-security`) | RLV restraints and sit/menu access — use the QS forks (see below). |
+| **Locks & adult** (`[AV]LockMeister`, `[AV]LockGuard`, `[AV]Xcite!`) | Lock and adult interaction: stock, work unchanged. |
+| **RLV & access** (`[QS]root-RLV`, `[QS]root-control`, `[QS]root-security`) | RLV restraints and sit/menu access: use the QS forks (see below). |
 | **Favourites** (`[AV]favs`) | Sitters can save and recall favourite poses. |
 | **Expressions** (`[QS]faces`) | Facial expressions per pose. |
 | **Sequences** (`[QS]sequence`) | Auto-advancing pose sequences. |
-| **Helper** (`[AV]helperscript`) | The classic stock pose-adjust helper — QuickySitter's HUD + ADJUSTMODE already cover this, so you rarely need it. |
+| **Helper** (`[AV]helperscript`) | The classic stock pose-adjust helper: QuickySitter's HUD + ADJUSTMODE already cover this, so you rarely need it. |
 
-QuickySitter ships its own take on some of these (expressions, sequences, props, RLV, the seat picker) with extra integration — where a Quicky version is included, use that.
+QuickySitter ships its own take on some of these (expressions, sequences, props, RLV, the seat picker) with extra integration: where a Quicky version is included, use that.
 
-For **camera, favourites and the lock/adult plugins** the stock version works either way. **Expressions, sequences, props and RLV need the Quicky versions:** stock `[AV]faces` / `[AV]sequence` / `[AV]prop` / `[AV]root-RLV` find the engine by probing `[AV]sitA` script names that a QS linkset doesn't have, so they mis-read the sitter count (RLV drops to a single seat on multi-sitter pieces). Props have a second reason: the HUD's auto-attach is wired to `[QS]prop` (it listens for the `90280 QSPROP_ATTACH` hook that `[QS]prop` publishes) — a prop dropped in as `[AV]prop` would rez, but the HUD won't auto-attach to its sitter. If you take `[QS]root-RLV`, run `[QS]root-control` and `[QS]root-security` with it: the control-suite scripts address each other by name, so don't mix `[QS]` and `[AV]` there.
+For **camera, favourites and the lock/adult plugins** the stock version works either way. **Expressions, sequences, props and RLV need the Quicky versions:** stock `[AV]faces` / `[AV]sequence` / `[AV]prop` / `[AV]root-RLV` find the engine by probing `[AV]sitA` script names that a QS linkset doesn't have, so they mis-read the sitter count (RLV drops to a single seat on multi-sitter pieces). Props have a second reason: the HUD's auto-attach is wired to `[QS]prop` (it listens for the `90280 QSPROP_ATTACH` hook that `[QS]prop` publishes). A prop dropped in as `[AV]prop` would rez, but the HUD won't auto-attach to its sitter. If you take `[QS]root-RLV`, run `[QS]root-control` and `[QS]root-security` with it: the control-suite scripts address each other by name, so don't mix `[QS]` and `[AV]` there.
 
 Full plugin-by-plugin detail: [Compatibility Matrix](compatibility-matrix.html).
 
 ## See also
 
-- [User Manual](quickyhud-manual.html) — using the HUD while sitting.
+- [User Manual](quickyhud-manual.html): using the HUD while sitting.
