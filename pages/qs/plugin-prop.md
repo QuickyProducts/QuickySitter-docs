@@ -54,7 +54,7 @@ What it enables:
 
 - **Resize in the editor.** Stretch the rezzed prop with the normal viewer editor, then run `[SAVE]` (ADJUSTMODE or `[HELPER]`): the size is persisted and every future rez comes out at the saved size. No more take-back-and-replace loop. Scaling is uniform; a per-axis stretch is flattened to the X-axis ratio.
 - **Fit attachment props on the body.** Wear the prop via its pose, adjust position and rotation in the editor, `[SAVE]`: the fit is stored relative to the attach point and re-applied on every future attach.
-- **Touch fine-tuning for owners.** Touching a world-rezzed prop (types `PROP`/`PROP3`) as furniture owner opens a size menu: presets of ±1/5/10 % and `[RESTORE]` back to inventory size. Menu edits are per-rez unless persisted with `[SAVE]`.
+- **Touch fine-tuning for owners.** Touching a world-rezzed prop (types `PROP`/`PROP3`) as furniture owner opens a size menu: presets of ±1/5/10 % and `[RESTORE]` back to inventory size. Menu edits are per-rez unless persisted with `[SAVE]`. The menu exists for **world-rezzed props only**: an attached prop cannot be touched into the menu (clicks on worn attachments go to the wearer, not the script), so size and fit of attachment props are done in the viewer editor while worn, then saved.
 
 The saved values live in the prop's database row, so they are per prop line (per sitter and trigger), and `[DUMP]` emits them as the optional notecard fields 6 to 8 above. The factor is always relative to the prop's inventory size, so `[RESTORE]` and factor `1` mean "as the object is in the furniture inventory".
 
