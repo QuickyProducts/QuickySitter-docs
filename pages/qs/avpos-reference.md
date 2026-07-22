@@ -122,13 +122,15 @@ A `BUTTON` line without `|<integer>` defaults to integer `90200` (the AVprop rez
 
 ```
 PROP <trigger>|<object>|<group>|<pos>|<rot>
-PROP1 <trigger>|<object>|<group>|<pos>|<rot>|<attach_point>
+PROP1 <trigger>|<object>|<group>|<pos>|<rot>|<attach_point>[|<scale>[|<wornpos>|<wornrot>]]
 ```
 
 - `PROP`: ground prop (rezzed at the prim).
 - `PROP1`: attachment prop (auto-attaches to the sitter's `<attach_point>`).
 - `PROP2`: attachment prop, personal (COPY-TRANSFER NEXT).
 - `PROP3`: special (persists across pose changes).
+
+The trailing fields are optional (QS 1.25+): `<scale>` is a uniform size factor relative to the object's inventory size (empty or `1` = unchanged), `<wornpos>`/`<wornrot>` are the worn fit of an attachment prop, local to its attach point. They are written by `[DUMP]` when the prop was saved with the [prop scale & worn fit](plugin-prop.html#prop-scale-and-worn-fit-qsobjectadjust) feature (`[QS]objectadjust` companion in the prop); stock `[AV]prop` ignores them.
 
 Example:
 

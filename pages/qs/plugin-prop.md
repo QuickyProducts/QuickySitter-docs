@@ -2,15 +2,15 @@
 title: '[QS]prop'
 sidebar: home_sidebar
 permalink: plugin-prop.html
-keywords: prop, plugin, attachment, dynamic, QSPROP_ATTACH
+keywords: prop, plugin, attachment, dynamic, QSPROP_ATTACH, objectadjust, scale, worn fit
 toc: true
 ---
 
-`[QS]prop` is a minimally-invasive fork of stock `[AV]prop` (AVsitter 2 / 2.2p04) that adds one new link-message, `QSPROP_ATTACH` (90280), to register and rez a prop dynamically without writing it into the AVpos notecard. Used by `[QS]hudadmin` to attach the wearable QuickyHUD on sit.
+`[QS]prop` is a minimally-invasive fork of stock `[AV]prop` (AVsitter 2 / 2.2p04) with two QS additions: a new link-message, `QSPROP_ATTACH` (90280), to register and rez a prop dynamically without writing it into the AVpos notecard (used by `[QS]hudadmin` to attach the wearable QuickyHUD on sit), and since 1.25 [prop scale & worn fit](#prop-scale-and-worn-fit-qsobjectadjust) together with the `[QS]objectadjust` companion script.
 
-Everything else matches stock semantics exactly. Drop a stock `[AV]prop` into a QS prim and it works; drop `[QS]prop` into a stock-AVsitter prim and stock paths work, because the QS-specific 90280 handler is dormant when no one sends to it.
+Everything else matches stock semantics exactly. Drop a stock `[AV]prop` into a QS prim and it works; drop `[QS]prop` into a stock-AVsitter prim and stock paths work, because the QS-specific handlers are dormant when no one sends to them.
 
-## Notecard syntax (unchanged from stock)
+## Notecard syntax
 
 Props are declared with `PROP` / `PROP1` / `PROP2` / `PROP3` directives in `AVpos`, one per line with `|`-separated arguments:
 
@@ -29,6 +29,11 @@ Arguments:
 | 3 | `<pos>`: position vector `<x, y, z>`. |
 | 4 | `<rot>`: rotation Euler `<x, y, z>` in degrees. |
 | 5 | `<attach_point>` *(optional)*: attachment point name for `PROP1` / `PROP2` / `PROP3`. Empty for ground props. |
+| 6 | `<scale>` *(optional, QS 1.25+)*: uniform scale factor relative to the object's inventory size. Empty or `1` = unchanged. |
+| 7 | `<wornpos>` *(optional, QS 1.25+)*: worn-fit position vector, local to the attach point. |
+| 8 | `<wornrot>` *(optional, QS 1.25+)*: worn-fit rotation Euler in degrees, local to the attach point. |
+
+Fields 6 to 8 are the persisted output of the [prop scale & worn fit](#prop-scale-and-worn-fit-qsobjectadjust) feature; `[DUMP]` writes them only as far as they are set. Stock `[AV]prop` ignores the extra fields.
 
 The directive name controls the prop-type semantic in `[QS]prop`:
 
@@ -40,6 +45,20 @@ The directive name controls the prop-type semantic in `[QS]prop`:
 | `PROP3` | `3` | Special: persists across pose changes. |
 
 Full directive reference in the [upstream AVprop page](https://avsitter.github.io/avsitter2_prop.html).
+
+## Prop scale and worn fit ([QS]objectadjust)
+
+Since 1.25 a prop can carry a persisted size and, for attachment props, a worn fit (position and rotation on the body). The prop-side half is the **`[QS]objectadjust`** companion script, named after the stock `[AV]object` it ships beside: drop it into the prop's **root prim**, next to the untouched `[AV]object`. The furniture-side half is built into `[QS]prop`; no configuration is needed on either side.
+
+What it enables:
+
+- **Resize in the editor.** Stretch the rezzed prop with the normal viewer editor, then run `[SAVE]` (ADJUSTMODE or `[HELPER]`): the size is persisted and every future rez comes out at the saved size. No more take-back-and-replace loop. Scaling is uniform; a per-axis stretch is flattened to the X-axis ratio.
+- **Fit attachment props on the body.** Wear the prop via its pose, adjust position and rotation in the editor, `[SAVE]`: the fit is stored relative to the attach point and re-applied on every future attach.
+- **Touch fine-tuning for owners.** Touching a world-rezzed prop (types `PROP`/`PROP3`) as furniture owner opens a size menu: presets of ±1/5/10 % and `[RESTORE]` back to inventory size. Menu edits are per-rez unless persisted with `[SAVE]`.
+
+The saved values live in the prop's database row, so they are per prop line (per sitter and trigger), and `[DUMP]` emits them as the optional notecard fields 6 to 8 above. The factor is always relative to the prop's inventory size, so `[RESTORE]` and factor `1` mean "as the object is in the furniture inventory".
+
+Compatibility follows the stock promise in both directions: a prop **without** `[QS]objectadjust` simply rezzes unscaled and ignores the extra wire commands, and under stock `[AV]prop` the companion never receives them and stays passive. The wire commands (`QSSCALE`, `QSWORN`, `QSSAVESCALE`, `QSSAVEWORN`, region-say on the prop `comm_channel`) are specified in [`qs/PROTOCOL.md` § Prop scale](https://github.com/QuickyProducts/QuickySitter/blob/master/qs/PROTOCOL.md) in the QuickySitter repository.
 
 ## QS-specific addition: 90280 (QSPROP_ATTACH)
 
@@ -83,7 +102,8 @@ Total changes from stock `[AV]prop` 2.2p04:
 5. **One line in 90171/90173 handler** for the same alignment.
 6. **Three lines in `listen()`'s REZ branch** to forward the post-rez say.
 7. **New `link_message` handler block** for 90280 (≈40 lines).
-8. **Version string + header comment block.**
+8. **Prop scale & worn fit (1.25).** The `qs:prop:<i>` row grows to 11 fields (scale, wornpos, wornrot), the REZ handshake additionally sends `QSSCALE`/`QSWORN`, and the `[SAVE]`-triggered `PROPSEARCH` accepts `QSSAVESCALE`/`QSSAVEWORN` replies from `[QS]objectadjust`. Older 8/9-field rows stay readable.
+9. **Version string + header comment block.**
 
 Everything else verbatim from stock.
 

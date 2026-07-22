@@ -123,6 +123,8 @@ QuickySitter ships its own take on some of these (expressions, sequences, props,
 
 For **camera, favourites and the lock/adult plugins** the stock version works either way. **Expressions, sequences, props and RLV need the Quicky versions:** stock `[AV]faces` / `[AV]sequence` / `[AV]prop` / `[AV]root-RLV` find the engine by probing `[AV]sitA` script names that a QS linkset doesn't have, so they mis-read the sitter count (RLV drops to a single seat on multi-sitter pieces). Props have a second reason: the HUD's auto-attach is wired to `[QS]prop` (it listens for the `90280 QSPROP_ATTACH` hook that `[QS]prop` publishes). A prop dropped in as `[AV]prop` would rez, but the HUD won't auto-attach to its sitter. If you take `[QS]root-RLV`, run `[QS]root-control` and `[QS]root-security` with it: the control-suite scripts address each other by name, so don't mix `[QS]` and `[AV]` there.
 
+Your delivery package also contains **`[QS]objectadjust`**: drop it into a prop next to the stock `[AV]object` and the prop becomes resizable and body-fittable with `[SAVE]` persistence, see [prop scale & worn fit](plugin-prop.html#prop-scale-and-worn-fit-qsobjectadjust).
+
 Full plugin-by-plugin detail: [Compatibility Matrix](compatibility-matrix.html).
 
 ## See also
