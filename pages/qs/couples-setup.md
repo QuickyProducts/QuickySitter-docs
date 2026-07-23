@@ -17,8 +17,8 @@ For a 2-sitter prim:
 Mandatory:
 
 - `[QS]boot` (one instance)
-- `[QS]sitA` + `[QS]sitA 2` (two instances)
-- `[QS]sitB` + `[QS]sitB 2` (matching count)
+- `[QS]sitA` + `[QS]sitA 1` (two instances)
+- `[QS]sitB` + `[QS]sitB 1` (matching count)
 - an `AVpos` notecard
 
 Optional (all presence-gated; add only what you need):
@@ -27,13 +27,13 @@ Optional (all presence-gated; add only what you need):
 - `[QS]select` (dedicated seat-select picker; sitB already has a built-in picker, so this is not required)
 - `[QS]offset`, `[QS]prop`, `[QS]faces`, `[QS]sequence`
 
-The script name suffix matches stock: space + number for instances beyond the first.
+The script name suffix matches stock: space + number starting at 1 for the second instance (`[QS]sitA`, `[QS]sitA 1`, `[QS]sitA 2`, ...). The numbering must be contiguous; a gap (e.g. `[QS]sitA` + `[QS]sitA 2` without `[QS]sitA 1`) breaks the slot count.
 
 ## Sit-targets
 
-Each slot has its own sit-target. The `SET` directive declares how many sit-target sets the furniture has (couples on a sofa might have one set; a sofa with both "facing each other" and "lying down" arrangements has two). `SET` is a plain channel-level directive, and there is no `SETUP` section.
+Each slot has its own sit-target, derived from the slot's default pose. The `SET` directive is an ID used to pin seats to specific prims via prim descriptions (`<set>-<slot>`), not a count of arrangements. `SET` is a plain global directive, and there is no `SETUP` section.
 
-See [SitTargets](sittargets.html) for the per-slot offset model.
+See [SitTargets](sittargets.html) for the model and the pinning syntax.
 
 ## SYNC poses
 

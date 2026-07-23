@@ -24,7 +24,7 @@ See [HUD Integration](hud-integration.html) for the in-prim contract and [Person
 
 ## The classic `[HELPER]` dialog (still available)
 
-The stock-AVsitter authoring loop is still here and unchanged in feel: `[HELPER]` exposes `[NEW]`/`[SAVE]`/`[DUMP]`/`[SITTARGET]`, and you adjust with the dialog arrows. It's exposed only when `[QS]adjuster` is present (sitB reads `qs:alive:adjuster`) and the clicker has creator-level permission.
+The stock-AVsitter authoring loop is still here and unchanged in feel: `[HELPER]` exposes `[NEW]`/`[SAVE]`/`[DUMP]`, and you adjust with the dialog arrows. It's exposed only when `[QS]adjuster` is present (sitB reads `qs:alive:adjuster`) and the clicker has creator-level permission.
 
 What QS changed under the hood is small:
 
@@ -39,7 +39,6 @@ What QS changed under the hood is small:
 | `[NEW]` | Create a new pose entry with the next sequential name. You're prompted for the name in chat. |
 | `[SAVE]` | Write `CURRENT_POSITION`/`CURRENT_ROTATION` to `qs:p:<ch>:<i>` as the new pose default. Also emits 90263 to clear stale customs. |
 | `[DUMP]` | Trigger boot's dump cascade. From this path it runs **loud** (full chat output) and uploads. |
-| `[SITTARGET]` | Adjust the sit-target itself, not the pose offset. |
 | `[QUICKYHUD]` | Toggle QuickyHUD ADJUSTMODE (90266 `"On"`). Visible only when hudproxy is present. |
 | `[DONE]` | Leave helper mode and return to the normal pose menu. |
 

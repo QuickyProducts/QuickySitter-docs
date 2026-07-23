@@ -76,11 +76,11 @@ A region restart preserves LSD for prims in the region. A re-rez of a saved prim
 
 **What it can't fix:** The 25/20 s budget is **per object, shared by every script in the linkset**. If something else in the prim is also firing HTTP requests, even the paced dump POSTs can be refused under contention. Boot flags `dump_failed` and warns, but the refused chunk is lost and the uploaded copy is incomplete. Recovery: re-run the dump, or use the loud `[HELPER]` `[DUMP]`, which also streams every line to local chat so you have the full text regardless of the upload.
 
-## SitTarget bone offsets
+## SitTarget offset clamp
 
-SL's `llSitTarget` accepts an offset relative to the prim's pivot. The offset is **clamped** to ±1.7 m from the prim for ground prims (different behavior for attached prims). Larger offsets get silently truncated.
+SL's `llSitTarget` / `llLinkSitTarget` accept an offset relative to the prim's pivot, clamped to **±300 m per axis**; out-of-range values are rounded to the limit (see [llSitTarget on the SL wiki](https://wiki.secondlife.com/wiki/LlSitTarget)).
 
-**Practical impact:** Pose adjustments via `[HELPER]` arrows are limited to within this clamp. If you need very long-range positioning, you'll need multiple sit-target prims or use SL's `llSetLinkPrimitiveParamsFast(LINK_THIS, [PRIM_POSITION, ...])` from a separate script.
+**Practical impact:** none for normal furniture. The sit-target only controls initial docking; seated avatars are positioned by the pose engine via `PRIM_POS_LOCAL`, which is not subject to this clamp. `[HELPER]` arrow adjustments move pose positions, not sit-targets, so they aren't limited by it either.
 
 ## See also
 

@@ -56,7 +56,7 @@ See [Submenus](submenus.html) for navigation design.
 ## Common gotchas
 
 - **`[QS]select`.** Optional and presence-gated, since sitB has a built-in seat picker, so multi-sitter menu routing works without it. When `[QS]select` is present (sitB reads the `qs:alive:select` flag, with a `[AV]select` inventory probe as fallback), it provides the dedicated seat-select picker.
-- **Sit-target clamp.** SL clamps sit-target offsets to ±1.7 m for ground prims. For very long furniture (e.g., banquet table with 8 sitters), you'll need linked child prims with their own sit-targets, not stretched offsets from a single root.
+- **Seat prims.** SL's sit-target clamp is ±300 m per axis, so offsets are not the constraint on long furniture. Still, give each seat its own prim and pin it via the prim description (`<set>-<slot>`): right-click Sit docks on the clicked prim, so separate seat prims are what make "sit where you click" work on a banquet table with 8 sitters. See [SitTargets](sittargets.html).
 
 ## See also
 

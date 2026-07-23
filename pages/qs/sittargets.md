@@ -10,58 +10,52 @@ A **sit-target** is the position and rotation the SL physics engine places an av
 
 ## The model
 
-Each sitter slot (`[QS]sitA`, `[QS]sitA 2`, …) has its own sit-target. The sit-target is a `<position, rotation>` pair set via `llSitTarget` (or `llSetLinkSitTarget` on the linked prim).
+Each sitter slot (`[QS]sitA`, `[QS]sitA 1`, ...) gets its own sit-target, placed with `llLinkSitTarget` on the prim assigned to that slot.
 
-When a pose plays, it adds an additional `POS` / `ROT` offset on top of the sit-target. The total avatar position is:
+The sit-target only controls the initial docking when the avatar sits down. Immediately afterwards the pose engine positions the avatar at the current pose's `{Pose}` coordinates (via `PRIM_POS_LOCAL` on the seated avatar). The pose position **replaces** the sit-target placement; it is not an offset added on top of it. Pose coordinates are always relative to the prim that holds the `[QS]` scripts, no matter which prim carries the sit-target.
 
-```
-avatar = prim_position + sit_target_offset + pose_POS
-```
+QS derives each slot's sit-target from the slot's current default pose (lowered slightly so the avatar docks close to its final spot). Seats follow the poses automatically; there is no separate sit-target data to configure.
 
-The sit-target is **per-slot**, the pose POS is **per-pose**.
+## The SET directive
 
-## SET sets
+`SET <n>` tags this installation's seat assignments with an ID. It is **not** a count of seating arrangements, and there is no menu to switch sets at runtime.
 
-The `SET <n>` directive declares how many sit-target *sets* the furniture has. It is a plain channel-level directive, and there is no `SETUP` section wrapping it. Each set is a different physical seating arrangement (e.g., chair facing left, chair facing right, couples on a sofa, solo on a bench). The user picks the set via the `[SET]` button in the menu.
+- Without a `SET` line (internal default -1), seats are **auto-assigned**: avatars are matched to free slots in link order, gender-aware for couples. The physical prim is decoupled from the logical slot.
+- With `SET <n>`, pin each seat to a prim by putting `<n>-<slot>` in that prim's description (e.g. `0-1` = slot 1 of set 0). `-1` in a description excludes the prim from receiving a sit-target. Sitting on a pinned prim yields exactly that slot and its menu.
 
-`DFLT <n>` sets which set is active by default (1-based).
+Upstream AVsitter uses distinct SET numbers to keep several independent script installations in one linkset from claiming each other's prims. QuickySitter supports one installation per linkset (single AVpos notecard, shared LinksetData store), so in QS the directive's practical use is pinning seats to prims: use a single `SET 0`.
 
-For each set there's a per-slot sit-target offset. The notecard syntax for declaring multiple sets is in the upstream docs.
+## The DFLT directive
 
-## Adjusting sit-targets in-world
+`DFLT` is unrelated to sets. It is a 0/1 flag that controls whether a seat reverts to its first pose when the last sitter stands up: `1` (the default) reverts; `0` keeps the last chosen `POSE` as the new default.
 
-With `[QS]adjuster` installed, the `[ADJUST]` → `[HELPER]` → `[SITTARGET]` menu path enters sit-target adjustment mode:
+## Moving and showing sit-targets in-world
 
-- Helper-bar arrows move the **sit-target itself** (not the pose offset).
-- Click `[SAVE]` to commit.
-- The new sit-target persists across resets because the prim's link properties survive `llResetScript` (unless the prim is also taken/rerezzed, which preserves the saved sit-target via inventory).
+There is no separate sit-target editor. Sit-targets are derived from pose positions and recomputed at boot and whenever pose data changes. To move a seat, adjust the slot's poses (`[HELPER]` bar or the QuickyHUD adjust mode) and save; the derived sit-target follows the new default pose. To move a seat to a different prim, change the prim descriptions (see above) and reset.
 
-## QS-specific: sit-target sync via 90150
+With `[QS]adjuster` installed, the owner chat command `/5 targets` labels each assigned prim with floating text showing its `SET-SLOT` pair (link message 90298 to the sitA scripts).
 
-When slot-0's `[QS]sitA` resets (typically because boot re-seeded LSD), it broadcasts `90150` so all other sitA slots in the prim re-place their own sit-targets. Without this, a notecard re-save could leave sit-target offsets inconsistent across slots until a manual reset.
+## Re-placement on linkset changes (90150)
+
+When the linkset's prim count changes (link/unlink), slot 0's `[QS]sitA` clears all sit-targets (prims marked `-1` are left alone) and broadcasts `90150`; every sitA slot then re-runs its assignment and re-places its own sit-target.
 
 | Num | Direction | `msg` | `id` | Meaning |
 |-----|-----------|-------|------|---------|
-| 90150 | `[QS]sitA` slot 0 → all other `[QS]sitA` | `""` | `""` | Re-apply your sit-target now. |
+| 90150 | `[QS]sitA` slot 0 → all `[QS]sitA` | `""` | `""` | Re-assign and re-place your sit-target now. |
 
 This is a stock-AVsitter number used identically by QS.
 
 ## Clamp behavior
 
-SL clamps sit-target offsets relative to the prim:
-
-- **Ground prims (rezzed in-world):** ±1.7 m on any axis. Larger offsets are silently truncated.
-- **Attached prims (worn HUD / attachment):** different clamps depending on attachment point.
-
-The clamp is hard: there's no way around it from LSL except by linking additional prims at the position you want and setting the sit-target on those.
+SL clamps a sit-target offset to **±300 m per axis**; out-of-range values are rounded to the limit (see [llSitTarget on the SL wiki](https://wiki.secondlife.com/wiki/LlSitTarget)). This is practically irrelevant for furniture: seated avatars are positioned by the pose engine via `PRIM_POS_LOCAL`, which is not subject to the sit-target clamp.
 
 ## Adjusting at the QS-extension level
 
-Personal pose offsets ([Personal Pose Offsets](personal-pose-offsets.html)) sit **on top of** the sit-target + pose offset. They're per-user, stored in `QSO:*` LSD keys, applied at pose play time. The sit-target itself isn't touched; only `CURRENT_POSITION`/`CURRENT_ROTATION` shifts.
+Personal pose offsets ([Personal Pose Offsets](personal-pose-offsets.html)) sit **on top of** the pose position. They're per-user, stored in `QSO:*` LSD keys, applied at pose play time. The sit-target itself isn't touched; only `CURRENT_POSITION`/`CURRENT_ROTATION` shifts.
 
 ## See also
 
 - [AVpos Reference](avpos-reference.html): `SET` and `DFLT` directives.
-- [Adjustment Workflow](adjustment-workflow.html): `[HELPER]` → `[SITTARGET]` mode.
+- [Adjustment Workflow](adjustment-workflow.html): `[HELPER]` pose adjustment.
 - [Personal Pose Offsets](personal-pose-offsets.html): per-user offsets layered on top.
-- [Known Limits](known-limits.html): sit-target clamp details.
+- [Known Limits](known-limits.html): storage, HTTP and clamp limits.

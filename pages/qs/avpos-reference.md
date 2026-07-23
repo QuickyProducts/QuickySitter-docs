@@ -33,16 +33,16 @@ Unknown commands are silently ignored (forward-compat). Blank lines and comment-
 
 There is no multi-line block syntax: `NAME`, `ANIM`, `POS`, `ROT` as standalone directives don't exist in the parser. The position/rotation of a pose lives on a separate `{<name>}<pos><rot>` line (see below).
 
-## Channel-level directives
+## Global directives
 
-These usually appear once near the top of the notecard. They configure the current sitter slot, opened by the most recent `SITTER` directive (or slot 0 if no `SITTER` line has appeared yet).
+These usually appear once near the top of the notecard. They apply **furniture-wide**: the parser reads them wherever they appear, the last value wins, and the same set of values is applied to every sitter slot. (Stock AVsitter parses them the same way; only `SITTER` itself and the pose lines below it are per-slot.)
 
 | Directive | Argument | Meaning |
 |-----------|----------|---------|
 | `SITTER <n>` (or `SITTER <n>\|<info>`) | sitter slot index (0-based); optional info field can include `Male` / `Female` gender | Starts a new sitter channel. Subsequent POSE/SYNC/MENU/BUTTON lines belong to this slot until the next `SITTER` line. |
 | `MTYPE <int>` | menu type | Dialog behavior. See upstream docs for values. |
 | `ETYPE <int>` | exit type | Stand-up behavior. |
-| `SET <int>` | sit-target sets count | Defaults to 1. |
+| `SET <int>` | set ID | Not a count. Tags seat assignments for prim-description pinning (`<set>-<slot>` in the prim description). Internal default -1 = auto-assign seats. See [SitTargets](sittargets.html). |
 | `SWAP <int>` | 0/1/2 | Swap mode for couple/multi-sitter setups. |
 | `SELECT <int>` | - | Read by `[QS]select` (optional, presence-gated) for multi-seat routing. |
 | `AMENU <int>` | - | Adjustment menu style. |
@@ -51,7 +51,7 @@ These usually appear once near the top of the notecard. They configure the curre
 | `VERBOSE <int>` | 0–3 | QS-specific. Diagnostic verbosity level; boot stores it in the `qs:cfg:verbose` LSD key. `0` = quiet, `3` = most verbose. |
 | `KFM <int>` | 0/1 | KeyFrame motion present (for motion props). |
 | `LROT <int>` | - | Local rotation flag (advanced). |
-| `DFLT <int>` | - | Default sit-target index (1-based). |
+| `DFLT <int>` | 0/1 | `1` (default): seat reverts to its first pose when the last sitter stands up. `0`: the last chosen `POSE` stays as the new default. |
 | `BRAND <text>` | brand label | Free-text shown in the menu header. |
 | `ONSIT <text>` | - | onSit behavior. |
 | `TEXT <text>` | - | Custom hovertext (escape `\n` for newlines). |

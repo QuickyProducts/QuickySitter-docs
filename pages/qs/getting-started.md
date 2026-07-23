@@ -74,7 +74,7 @@ Save the notecard, and boot detects the asset-key change via `changed(CHANGED_IN
 | Boot hangs at "Parsing AVpos…" | Notecard was never saved after creation; open it, save it, reset the script. |
 | `[PROP]` button missing despite `PROP*` lines in AVpos | `[QS]prop` not installed. Boot self-check warns about this case. |
 | `[FACES]` / `[EXPRESSION]` button missing | `[QS]faces` not installed. |
-| Adjuster sliders make no visible change | Helper-bar / sit-target conflict: check the sit-target via `[ADJUST] [SITTARGET]`. See [SitTargets](sittargets.html). |
+| Adjuster arrows make no visible change | Check you're adjusting the intended slot: the owner chat command `/5 targets` labels each seat prim with its `SET-SLOT` assignment. See [SitTargets](sittargets.html). |
 
 ## See also
 
