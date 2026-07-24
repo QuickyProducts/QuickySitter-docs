@@ -6,61 +6,45 @@ keywords: chat, commands, slash, slash command, channel
 toc: true
 ---
 
-QuickySitter inherits the user-facing chat commands from stock AVsitter 2 (the `/1 …` family below behaves the same). It also adds its own owner-only diagnostics channel: `/88`, served by the optional `[QS]debug` script; see [Debug Flags](debug-flags.html). This page is a quick-reference; for the conceptual tutorial see the [upstream AVsitter chat commands page](https://avsitter.github.io/avsitter2_home.html).
+QuickySitter has **no public chat commands**. All user-facing interaction (pose menus, adjust, swap, security) runs through `llDialog` popups opened by touching or sitting on the furniture, same as stock AVsitter 2. What does exist are two **owner-only maintenance channels**, documented below.
 
-## Public commands (chat channel 0)
+## `/5`: [QS]adjuster (owner only)
 
-Issued by anyone with access (typically the owner or sitter), spoken in local chat.
+`[QS]adjuster` listens on fixed channel 5, filtered to the owner. Three commands:
 
 | Command | What it does |
 |---------|--------------|
-| `/1 menu` | Open the pose menu for the speaker. |
-| `/1 reset` | Reset the prim (creator only). |
-| `/1 set <n>` | Change to sit-target set `n` (creator only). |
+| `/5 targets` | Labels every assigned seat prim with floating text showing its `SET-SLOT` pair (link message 90298 to the sitA scripts). Handy for verifying prim-description seat pinning; see [SitTargets](sittargets.html). |
+| `/5 helper` | Starts the classic `[HELPER]` flow for the slot-0 sitter. Requires someone to be seated. |
+| `/5 cleanup` | Build finalization: removes `[QS]adjuster` and the `[AV]helper` object from the prim (mirrors the stock AVsitter cleanup step). |
 
-Public commands run through `[QS]sitA`'s `listen` event on the configured chat channel.
+## `/88`: [QS]debug (owner only, optional)
 
-## Helper-bar shortcuts
+The optional `[QS]debug` script is a Linkset-Data inspector for creators. On install it announces "ready on /88"; `/88 help` prints the command list:
 
-When in `[HELPER]` adjustment mode, the chat input is gated to a helper-bar channel. Type values directly:
+| Command | What it does |
+|---------|--------------|
+| `/88 help` | Show the command list. |
+| `/88 keys [pattern]` | List `qs:*` keys (optional regex pattern). |
+| `/88 count <ch>` | Pose count for a channel. |
+| `/88 meta <ch>` / `/88 cfg <ch>` / `/88 sitter <ch>` | Show the channel's `qs:meta` / `qs:cfg` / `qs:sitter` row. |
+| `/88 pose <ch> <i>` | Show one `qs:p:<ch>:<i>` row, parsed into fields. |
+| `/88 poses <ch>` | Dump all poses of a channel. |
+| `/88 grep <text>` | Find all `qs:p:*` rows whose value contains `<text>`. |
+| `/88 raw <key>` | Raw value of any LSD key. |
+| `/88 mem` | LSD bytes used / free. |
+| `/88 delch <ch>` | Delete all `qs:*:<ch>` keys (destructive). |
+| `/88 nuke yes` | Wipe ALL Linkset Data (destructive; plain `nuke` just warns). |
+| `/88 stress start` / `stop` / `status` / `speed` | hudproxy stress-test driver. |
 
-| Input | Effect |
-|-------|--------|
-| `<x>,<y>,<z>` | Set POS offset to that exact vector (overrides arrow nudges). |
-| `<rot_x>,<rot_y>,<rot_z>` | Set ROT offset to Euler degrees vector. |
-| `save` | Same as clicking `[SAVE]`. |
-| `cancel` | Exit helper without saving. |
+See [Debug Flags](debug-flags.html) for the wider diagnostics story (the `VERBOSE` chat-verbosity ladder).
 
-These shortcuts are documented in the upstream adjuster tutorial.
+## Dialog channels (internal)
 
-## Listen channel layout
-
-Each script listens on a channel derived from its slot and purpose. Plugin authors don't usually need to know these (link-messages are the public API), but for debugging:
-
-| Script | Listen channel | Purpose |
-|--------|----------------|---------|
-| `[QS]sitA` slot N | Sit-channel derived from `llGetOwner` and slot | Per-sitter dialog menus, public commands. |
-| `[QS]adjuster` | Helper-bar channel | Adjustment values from chat. |
-| `[QS]select` (optional) | Cross-furniture select channel | Multi-furniture routing. Only present when the optional `[QS]select` plugin is installed. |
-| `[QS]debug` (optional) | `/88` (owner-only) | LSD inspector + stress-test commands. See [Debug Flags](debug-flags.html). |
-
-## Dialog interaction
-
-Most user interaction goes through `llDialog` blue-popup menus, not chat. The `[HELPER]` menu is the main entry point; from there:
-
-- `[NEW]`: create a new pose stub.
-- `[SAVE]`: commit current adjustments to LSD.
-- `[SAVE ALL]`: set the `M#T!` all-poses fallback for this user/slot. See [Personal Pose Offsets](personal-pose-offsets.html).
-- `[DUMP]`: kick the `90098` cascade in boot, then chat or upload the LSD-formatted AVpos text.
-- `[CANCEL]`: exit without saving.
-- `[STOP HELP]`: leave helper mode entirely.
-
-## RLV commands (with `[AV]root-RLV`)
-
-When the stock `[AV]root-RLV` plugin is in the prim, additional RLV-style commands become available. These are documented in the upstream AVsitter RLV docs.
+Menu dialogs listen on a random negative channel rolled per dialog and bound to the avatar the dialog was sent to. There are no fixed, guessable menu channels, and nothing in QuickySitter listens on channel 0 or 1. Plugin authors interact via link messages, not chat; see [LinkMessage Numbers](linkmessage-numbers.html).
 
 ## See also
 
-- [Adjustment Workflow](adjustment-workflow.html): full `[HELPER]` menu walkthrough.
-- [Submenus](submenus.html): menu navigation model.
-- [LinkMessage Numbers](linkmessage-numbers.html): what each menu click sends internally.
+- [Adjustment Workflow](adjustment-workflow.html): the `[HELPER]` and ADJUSTMODE flows the `/5` commands feed into.
+- [Debug Flags](debug-flags.html): `VERBOSE` levels and what each script logs.
+- [SitTargets](sittargets.html): what the `SET-SLOT` labels from `/5 targets` mean.
