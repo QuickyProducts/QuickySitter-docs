@@ -61,7 +61,7 @@ QuickySitter/
 
 ## qs/: fork-specific code
 
-Each `[QS]*.lsl` is a self-contained script. Convention: file header starts with a short comment block (purpose, key inputs/outputs, dependencies), followed by `string version = "X.YYY";` and any other top-level constants. Every shipped script is currently version-locked at `0.999`. Only `[QS]sitA`'s version reaches other scripts, because it is exposed in the QSALIVE (90097) payload; the rest are read directly from the file headers. Bumps follow the [version-bump convention](version-bump.html) (currently +0.00001 per change).
+Each `[QS]*.lsl` is a self-contained script. Convention: file header starts with a short comment block (purpose, key inputs/outputs, dependencies), followed by `string version = "X.YY";` and any other top-level constants. Scripts carry independent per-script versions that drift between releases; a release stamps the whole set to one number (the current release is `1.25`). Only slot-0 `[QS]sitA`'s version reaches other scripts, because it is exposed in the QSALIVE (90097) payload; the rest are read directly from the file headers. Bumps follow the [version-bump convention](version-bump.html) (default +0.0001, feature/blocker rounds up to the next hundredth).
 
 ### Script-by-script summary
 
@@ -108,10 +108,10 @@ Two purposes:
 Long-running Claude sessions often spawn worktrees under `.claude/worktrees/<name>/` to keep work isolated. Each worktree is a full checkout of the repo at a feature branch. Two conventions matter:
 
 - **Edit paths must live under the active worktree root.** A worktree session shouldn't touch a sibling worktree's files.
-- **Coordinate version bumps.** Before bumping a script in your worktree, check sibling worktrees for the same script with an in-flight bump. Two parallel `0.99901 → 0.99902` bumps will both look correct in isolation but collide on merge. See [Version Bump Convention](version-bump.html).
+- **Coordinate version bumps.** Before bumping a script in your worktree, check sibling worktrees for the same script with an in-flight bump. Two parallel `1.0401 → 1.0402` bumps will both look correct in isolation but collide on merge. See [Version Bump Convention](version-bump.html).
 
 ## See also
 
 - [Getting Started](getting-started.html): installing the scripts in an in-world prim.
 - [Contributing](contributing.html): PR / commit workflow.
-- [Version Bump Convention](version-bump.html): the per-change increment rule (currently +0.00001).
+- [Version Bump Convention](version-bump.html): the per-change increment rule (default +0.0001, feature round-up).

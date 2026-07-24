@@ -6,7 +6,7 @@ keywords: control, lockguard, lockmeister, xcite, rlv, plugin
 toc: true
 ---
 
-The control family splits two ways in QuickySitter. The **root-prim scripts** (`[QS]root`, `[QS]root-control`, `[QS]root-security`, `[QS]root-RLV`) are **forked** (all v0.999). The **restraint / sensation protocol plugins** (LockGuard, LockMeister, Xcite!) are **genuinely stock AVsitter**, unforked: drop them into a QS prim and they work as in a stock AVsitter prim.
+The control family splits two ways in QuickySitter. The **root-prim scripts** (`[QS]root`, `[QS]root-control`, `[QS]root-security`, `[QS]root-RLV`) are **forked** (release 1.25). The **restraint / sensation protocol plugins** (LockGuard, LockMeister, Xcite!) are **genuinely stock AVsitter**, unforked: drop them into a QS prim and they work as in a stock AVsitter prim.
 
 ## Forked root-prim scripts (`[QS]root*`)
 

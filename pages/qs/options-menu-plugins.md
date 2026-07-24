@@ -33,7 +33,7 @@ Pipe-delimited. **Use `llParseString2List`, not `llParseStringKeepNulls`**, beca
 | Field | Content |
 |-------|---------|
 | 0 | Button label as it appears in the dialog (e.g. `[MYPLUGIN]`). Convention is bracket-wrapped uppercase for visual parity with built-in buttons, but anything llDialog accepts works. |
-| 1 | Click channel: the LinkMessage `num` sitB fires when the user picks your button. Pick a free number outside the fork-reserved ranges: 90212–90229 is one free band, 90232–90259 is another. Document your pick in your plugin's README. |
+| 1 | Click channel: the LinkMessage `num` sitB fires when the user picks your button. Pick a genuinely free number: within 90212–90229 and 90232–90259, the numbers `90212` (QSPLUG_REGISTER itself), `90213` (QSADJ_REGISTER), and `90220` (a stock play-by-name channel handled by `[QS]prop`) are **taken** — that leaves 90214–90219, 90221–90229, and 90232–90259 (43 numbers) actually free. Document your pick in your plugin's README. |
 | 2 | `llGetScriptName()` of the announcing script. Used as the dedupe key: a re-announce on plugin reset / inventory change overwrites the existing registry slot instead of appending a duplicate. |
 
 ## What sitB does with this
@@ -132,10 +132,10 @@ The most important cross-wiring is: **listen to 90097 and re-announce on it**. s
 
 ## Limits and v1 scope
 
-- **`[OPTIONS]` menu only.** The pose menu's main button strip (`[ADJUST]`, `[NEW]`, `[DUMP]`) and the `[ADJUST]` submenu are not Plugin-Registry targets in v1. Plugin authors who want buttons there must still patch sitB directly, or use the legacy notecard `ADJUST` line, which is functionally identical to a registry entry but boot-time and scoped to the ADJUST submenu (see [Adjustment Workflow](adjustment-workflow.html#helper-menu-entries)).
+- **Two registry channels.** `QSPLUG_REGISTER` (90212) lands a button in the `[OPTIONS]` menu; `QSADJ_REGISTER` (90213) lands one in the `[ADJUST]` submenu instead (payload `label|click_chan|scriptName|flags`, where flags bit 0 = owner/ACL-gated). Both dedupe by script name and both should re-announce on 90097. The pose menu's own main strip (`[ADJUST]`, `[NEW]`, `[DUMP]`) is still not a registry target — those are built-ins.
 - **No active staleness probe in v1.** If a plugin script crashes silently between announces, its label stays in the registry until sitB resets (which re-issues a 90097 broadcast, prompting all surviving plugins to re-announce). `CHANGED_INVENTORY` in the plugin → re-announce is the recommended path; script removal is not detected actively. v2 may add a probe channel mirroring the [HUDPROXY 90093 pattern](hud-integration.html#hudproxy-presence-90093).
 - **Order = announce order.** First plugin to register gets the first slot in the `[OPTIONS]` dialog. No priority field in v1.
-- **Click `id` is the controller key only.** sitA's legacy `<controller>|<sitter>` composite (used by the 90101 ADJUST_MENU dispatch when `AMENU & 4` is unset) is not emulated. Plugins that need the sitter key can query via QSALIVE or read the `qs:sitter:<ch>` LSD keys.
+- **Click `id` is the controller key only.** sitA's legacy `<controller>|<sitter>` composite (used by the 90101 ADJUST_MENU dispatch when `AMENU & 4` is unset) is not emulated. Note that neither QSALIVE nor `qs:sitter:<ch>` gives you a *seated avatar's* key: the 90097 reply carries `product|version|sitter_count|caps`, and `qs:sitter:<ch>` holds the notecard `SITTER` info written at seed time. To map a sitter, track the 90045 pose broadcast (its `id` is the seated avatar) or the 90060/90065 sit/stand events.
 
 ## FAQ
 
@@ -152,7 +152,7 @@ Won't work: sitB dedupes by `scriptName`, so two scripts with different names bo
 Not from a single script. Workaround: drop the plugin script twice with different filenames and different `MY_LABEL` / `MY_CLICK_CHAN` constants. Each instance registers independently.
 
 **What if two plugins pick the same `click_chan`?**
-Both will receive every click for that channel. Plugin authors must coordinate channel picks (or just be lucky in the 48-slot free band). The fork doesn't validate against duplicates, it just dispatches to whatever channel you announced.
+Both will receive every click for that channel. Plugin authors must coordinate channel picks within the 43 free numbers (see the payload table above). The fork doesn't validate against duplicates, it just dispatches to whatever channel you announced.
 
 ## See also
 

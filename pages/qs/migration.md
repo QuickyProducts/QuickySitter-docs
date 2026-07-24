@@ -31,7 +31,7 @@ In stock AVsitter, `[SAVE]` updates the in-memory pose default but **does not** 
 
 In QuickySitter, `[SAVE]` writes the new pose offset to LSD (`qs:p:<ch>:<i>`), which survives object rerez, script reset, and region restart. The notecard isn't touched, but the next boot reads LSD ahead of re-parsing if the asset-key matches, so your live edits are preserved.
 
-You can still `[DUMP]` to back up the LSD state to the AVsitter settings service or the chat console. See [Adjustment Workflow](adjustment-workflow.html). Boot will overwrite LSD with notecard content whenever the notecard's asset-key changes (typically when you re-save the notecard).
+You can still `[DUMP]` to back up the LSD state to QuickySitter's self-hosted `slquicky.com` receiver or the chat console. See [Adjustment Workflow](adjustment-workflow.html). Boot will overwrite LSD with notecard content whenever the notecard's asset-key changes (typically when you re-save the notecard).
 
 ### Larger configs become stable
 
@@ -47,11 +47,11 @@ Purely protocol-driven stock plugins (camera, the lock/adult plugins, favs, text
 
 1. **Backup.** Take the existing prim to your inventory, then take a second copy and rename it (e.g., "Foo (QS port)"). Work on the copy.
 2. **Swap the base scripts.** In the prim's contents:
-   - Delete `[AV]sitA`, `[AV]sitA 2`, `[AV]sitA 3`, … (one per sitter slot).
-   - Delete `[AV]sitB`, `[AV]sitB 2`, `[AV]sitB 3`, … (matching count).
+   - Delete `[AV]sitA`, `[AV]sitA 1`, `[AV]sitA 2`, … (one per sitter slot; the suffix starts at ` 1` for the second slot).
+   - Delete `[AV]sitB`, `[AV]sitB 1`, `[AV]sitB 2`, … (matching count).
    - Add `[QS]boot` (one instance, no slot suffix).
-   - Add `[QS]sitA`, `[QS]sitA 2`, `[QS]sitA 3`, … (same count as before).
-   - Add `[QS]sitB`, `[QS]sitB 2`, `[QS]sitB 3`, … (same count).
+   - Add `[QS]sitA`, `[QS]sitA 1`, `[QS]sitA 2`, … (same count as before; contiguous numbering from ` 1`, a gap breaks the slot count).
+   - Add `[QS]sitB`, `[QS]sitB 1`, `[QS]sitB 2`, … (same count).
 3. **Swap the name-probing plugins.** Replace `[AV]adjuster`, `[AV]prop`, `[AV]faces`, `[AV]sequence` with their `[QS]` counterparts: these detect the engine via `[AV]sitA` script names and degrade in a QS linkset, so their features (props, faces, sequences, the `[HELPER]`/`[SAVE]` flow) won't work without the swap. (`[QS]select` is optional, since sitB has a built-in picker, but remove stock `[AV]select` rather than leaving it.) Add `[QS]offset` if you want personal-offset persistence. For RLV furniture swap in `[QS]root-RLV` (stock `[AV]root-RLV` name-probes `[AV]sitA 1`, so its capture/seat-relocation misfires on multi-sitter pieces) together with `[QS]root-control` / `[QS]root-security`. The control suite addresses its members by name, so don't mix `[QS]` and `[AV]`.
 4. **Leave the protocol-driven stock plugins alone.** Keep `[AV]camera`, `[AV]LockGuard`, `[AV]LockMeister`, `[AV]Xcite!`, `[AV]favs`, `[AV]texture`: they work as-is. Stock `[AV]root-control` / `[AV]root-security` are fine too; only `[AV]root-RLV` needs the `[QS]` fork on multi-sitter pieces (see step 3).
 5. **Keep the AVpos notecard.** No edits needed, same syntax.
@@ -71,7 +71,7 @@ QS **does** fork the root family: `[QS]root`, `[QS]root-control`, `[QS]root-secu
 ## What does NOT migrate
 
 - **Personal offsets stored in stock `CUSTOMS`.** In stock AVsitter these live in sitA's per-session memory and are wiped on script reset. Migration replaces sitA, so any per-user offsets accumulated in the previous prim are gone. Users who had `[SAVE OFFSET]`-ed positions will need to re-save after the migration. (This is the same as any stock-AVsitter reset.) Going forward, install `[QS]offset` and the re-saved offsets persist in LSD (`QSO:*`) across reset and re-rez instead of being volatile. Note that `[QS]offset` **owns** the `CUSTOMS` store: without it there is no personal-offset persistence and no sitA fallback.
-- **`[DUMP]` history.** The `[DUMP]` URL written to the AVsitter settings service is tied to the prim/sitter UUID, not the script. After migration the dump URL changes; old URLs go stale.
+- **`[DUMP]` history.** The `[DUMP]` URL written to the `slquicky.com` receiver is tied to the upload key, not the script. After migration the dump URL changes; old URLs go stale.
 
 ## Reverting
 

@@ -66,11 +66,11 @@ A region restart preserves LSD for prims in the region. A re-rez of a saved prim
 
 `llSay` / `llOwnerSay` / `llShout` are rate-limited per script per frame. `[DUMP]` of a large config can hit the limit and lose lines if dumped in a tight loop.
 
-**What QS does:** `[QS]boot`'s dump cascade self-throttles via 90099 self-trigger between iterations, letting the Sim drain queued chat between batches. The output is also POST-uploaded to the AVsitter settings service (URL in the chat) so a large dump can be fetched from a URL instead of scraped out of chat, subject to its own HTTP throttle (next section).
+**What QS does:** `[QS]boot`'s dump cascade self-throttles via 90099 self-trigger between iterations, letting the Sim drain queued chat between batches. The output is also POST-uploaded to QuickySitter's own self-hosted receiver at `slquicky.com` (URL in the chat) so a large dump can be fetched from a URL instead of scraped out of chat, subject to its own HTTP throttle (next section). The old avsitter.com service stopped accepting QS output and is no longer used (since boot 1.25, issue #66).
 
 ## HTTP request throttle (the `[DUMP]` upload)
 
-`[DUMP]` POSTs the rebuilt notecard to the AVsitter settings service so a large config can be fetched from a URL instead of scraped out of chat. Outbound `llHTTPRequest` is throttled to **25 requests per 20 s per object** (and 1000 per 20 s per owner).
+`[DUMP]` POSTs the rebuilt notecard to QuickySitter's self-hosted receiver (`slquicky.com/quicky-sitter/dump/settings.php`) so a large config can be fetched from a URL instead of scraped out of chat. Outbound `llHTTPRequest` is throttled to **25 requests per 20 s per object** (and 1000 per 20 s per owner).
 
 **What QS does:** `[QS]boot` streams the upload in ~1 KB chunks (`web()` flushes once the escaped cache passes 1024 characters, one `llHTTPRequest` each) and **paces** them: between dump entries it arms a one-shot 0.2 s timer (`QS_DUMP_PACE`) instead of firing the next tick immediately, so the POSTs land well under SL's ~1/s rate and never burst toward the 25/20 s cap. It also **guards the throttle directly**: `llHTTPRequest` returns `NULL_KEY` synchronously when a POST is refused, and boot sets `dump_failed` on that (and on any non-200 `http_response`), so the owner gets a `[DUMP] Upload failed` notice instead of a silently truncated link. boot never reads the response body, only the status, so the 2 KB response-body limit doesn't apply, and the retrieval URL is built from the upload key.
 

@@ -6,72 +6,83 @@ keywords: version, bump, convention, semver, lsl
 toc: true
 ---
 
-QuickySitter LSL scripts carry a `string version = "X.YYY…"` global near the top of every file. The whole fork is **version-locked as a set**: every shipped `[QS]*.lsl` currently reports the same number, `0.999`. The number is a shared build counter for the fork, not a per-script semantic version.
+QuickySitter LSL scripts carry a `string version = "X.YY…"` global near the top of every file. Each script has its **own** version and they drift independently between releases; a shared, uniform number only appears at a release (see below). Read the live value from the file header before bumping — never assume all scripts share a number.
 
-## The current step: +0.00001
+## The default step: +0.0001
 
-A routine change bumps the locked version by **0.00001**. The next routine bump from today's baseline is therefore:
+A routine change (bug fix that isn't a blocker, refactor, cosmetic edit) bumps the touched script by **+0.0001**:
 
 ```
-0.999 → 0.99901
+1.0401 → 1.0402
 ```
 
-The step has shrunk over time as the fork settled and PR cadence rose. For reading older commit history:
+A **feature or a blocker fix** rounds the version **up to the next hundredth** instead:
 
-| In effect | Step | Example bump |
-|-----------|------|--------------|
-| from **2026-06-04** (current) | `+0.00001` | `0.999` → `0.99901` |
-| 2026-05-24 – 2026-06-03 | `+0.0001` | `0.9989` → `0.999` |
-| before 2026-05-24 | `+0.001` | `0.997` → `0.998` |
+```
+1.0402 → 1.05      (feature/blocker, not 1.0403)
+1.04   → 1.0501    (a blocker fix lands on top of the rounded 1.05 line)
+```
 
-So a fifth-decimal digit in a `version =` line is a current-era bump; trailing `0.99x`/`0.9xx` numbers in comments or old commits are change-history, not the live value.
+This is a real convention from the history, not a guess: commit `dca64b0` bumped three scripts in one commit to **three different numbers** (`[QS]root-security` 1.0501, `[QS]sitB` 1.0501, `[QS]adjuster` 1.0502) for the Adjust-ACL feature, while `792ce6e` was a routine `+0.0001` (`1.0401 → 1.0402`).
 
-Because the set is locked, **every touched script gets the same new number in a PR**, so you don't carry independent per-script counters. Bump them together.
+The step has changed over the project's life; for reading old commit history:
 
-> Don't hardcode `0.999` anywhere as if it were permanent. It's just today's baseline. Read the live value from the file header before bumping.
+| In effect | Default step |
+|-----------|--------------|
+| from **2026-07-03** (current) | `+0.0001` |
+| 2026-06-12 – 2026-07-02 | `+0.001` |
+| feature/blocker round-up to the next hundredth has applied since 2026-06-15 |
+
+> Pre-release iteration on an **unreleased** script always uses the plain default step, even for a feature — the round-up rule is for shipped scripts.
+
+## Releases stamp a uniform number
+
+A **release** is the only time all product scripts share a version: the release stamps every script in the set to one new number, chosen above the highest per-fix version currently in the set. The current release is **1.25** (commit `e568aa9` unified the sitter set; the QuickyHUD kit and the QuickySitter engine share the number from this release on, which is why the sitter jumped `1.04 → 1.25` to meet the kit).
+
+Between releases, scripts carry their independent per-fix numbers again. So a bare `1.25` across the whole set means "as shipped in release 1.25"; mixed numbers like `1.0501` / `1.0502` are normal mid-cycle state.
+
+Folding is allowed while a release is **unshipped**: an interim per-fix bump made after the release tag can be folded back into the release number and the tag moved, since nothing was delivered (e.g. `6cb2659` bumped `[QS]prop` to 1.26, then `9fb5fca` folded it back into 1.25).
 
 ## Where the version lives
 
-Near the top of each `[QS]*.lsl`, before any other globals:
+Near the top of each `[QS]*.lsl`:
 
 ```lsl
-string version = "0.999";
+string version = "1.25";
 ```
 
 It appears in:
 
-- The QSALIVE reply (field 1): only `[QS]sitA` answers QSALIVE, so this carries the sitter's version; consumers can substring-match for capability gating.
+- The QSALIVE reply: only slot-0 `[QS]sitA` answers QSALIVE, so this carries the **sitter's** version; consumers can substring-match for capability gating.
 - The `Out(level, …)` diagnostic prefix (each line is tagged `[<version>]`). See [Debug Flags](debug-flags.html).
 - The `[DUMP]` output header.
-- Commit messages: see Commit message format below.
+- Commit subject lines (below).
 
 ## Commit message format
 
-Every script bump in a commit is named in the subject line:
+Every script bump is named in the subject line with its own old → new number:
 
 ```
-[QS]sitA 0.99901, [QS]boot 0.99901: fix QSALIVE late-arrival race
+[QS]root-security 1.04 -> 1.0501, [QS]sitB 1.04 -> 1.0501, [QS]adjuster 1.04 -> 1.0502: Adjust access ACL
 ```
 
-Multiple scripts in one commit are listed comma-separated, all sharing the same new number. The body explains the change. The version part is always quoted in the subject so `git log --oneline` reads naturally.
+Scripts in the same commit that genuinely landed on different numbers list them separately — don't force them to match. The body explains the change.
 
 This convention is enforced socially, not by tooling. Reviewers check that touched scripts bumped.
 
 ## Announce the bump
 
-Every edit and PR that touches a version states the file and the old → new number up front, e.g.:
+Every edit that touches a version states the file and old → new number up front, e.g.:
 
 ```
-Update: [QS]sitA 0.999 → 0.99901, [QS]boot 0.999 → 0.99901
+Update: [QS]sitA 1.04 → 1.0401
 ```
 
-This makes review queues easy to skim for "which scripts changed, and to what." See [Contributing](contributing.html).
+For several files, a small table at the top of the reply. See [Contributing](contributing.html).
 
 ## Coordinated bumps across worktrees
 
-Several agents may be working in parallel on Claude worktrees. Before bumping, check sibling worktrees for an in-flight bump on the same script. Two independent `0.999 → 0.99901` bumps in different worktrees both look correct in isolation but collide on merge.
-
-The convention: scan sibling `.claude/worktrees/*` paths for the same `[QS]*.lsl` file with a newer `version =` line. If a sibling has already bumped to `0.99901`, use `0.99902` in your worktree.
+Several agents may work in parallel on Claude worktrees. Before bumping, scan sibling `.claude/worktrees/*` paths for an in-flight bump on the same script — two independent bumps to the same number in different worktrees each look correct in isolation but collide on merge. If a sibling already took `1.0402`, use `1.0403`.
 
 ## See also
 

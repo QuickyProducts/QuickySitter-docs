@@ -162,31 +162,23 @@ ANIM pose2|pose1
 
 See [`[QS]faces`](plugin-faces.html).
 
-## Animation sequences: `SEQUENCE` + `WAIT` + `SOUND` (handled by `[QS]sequence`)
+## `SEQUENCE` (launcher line, handled by `[QS]sequence`)
+
+In the **AVpos** notecard, a `SEQUENCE` line is just a menu launcher — boot turns it into a button (default integer `90210`) that starts the named sequence:
 
 ```
-SEQUENCE <pose_or_label>
-WAIT <seconds>
-SOUND <sound_name>|<flag>
+SEQUENCE <name>
 ```
 
-Each `SEQUENCE` line starts a step; subsequent `WAIT` / `SOUND` lines belong to the step until the next `SEQUENCE` line.
+The actual step definitions (`PLAY`, `WAIT`, `SAY`, `WHISPER`, `SOUND`, `LOOP`) live in the **separate `[AV]sequence_settings` notecard**, not in AVpos — see [Animation Sequences](animation-sequences.html) for that grammar. Do **not** put `WAIT`/`SOUND` lines in AVpos; boot ignores them.
 
-```
-SEQUENCE Lovescene
-WAIT 30
-SEQUENCE poseB
-SOUND beat|1
-WAIT 25
-```
-
-`SEQUENCE` lines in the AVpos notecard name the steps, but `[QS]sequence` reads its own separate **`[AV]sequence_settings`** notecard (not AVpos) for the full sequence definitions. `SEQUENCE` entries are not part of the `[DUMP]` output.
+Unlike the step notecard, the AVpos `SEQUENCE` launcher lines **are** reconstructed in `[DUMP]` output (boot re-emits the `90210` button as `SEQUENCE <name>`).
 
 See [`[QS]sequence`](plugin-sequence.html) and the [upstream AVsequence docs](https://avsitter.github.io/avsitter2_sequence.html) for the full sequence semantics.
 
 ## QS-specific behavior
 
-- **Empty notecard.** A notecard with only `This notecard is empty` (or any single non-directive line) is valid and boot accepts it. The prim sits but plays no poses.
+- **Notecard must have at least one `SITTER`/`POSE` block.** boot derives the sitter-channel count from notecard content, not from installed scripts. A notecard with no pose-ish line seeds **zero** channels — boot reports "0 sitter(s) ready" and the sit scripts never leave their pre-boot state. Use the minimal block in [Getting Started](getting-started.html) as a floor.
 - **Asset-key tracking.** Boot stores the notecard's asset-key in `qs:boot:asset`. Re-saving the notecard with the same content keeps the same asset-key → boot skips re-parse. Editing the text → new asset-key → boot re-seeds. See [Boot Sequence](boot-sequence.html).
 - **`[HELPER] [SAVE]` edits go to LSD, not the notecard.** Stock AVsitter doesn't auto-write pose defaults anywhere; you `[DUMP]` and paste back. QS writes them to `qs:p:<ch>:<i>` LSD so they survive script reset and rerez. The notecard is the import source on next fresh boot, but in-world edits are durable. Use `[DUMP]` to back up to notecard form manually.
 

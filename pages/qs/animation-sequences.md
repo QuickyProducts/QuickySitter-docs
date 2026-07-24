@@ -6,57 +6,49 @@ keywords: sequence, animation, chain, multi-step, plugin
 toc: true
 ---
 
-Animation sequences are multi-step animation chains, e.g., a "lovescene" that plays one pose for 30 s, then transitions to a second pose for 25 s, then loops. Implemented by the `[QS]sequence` plugin (or stock `[AV]sequence`, which is interchangeable).
+Animation sequences are multi-step animation chains, e.g., a "lovescene" that plays one pose for 30 s, then transitions to a second pose for 25 s, then loops. Implemented by the `[QS]sequence` plugin. Stock `[AV]sequence` runs too, but degrades on multi-sitter QS furniture: it counts sitters by probing for `[AV]sitA N` script names, which a QS prim doesn't have, so sequences only fire for slot 0. The fork exists to fix exactly that.
 
 This page focuses on the QS-specific aspects. For the tutorial walk-through see the [upstream AVsequence page](https://avsitter.github.io/avsitter2_sequence.html).
 
 ## Notecard syntax (unchanged from stock)
 
-Sequence definitions live in a dedicated **`[AV]sequence_settings`** notecard, read by `[QS]sequence` directly, not in the AVpos notecard. A sequence is a series of `SEQUENCE <pose_or_label>` lines, each followed by a `WAIT <seconds>` (and optionally a `SOUND <name>|<flag>` line). Each `SEQUENCE` line names the pose (or label) to play for that step; `WAIT` gives the step's duration.
+Sequence definitions live in a dedicated **`[AV]sequence_settings`** notecard, read by `[QS]sequence` directly, not in the AVpos notecard. A `SEQUENCE <name>` line **starts a new named sequence**; the lines under it are its steps, until the next `SEQUENCE` line. `PLAY` is the directive that actually plays a pose — `SEQUENCE` only names the block.
 
 ```
 SEQUENCE Lovescene
+PLAY pose1
 WAIT 30
-SEQUENCE poseB
+PLAY pose2
+SOUND moan|1.0
 WAIT 25
-SEQUENCE poseC
-SOUND beat|1
-WAIT 60
+LOOP
 ```
 
-The sequence plays steps in order. After the final step, the last pose continues to loop until something else changes the sitter's animation. `SOUND <name>|<flag>` (where `flag = 1` loops) is optional per step.
-
-`SEQUENCE`, `WAIT`, and `SOUND` are three independent directives, each on its own line. There is no `NAME` or `STEP` directive.
+Step directives: `PLAY <pose>` (play a pose), `WAIT <seconds>` (hold, float), `SAY`/`WHISPER <text>` (chat), `SOUND <name>|<volume>` (play a sound — **field 2 is the volume**, 0.0–1.0, not a loop flag), and `LOOP` (jump back to the sequence's first step at the end). Without `LOOP`, the sequence stops after the last step and the final pose keeps looping.
 
 ## How it works
 
 When a pose with a sequence is selected:
 
-1. `[QS]sequence` looks up the sequence by name and starts the first step.
-2. A `llSetTimerEvent` fires at the step's `WAIT` duration.
-3. On timer, the next `SEQUENCE` step plays.
-4. After the last step, the timer stops and the last step's animation continues to loop.
+1. `[QS]sequence` looks up the sequence by name and starts its first step.
+2. Steps run in order; a `WAIT` arms `llSetTimerEvent` for its duration, `PLAY` fires the pose.
+3. `LOOP` at the end restarts the sequence; otherwise it stops and the last pose keeps looping.
 
-The sequence pointer is per-slot in sitA's per-sitter globals. A sit-down resets it.
+The sequence pointer is a single global in `[QS]sequence` — **one sequence runs per furniture at a time**, not one per slot. It is stopped when any pose is played directly (90000/90008), on stand-up (90065), or on a swap (90030).
 
 ## Interaction with Re-Sync
 
-LinkMsg 90271 re-phases the **main** pose animation. For sequences, this means:
-
-- The current STEP animation (whatever's playing now) gets the Stop+Start cycle.
-- Steps that are about to play continue normally, because the timer wasn't interrupted.
-
-In practice, sequences with short steps (< 1 s) are visible-loop fast enough that drift between sitters is dominated by within-step phase, which 90271 handles. Long-step sequences (e.g., a 30-second slow-dance loop) benefit more from re-sync.
+LinkMsg 90271 re-phases pose animations, but only **SYNC** poses (those with no `P:` prefix). A sequence step that `PLAY`s a solo `POSE` entry is not re-phased; a step playing a SYNC pose is. So re-sync helps a sequence exactly when its current step is a shared couple pose.
 
 See [Re-Sync Protocol](resync-protocol.html).
 
 ## Configuration notecard
 
-`[QS]sequence` does **not** participate in the `[DUMP]` cascade: it has no QSDUMP announce, and `SEQUENCE` lines are not reconstructed in `[DUMP]` output. Instead, the plugin reads its own separate **`[AV]sequence_settings`** notecard (not the AVpos notecard) for sequence definitions. Its only fork change from stock `[AV]sequence` is the sitter-count query via QSALIVE (90096/90097); the product string is still the un-rebranded `"AVsitter™ sequence"`.
+The plugin's own `[AV]sequence_settings` notecard is never in `[DUMP]` output; the creator edits it directly. (Boot **does** round-trip the AVpos `SEQUENCE` launcher lines as `SEQUENCE <name>` in `[DUMP]` — but those live in AVpos and are handled by boot, not by this plugin.) Fork changes from stock `[AV]sequence`: the sitter-count query via QSALIVE (90096/90097) and the `Out()` verbose ladder. The product string is still the un-rebranded `"AVsitter™ sequence"`.
 
-## Sound and music sequences
+## Sound
 
-`[QS]sequence` also handles sound/music playback tied to poses: toggle via LinkMsg 90205, or via the `SOUND` directive in AVpos. See the upstream docs for the audio-related syntax.
+A `SOUND` step plays one sound inside a sequence (`SOUND <name>|<volume>`, field 2 is the volume). It is a `[AV]sequence_settings` step directive — in an AVpos notecard `SOUND` is an unknown command and ignored. LinkMsg `90205` is the separate global sound on/off toggle.
 
 ## See also
 

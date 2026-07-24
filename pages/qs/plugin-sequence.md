@@ -6,25 +6,33 @@ keywords: sequence, animation chains, plugin
 toc: true
 ---
 
-`[QS]sequence` is a very thin fork of stock `[AV]sequence`. Its **only** fork-specific change is that it learns the sitter count over QSALIVE (90096/90097) instead of probing for sitter scripts by name. It does **not** participate in the `[DUMP]` cascade, does not publish a `qs:alive:*` presence flag, and its product string is still the upstream `AVsitter(TM) sequence`.
+`[QS]sequence` is a thin fork of stock `[AV]sequence`. Its fork-specific changes are two: it learns the sitter count over QSALIVE (90096/90097) instead of probing for sitter scripts by name, and it carries the project `Out()`/`OutForce()` verbose ladder (reads `qs:cfg:verbose`). It does **not** publish a `qs:alive:*` presence flag, does not announce on QSDUMP, and its product string is still the upstream `AVsitter(TM) sequence`.
 
-Behaviour is otherwise identical to stock from the user's perspective. Animation sequences (chained pose / animation runs with timing) are defined the same way. Note that `[QS]sequence` reads its own separate `[AV]sequence_settings` notecard, **not** the main `AVpos` notecard, and SEQUENCE lines are therefore **not** part of the `[DUMP]` output.
+Behaviour is otherwise identical to stock from the user's perspective. The step definitions in `[AV]sequence_settings` are the plugin's own notecard and are never in `[DUMP]` output. (Separately, boot **does** reconstruct the AVpos `SEQUENCE` *launcher* lines — the ones that put a sequence button in the menu — as `SEQUENCE <name>` in `[DUMP]`; those are AVpos content, handled entirely by boot, not by this plugin.)
 
-## Notecard syntax (unchanged from stock)
+## Notecard syntax
 
-Sequences live in the dedicated `[AV]sequence_settings` notecard (the same separate notecard stock `[AV]sequence` uses), not in `AVpos`. A sequence is a block of directives starting with `SEQUENCE <pose_or_label>`. Following `WAIT <seconds>` and `SOUND <name>|<flag>` lines belong to that step until the next `SEQUENCE` line.
+Sequences live in the dedicated `[AV]sequence_settings` notecard (the same separate notecard stock `[AV]sequence` uses), not in `AVpos`. Each `SEQUENCE <name>` line **starts a new named sequence**; the lines under it are its steps, until the next `SEQUENCE` line. The step directives are `PLAY`, `WAIT`, `SAY`, `WHISPER`, `SOUND`, and `LOOP`.
 
 ```
 SEQUENCE Lovescene
+PLAY pose1
 WAIT 30
-SEQUENCE poseB
+PLAY pose2
+SOUND moan|1.0
 WAIT 25
-SEQUENCE poseC
-SOUND beat|1
-WAIT 60
+LOOP
 ```
 
-Each line is one directive. `WAIT` takes a single float (seconds); `SOUND <name>|<flag>` plays a sound on the step (`flag = 1` to loop). The sequence plays steps in order; after the last step the timer stops and the running pose continues to loop.
+| Directive | Meaning |
+|-----------|---------|
+| `PLAY <pose>` | Play a pose (fires 90003 to sitA). This is what advances the animation; `SEQUENCE` names the block, `PLAY` plays. |
+| `WAIT <seconds>` | Hold for that many seconds before the next step (float). |
+| `SAY <text>` / `WHISPER <text>` | Emit chat / whisper on channel 0. |
+| `SOUND <name>\|<volume>` | Play a sound. **Field 2 is the volume** (float 0.0–1.0), not a loop flag. |
+| `LOOP` | At the end of a sequence, jump back to its first step. Without it, the sequence stops after the last step and the final pose keeps looping. |
+
+`DEBUG <n>` is a settings-level toggle (not a step). There is no `NAME` or `STEP` directive.
 
 Full reference in the [upstream AVsequence page](https://avsitter.github.io/avsitter2_sequence.html).
 
@@ -32,25 +40,23 @@ Full reference in the [upstream AVsequence page](https://avsitter.github.io/avsi
 
 To be explicit, `[QS]sequence` deliberately does **not** add the features some of the other QS plugins have:
 
-- **No `[DUMP]` participation.** It does not announce on QSDUMP (90094/90095) and SEQUENCE lines never appear in `[DUMP]` output. Its config lives in `[AV]sequence_settings`, which the creator edits directly.
+- **No QSDUMP announce.** It does not announce dump capability. Its config lives in `[AV]sequence_settings`, which the creator edits directly. (The AVpos `SEQUENCE` launcher lines are still round-tripped by boot's dump — that's boot, not this plugin.)
 - **No `qs:alive:*` presence flag.** Unlike `[QS]prop`/`[QS]faces`, sequence does not publish a presence flag.
 - **Un-rebranded product string.** The script still reports `product = "AVsitter(TM) sequence"`.
 
-The single fork change is sitter-count discovery over QSALIVE (90096/90097) in place of stock's script-name probing.
+## Sound
 
-## Sound and music
-
-`[QS]sequence` handles the `SOUND` directive too, toggling music playback per pose. See [upstream AVsequence](https://avsitter.github.io/avsitter2_sequence.html) for the syntax.
+The `SOUND` step plays one sound inside a sequence (`SOUND <name>|<volume>`). Separately, LinkMsg `90205` toggles whether sounds play at all (the sound on/off switch). The two are unrelated: `90205` is a global mute, `SOUND` is a per-step action.
 
 ## Link messages
 
-All stock-AVsitter numbers, used unchanged, and `[QS]sequence` adds no link-messages of its own:
+`[QS]sequence` adds no link-messages of its own; all are stock-AVsitter numbers:
 
 | Num | Direction | Use |
 |-----|-----------|-----|
-| `90003` | sequence → sitA | Play the next pose/animation in the sequence step. |
-| `90205` | any → sequence | Toggle sound. |
-| `90210` | various | BUTTON-line default integer for sequence triggers. |
+| `90003` | sequence → sitA | Play a pose from a `PLAY` step (LINK_THIS; ignored by sequence itself so it doesn't stop its own run). |
+| `90205` | any → sequence | Toggle sound on/off. |
+| `90210` | AVpos → boot | Default integer for a `SEQUENCE` line: boot turns it into a menu launcher button. |
 
 ## See also
 

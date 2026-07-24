@@ -50,7 +50,7 @@ PROP* detection rides on the existing notecard parser: one extra `if (command ==
 
 Ownership of `[DUMP]` lives entirely in `[QS]boot`. Adjuster's involvement is exactly one line: the `[DUMP]` dialog handler sends 90098 to kick the chain.
 
-Boot writes the `qs:cfg` / `qs:sitter` / `qs:p:*` keys during seed, so reading them back to dump is a natural fit. Both producer (streaming the LSD into 90022 messages) and receiver (formatting them into AVpos lines, chat output, HTTP upload to the AVsitter settings service) live there.
+Boot writes the `qs:cfg` / `qs:sitter` / `qs:p:*` keys during seed, so reading them back to dump is a natural fit. Both producer (streaming the LSD into 90022 messages) and receiver (formatting them into AVpos lines, chat output, HTTP upload to QuickySitter's self-hosted `slquicky.com` receiver) live there.
 
 | Num   | Direction | `msg` | `id` | Meaning |
 |-------|-----------|-------|------|---------|
