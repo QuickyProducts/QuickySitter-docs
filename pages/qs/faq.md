@@ -12,19 +12,21 @@ Yes. The minimum change is to delete `[AV]sitA` / `[AV]sitB` and add `[QS]boot` 
 
 ## Do I need to replace ALL the AVsitter plugins?
 
-Not all of them. Stock `[AV]camera`, `[AV]control` (LockGuard, LockMeister, Xcite!, RLV) and `[AV]favs` work unchanged, because they are purely link-message-driven. `[AV]faces`, `[AV]select`, `[AV]adjuster`, `[AV]sequence` and `[AV]prop` find the engine via `[AV]sitA` script names and degrade in a QS linkset (single-sitter at best, no QS menu entries), so use their `[QS]` variants. See [Compatibility Matrix](compatibility-matrix.html).
+Not all of them. Stock `[AV]camera`, the lock/adult plugins (LockGuard, LockMeister, Xcite!) and `[AV]favs` work unchanged, because they are purely link-message-driven. `[AV]faces`, `[AV]select`, `[AV]adjuster`, `[AV]sequence`, `[AV]prop` and `[AV]root-RLV` find the engine via `[AV]sitA` script names and degrade in a QS linkset (single-sitter at best, no QS menu entries; `[AV]root-RLV` name-probes `[AV]sitA 1`, so on multi-sitter pieces its capture and seat-relocation misfire), so use their `[QS]` variants. See [Compatibility Matrix](compatibility-matrix.html).
 
 ## What happens to existing pose adjustments after migration?
 
 Pose **defaults** (from the AVpos notecard) carry over fine, because boot re-parses on first run.
 
-Pose **personal offsets** stored in stock `CUSTOMS` (set via `[ADJUSTER] [SAVE]`) live in the script's memory and are wiped when you replace the script. Users who had `[SAVE OFFSET]`-ed positions in the old prim will need to re-save in the new one. This is the same as any AVsitter script reset.
+Pose **personal offsets** stored in stock `CUSTOMS` (set via `[SAVE]` in the `[ADJUST]` personal-adjust menu) live in the script's memory and are wiped when you replace the script. Users who saved personal positions in the old prim will need to re-save in the new one. This is the same as any AVsitter script reset.
 
 If you install `[QS]offset`, future personal offsets persist across script resets and re-rezzes (LSD-backed). See [Personal Pose Offsets](personal-pose-offsets.html).
 
-## Why does my prim's chat show `Boot complete: 0 channel(s) seeded`?
+## Why does my prim's chat show `Load complete; 0 sitter(s) ready`?
 
-Most likely you have no `[QS]sitA` script in the prim, or its name doesn't match exactly. `[QS]boot` counts channels by finding `[QS]sitA`, `[QS]sitA 2`, `[QS]sitA 3`, … in inventory. Check the script names exactly: `[QS]SitA` (capital S in "Sit") won't match.
+On a fresh boot `[QS]boot` reports `Load complete; N sitter(s) ready.` (or `Cached boot; N sitter(s) ready.` on the skip-seed path). `N` is the number of **`SITTER` directives / pose sections boot parsed out of the `AVpos` notecard**, not a count of `[QS]sitA` scripts. `0` means boot found no seatable pose data: the `AVpos` notecard is empty, malformed, or has no `SITTER` / pose lines. Boot does **not** count sitA scripts to derive the channel count.
+
+A missing or misnamed `[QS]sitA` is a separate failure: it surfaces as a `self_check_report` line (`ERROR: [QS]sitA missing`), not as a `0 sitter(s)` count. Script names are case-sensitive, so `[QS]SitA` (capital S in "Sit") won't be recognised there either.
 
 ## I changed the AVpos notecard but the new pose isn't appearing.
 
@@ -36,7 +38,7 @@ Three possibilities:
 
 ## Why doesn't the `[FACES]` / `[PROP]` button show up even though I have the scripts?
 
-Each QS plugin advertises its presence by writing a `qs:alive:<name>` flag to Linkset Data in `state_entry` (`qs:alive:prop`, `qs:alive:faces`, `qs:alive:adjuster`, …; `[QS]offset` uses the inverted `qs:offset:alive`). `[QS]sitB` reads those flags on demand when it builds the menu, not script-name inventory. If the plugin is present but the button is missing, the script most likely crashed at `state_entry` (check chat for compile errors) so its flag was never written. Boot re-confirms the flags on every `QS_ALIVE_CENSUS` (90079): it wipes all `qs:alive:*`, broadcasts, and only live scripts re-stamp themselves. The retired HELLO broadcasts (90088–90092) are no longer used. See [QSALIVE Discovery](qsalive-discovery.html).
+Each QS plugin advertises its presence by writing a `qs:alive:<name>` flag to Linkset Data in `state_entry` (`qs:alive:prop`, `qs:alive:faces`, `qs:alive:adjuster`, …; `[QS]offset` uses the inverted `qs:offset:alive`). `[QS]sitB` reads those flags on demand when it builds the menu, not script-name inventory. If the plugin is present but the button is missing, the script most likely crashed at `state_entry` (check chat for compile errors) so its flag was never written. Boot's `QS_ALIVE_CENSUS` (90079) broadcast asks every live plugin to re-stamp its `qs:alive:<name>` flag; `finalize_boot` sends it after each boot without wiping anything. The wipe-then-census (clear all `qs:alive:*`, then broadcast so a removed plugin drops out) runs **only** on the plugin add/remove path: a `CHANGED_INVENTORY` where the notecard is unchanged. The retired HELLO broadcasts (90088-90092) are no longer used. See [QSALIVE Discovery](qsalive-discovery.html).
 
 ## My couple pose drifts between sitters over time. What do I do?
 
@@ -48,11 +50,11 @@ If you don't have QuickyHUD, any in-prim script can send the trigger:
 llMessageLinked(LINK_SET, 90271, "", "");
 ```
 
-Any current `[QS]sitA` handles 90271 (the Re-Sync trigger has shipped since the unified-version release; all shipped scripts are at the same locked version).
+Any current `[QS]sitA` handles 90271 (the Re-Sync trigger has shipped since the unified-version release). Per-script versions drift between releases; a release stamps the whole set to one number, so "uniform version" only holds at release boundaries.
 
 ## Can I rename `[QS]sitA` to keep the AVsitter brand on the prim?
 
-Yes for the publicly-visible script name, no for trademark reasons. You can rename QS scripts to whatever prefix you like: `[FOO]sitA`, `[Bar]sitB`, etc. Discovery is script-name-independent: presence is the `qs:alive:*` LSD flags (re-confirmed by the 90079 census), and the QSALIVE count/version handshake (90096/90097) keys off slot, not name. (The old name-matching that counted `[QS]sitA`, `[QS]sitA 2`, … in inventory is the one exception; see the `Boot complete` answer above.)
+Yes for the publicly-visible script name, no for trademark reasons. You can rename QS scripts to whatever prefix you like: `[FOO]sitA`, `[Bar]sitB`, etc. Discovery is script-name-independent: presence is the `qs:alive:*` LSD flags (re-confirmed by the 90079 census), and the QSALIVE count/version handshake (90096/90097) keys off slot, not name. The one naming constraint is internal to the sitter pair: sitA counts its sibling slots by walking its **own** basename with contiguous ` 1`, ` 2`, … suffixes (so keep the numbering gap-free, second instance is ` 1`), and it locates its menu partner by scanning inventory for a script whose name contains `sitB`, so a renamed pair must share a prefix (or at least keep `sitB` in the menu script's name). Boot itself does no script-name counting.
 
 You cannot, however, distribute renamed scripts as if they were the AVsitter or QuickySitter project. See the [TRADEMARK](https://avsitter.github.io/TRADEMARK.mediawiki) guidelines.
 
@@ -64,7 +66,7 @@ You cannot, however, distribute renamed scripts as if they were the AVsitter or 
 
 ## Will stock AVsitter scripts run inside a QS linkset?
 
-The link-message contracts at the plugin boundary are unchanged, so purely protocol-driven stock scripts (camera, the control family, favs) run as-is. Stock plugins that probe `[AV]sitA` script names for presence or sitter count (`[AV]faces`, `[AV]select`, `[AV]adjuster`, `[AV]sequence`, `[AV]prop`) mis-detect the QS-named engine and degrade, so use their `[QS]` variants. See [Compatibility Matrix](compatibility-matrix.html).
+The link-message contracts at the plugin boundary are unchanged, so purely protocol-driven stock scripts (camera, the lock/adult plugins, `[AV]root-control`, `[AV]root-security`, favs) run as-is. Stock plugins that probe `[AV]sitA` script names for presence or sitter count (`[AV]faces`, `[AV]select`, `[AV]adjuster`, `[AV]sequence`, `[AV]prop`, and `[AV]root-RLV`) mis-detect the QS-named engine and degrade (`[AV]root-RLV`'s multi-sitter capture and seat-relocation misfire on a failed `[AV]sitA 1` probe), so use their `[QS]` variants. See [Compatibility Matrix](compatibility-matrix.html).
 
 The reverse (QS scripts in a stock prim) does NOT work, because the QS scripts expect `[QS]boot` to have seeded LSD.
 

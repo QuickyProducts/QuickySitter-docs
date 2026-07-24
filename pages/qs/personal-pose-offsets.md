@@ -18,7 +18,7 @@ Persistent across script reset and re-rez. Used while LSD has at least `LSD_MIN_
 
 Keys are written **unprotected**: the proprietary QuickyHUD `LSD_PASS` is intentionally absent from this MPL-licensed source; `QPP_CFG:*` keys (license, reserve, migration flag) stay protected on the QuickyHUD side. Pose offsets aren't security-sensitive, so unprotected reads/writes are acceptable.
 
-`QPP_CFG:ADJUSTMODE` is the deliberate exception, unprotected by design because `[QS]adjuster` reads it (capability detection via `llLinksetDataFindKeys`, state read for sitA's `[STOP HELP]` relabel) and writes it via the 90266 link-message. hudproxy migrates the key on init (`migrateAdjustmodeToUnprotected`), idempotent.
+`QPP_CFG:ADJUSTMODE` is the deliberate exception, unprotected by design because `[QS]adjuster` reads it (capability detection via `llLinksetDataFindKeys`, plus the state checks in its adjust gates) and writes it via the 90266 link-message; `[QS]sitB` also reads it to enrich its menu state. `[QS]hudadmin` migrates the key from its old protected form on init (`migrateAdjustmodeToUnprotected`, idempotent); hudproxy only does a protected-read fallback.
 
 ### RAM tier: `CUSTOMS` list
 
@@ -63,7 +63,7 @@ LSD reads are Mono hashmap lookups (~50 µs); the four-read worst case stays wel
 |--------|-----------|-------|------|---------|
 | 90260 | `[QS]offset` → `[QS]sitA` + `[QS]hudproxy` | `pose_name\|pos\|rot` | sitter UUID | "Mirror this RAM-tier personal offset into your local cache." Sent once per matching RAM-tier entry when a sitter sits, once per RAM-tier `save_offset`. **ZERO/ZERO is the delete sentinel**: receivers drop the matching entry. |
 | 90261 | `[QS]sitA` → `[QS]offset` | `(string)slot` | sitter UUID | "Push every RAM-tier cached offset for this (sitter, slot) pair to me." Sent on sit and on hudproxy pose change. Only enumerates `CUSTOMS` (RAM tier). |
-| 90262 | `[QS]sitA` + `[QS]hudproxy` → `[QS]offset` | `slot\|pose_name\|pos\|rot` | sitter UUID | "Save this offset for (sitter, slot, pose)." Magic name `M#T!` is the all-poses offset used by `[SAVE ALL]`. |
+| 90262 | `[QS]sitA` + `[QS]hudproxy` → `[QS]offset` | `slot\|pose_name\|pos\|rot` | sitter UUID | "Save this offset for (sitter, slot, pose)." Magic name `M#T!` is the all-poses offset saved by the sitter's `[OFFSET ALL]` button (which first asks for an `[ALL POSES]` confirm). |
 | 90263 | `[QS]adjuster` → `[QS]sitA` + `[QS]offset` | `(string)sitter_slot` | pose_name (as `key`) | "The creator just overwrote this pose's default on this slot via `[HELPER] [SAVE]`. Drop every pose-specific entry on this slot that matches. `M#T!` survives, and other slots keep their offsets." |
 | 90264 | hudproxy → `[QS]offset` | `""` | ignored | "Wipe ALL personal offsets: both LSD `QSO:*` and RAM `CUSTOMS`." Triggered by the HUD settings menu's `CLEAR offset storage` confirm. |
 | 90265 | `[QS]offset` → all `[QS]sitA` + `[QS]hudproxy` | `""` | `NULL_KEY` | "Clear your RAM-tier mirror." Broadcast on `wipe_all_offsets` (90264 follow-up). LSD-tier values don't need invalidation. |
@@ -72,9 +72,9 @@ LSD reads are Mono hashmap lookups (~50 µs); the four-read worst case stays wel
 
 In stock AVsitter, pressing `[SAVE]` in the helper-bar adjuster only updates the pose default in memory; the currently seated avatar is **not** repositioned live, so the stale `[pose, user_short]` `CUSTOMS` entries never get a chance to re-apply on top of the new default.
 
-QuickySitter's `[QS]sitB` 90301 handler deliberately calls `send_anim_info(FALSE)` so the seated avatar reflects the new default immediately (better UX), but it routes through `apply_current_anim` in `[QS]sitA`, which adds `MY_CUSTOMS[pose_name]` to the new default. Result: visible "snap" by the old offset vector.
+QuickySitter's `[QS]sitB` 90301 handler forwards the new pos/rot straight from the 90301 payload to `[QS]sitA` via 90055, so the seated avatar reflects the new default immediately (better UX). It deliberately does **not** call `send_anim_info()` / route through `apply_current_anim`: re-reading LSD there would race with the adjuster's save and could re-apply a stale personal offset on top of the new default (a visible "snap"). There is no `MY_CUSTOMS`; personal offsets live only in the `QSO:*` LSD tier and the `RAM_OVERFLOW` mirror.
 
-90263 is sent by `[QS]adjuster` **before** 90301 in the `[SAVE]` loop, so sitA processes the customs eviction ahead of the 90055 chain that re-applies the pose. The seated avatar lands on the helper-bar position; future re-sits start from the new default with no carry-over offset.
+90263 is sent by `[QS]adjuster` **before** 90301 in the `[SAVE]` loop, so sitA and `[QS]offset` drop the matching pose-specific personal offsets on that slot ahead of the 90055 re-apply. The seated avatar lands on the helper-bar position; future re-sits start from the new default with no carry-over offset.
 
 `M#T!` (the all-poses personal offset) is intentionally preserved: it isn't tied to the saved pose name, and the user's intent ("I always sit X cm forward") still applies after a default change.
 
@@ -97,7 +97,7 @@ Since RAM-tier writes only happen when LSD is at the floor (rare in practice), t
 
 ## RAM-tier visibility: `QPP_CFG:RAM_TIER_COUNT`
 
-`[QS]offset` writes the current `CUSTOMS` entry count to the unprotected LSD key `QPP_CFG:RAM_TIER_COUNT` whenever the count changes (save, drop, wipe, eviction). hudproxy reads this key in `getStorageReport()` so the CLEAR-confirm dialog can show how many offsets sit in RAM tier (would be lost on script reset). Empty or `"0"` means none.
+`[QS]offset` writes the current `CUSTOMS` entry count to the unprotected LSD key `QPP_CFG:RAM_TIER_COUNT` whenever the count changes (save, drop, wipe, eviction). `[QS]hudadmin` reads this key in `getStorageReport()` (hudproxy delegates the storage dialog to it via 90267) so the CLEAR-confirm dialog can show how many offsets sit in RAM tier (would be lost on script reset). Empty or `"0"` means none.
 
 ## See also
 

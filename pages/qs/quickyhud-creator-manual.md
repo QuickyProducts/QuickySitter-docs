@@ -8,7 +8,7 @@ toc: true
 
 **QuickySitter Pro** is the creator toolset: the plugins and tools that make building and selling QuickySitter furniture easier. The HUD is one of those plugins, the Animesh Adjust Dummies are another. This manual covers the creator side: getting Pro into a piece and configuring how it behaves. For everyday use of the HUD while sitting, see the [User Manual](quickyhud-manual.html). For setting up couples / group poses without a second avatar, see [Animesh Adjust Dummies](quickyhud-animesh.html).
 
-> **Note:** This page is the *creator* side: preparing and configuring furniture you sell. QuickySitter Pro sits on top of the **QuickySitter engine** and needs it as its base. Its plugins, the HUD included, are **no longer compatible with stock AVsitter**.
+> **Note:** This page is the *creator* side: preparing and configuring furniture you sell. QuickySitter Pro is built for the **QuickySitter engine**, which is what you get the most out of it on. The HUD's in-prim components (`[QS]hudproxy` / `[QS]hudadmin`) are deliberately kept able to run on a stock AVsitter linkset too; only the SYNC / Re-Sync features are structurally bound to `[QS]sitA` and need the QuickySitter engine.
 
 ## Setting up a piece
 
@@ -87,7 +87,7 @@ ADJUSTMODE is your working mode while building. With it on, every move and rotat
 
 On a piece in **menu mode** (no auto-attach on sit), turning ADJUSTMODE on also makes sure you have a HUD to drive it: the in-prim hudproxy fires `90274 ATTACH_FOR_ADJUST` to hudadmin, which attaches a HUD to the seated operator. So you can enter ADJUSTMODE on a menu-mode piece without first attaching the HUD by hand.
 
-You can also enter ADJUSTMODE from QuickySitter's own in-world adjust tool, **`[QS]adjuster`**: the `[HELPER]` bar in the pose menu (shown when `[QS]adjuster` is present, gated on the `qs:alive:adjuster` flag). Picking its *Quicky HUD* option flips ADJUSTMODE on through the same path.
+You can also enter ADJUSTMODE without opening the HUD's own Settings menu, using the dedicated **`[QUICKYHUD]`** button in the furniture's `[ADJUST]` submenu (driven by `[QS]adjuster`). It appears when `[QS]adjuster` is present (`qs:alive:adjuster`), the `QPP_CFG:ADJUSTMODE` key exists, the build is licensed, and the clicker passes the **Adjust ACL**. Clicking it flips ADJUSTMODE on through the same path (and, in menu mode, attaches a HUD for the operator). There is no separate *Quicky HUD* option inside `[HELPER]`.
 
 ### Diagnostics (`VERBOSE`)
 

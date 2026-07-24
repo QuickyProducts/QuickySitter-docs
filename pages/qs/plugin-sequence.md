@@ -8,7 +8,7 @@ toc: true
 
 `[QS]sequence` is a thin fork of stock `[AV]sequence`. Its fork-specific changes are two: it learns the sitter count over QSALIVE (90096/90097) instead of probing for sitter scripts by name, and it carries the project `Out()`/`OutForce()` verbose ladder (reads `qs:cfg:verbose`). It does **not** publish a `qs:alive:*` presence flag, does not announce on QSDUMP, and its product string is still the upstream `AVsitter(TM) sequence`.
 
-Behaviour is otherwise identical to stock from the user's perspective. The step definitions in `[AV]sequence_settings` are the plugin's own notecard and are never in `[DUMP]` output. (Separately, boot **does** reconstruct the AVpos `SEQUENCE` *launcher* lines — the ones that put a sequence button in the menu — as `SEQUENCE <name>` in `[DUMP]`; those are AVpos content, handled entirely by boot, not by this plugin.)
+Behaviour is otherwise identical to stock from the user's perspective. The step definitions in `[AV]sequence_settings` are the plugin's own notecard and are never in `[DUMP]` output. (Separately, boot **does** reconstruct the AVpos `SEQUENCE` *launcher* lines, the ones that put a sequence button in the menu, as `SEQUENCE <name>` in `[DUMP]`; those are AVpos content, handled entirely by boot, not by this plugin.)
 
 ## Notecard syntax
 
@@ -40,7 +40,7 @@ Full reference in the [upstream AVsequence page](https://avsitter.github.io/avsi
 
 To be explicit, `[QS]sequence` deliberately does **not** add the features some of the other QS plugins have:
 
-- **No QSDUMP announce.** It does not announce dump capability. Its config lives in `[AV]sequence_settings`, which the creator edits directly. (The AVpos `SEQUENCE` launcher lines are still round-tripped by boot's dump — that's boot, not this plugin.)
+- **No QSDUMP announce.** It does not announce dump capability. Its config lives in `[AV]sequence_settings`, which the creator edits directly. (The AVpos `SEQUENCE` launcher lines are still round-tripped by boot's dump; that's boot, not this plugin.)
 - **No `qs:alive:*` presence flag.** Unlike `[QS]prop`/`[QS]faces`, sequence does not publish a presence flag.
 - **Un-rebranded product string.** The script still reports `product = "AVsitter(TM) sequence"`.
 

@@ -6,7 +6,7 @@ keywords: version, bump, convention, semver, lsl
 toc: true
 ---
 
-QuickySitter LSL scripts carry a `string version = "X.YY…"` global near the top of every file. Each script has its **own** version and they drift independently between releases; a shared, uniform number only appears at a release (see below). Read the live value from the file header before bumping — never assume all scripts share a number.
+QuickySitter LSL scripts carry a `string version = "X.YY…"` global near the top of every file. Each script has its **own** version and they drift independently between releases; a shared, uniform number only appears at a release (see below). Read the live value from the file header before bumping; never assume all scripts share a number.
 
 ## The default step: +0.0001
 
@@ -33,7 +33,7 @@ The step has changed over the project's life; for reading old commit history:
 | 2026-06-12 – 2026-07-02 | `+0.001` |
 | feature/blocker round-up to the next hundredth has applied since 2026-06-15 |
 
-> Pre-release iteration on an **unreleased** script always uses the plain default step, even for a feature — the round-up rule is for shipped scripts.
+> Pre-release iteration on an **unreleased** script always uses the plain default step, even for a feature; the round-up rule is for shipped scripts.
 
 ## Releases stamp a uniform number
 
@@ -66,7 +66,7 @@ Every script bump is named in the subject line with its own old → new number:
 [QS]root-security 1.04 -> 1.0501, [QS]sitB 1.04 -> 1.0501, [QS]adjuster 1.04 -> 1.0502: Adjust access ACL
 ```
 
-Scripts in the same commit that genuinely landed on different numbers list them separately — don't force them to match. The body explains the change.
+Scripts in the same commit that genuinely landed on different numbers list them separately; don't force them to match. The body explains the change.
 
 This convention is enforced socially, not by tooling. Reviewers check that touched scripts bumped.
 
@@ -82,7 +82,7 @@ For several files, a small table at the top of the reply. See [Contributing](con
 
 ## Coordinated bumps across worktrees
 
-Several agents may work in parallel on Claude worktrees. Before bumping, scan sibling `.claude/worktrees/*` paths for an in-flight bump on the same script — two independent bumps to the same number in different worktrees each look correct in isolation but collide on merge. If a sibling already took `1.0402`, use `1.0403`.
+Several agents may work in parallel on Claude worktrees. Before bumping, scan sibling `.claude/worktrees/*` paths for an in-flight bump on the same script; two independent bumps to the same number in different worktrees each look correct in isolation but collide on merge. If a sibling already took `1.0402`, use `1.0403`.
 
 ## See also
 

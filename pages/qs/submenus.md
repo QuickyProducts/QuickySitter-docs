@@ -47,7 +47,7 @@ A common bug: a creator adds a second `MENU Solos` section but forgets the secon
 
 ## Menu pagination
 
-An SL dialog has 12 button slots. In a submenu, a `[BACK]` button is always present (it takes you up to the parent menu), leaving **11 slots** for pose entries. When a section has more entries than fit, QS paginates: `[<<]` and `[>>]` paging buttons appear, which consume two more slots and leave **9 pose slots per page**. The navigation buttons are `[<<]` / `[>>]`, and there is no `[NEXT]` button.
+An SL dialog has 12 button slots, and the number left for pose entries is **dynamic**: it is 12 minus whatever nav and control buttons the current menu renders. In a submenu a `[BACK]` button is always present (it takes you up to the parent menu). With the default `AMENU=2` the menu also carries an `[ADJUST]` button, so a typical submenu leaves **10 pose slots** (8 once paging is active). The bare minimum case (no `[ADJUST]`, so only `[BACK]` consuming a slot) is 11, dropping to 9 with paging. When a section has more entries than fit, QS paginates: `[<<]` and `[>>]` paging buttons appear and consume two more slots. The navigation buttons are `[<<]` / `[>>]`, and there is no `[NEXT]` button.
 
 On the top-level pose menu, control buttons (`[OPTIONS]`, `[SWAP]`, plugin-registered buttons, etc.) consume slots first, before poses are laid out.
 
@@ -57,8 +57,8 @@ For plugin authors: menu choices are reported via LinkMsg 90050 (pose selection)
 
 ## QS-specific behaviors
 
-- **`[NEW]` button appears** when `[QS]adjuster` is present and the user is in HELPER mode (or in QuickyHUD ADJUSTMODE). Click → enter a name → fresh pose stub gets written to LSD.
-- **`[QUICKYHUD]` button** in the Adjust dialog appears only if `QPP_CFG:ADJUSTMODE` exists (set by hudproxy). See [HUD Integration](hud-integration.html).
+- **`[NEW]` button appears** when `[QS]adjuster` is present and the user is in HELPER mode (or in QuickyHUD ADJUSTMODE). Clicking it opens a **type picker** (`[POSE]`/`[SYNC]`/`[SUBMENU]`/`[PROP]`/`[FACE]`/`[CAMERA]`). For a pose you then pick the animation(s) and confirm with `[DONE]`, after which a text box prompts for the entry name; the new entry is inserted into the menu at that point.
+- **`[QUICKYHUD]` button** in the Adjust dialog is gated on the full chain: the caller passes the **Adjust ACL** (`qs:sec:adjust`, owner always passes, widenable to GROUP/ALL via `[SECURITY]`), `qs:alive:adjuster` is set, the `QPP_CFG:ADJUSTMODE` LSD key exists, and `qs:hud:unlicensed` is not `"1"`. See [HUD Integration](hud-integration.html).
 - **`[DONE]`** in the main pose menu appears in HELPER mode or QuickyHUD ADJUSTMODE (`QPP_CFG:ADJUSTMODE == "On"`). Clicking exits the mode (sitB broadcasts 90100 `[DONE]`, `[QS]adjuster` does the tear-down, including 90266 `"Off"` to hudproxy) and opens the adjust submenu.
 
 ## See also

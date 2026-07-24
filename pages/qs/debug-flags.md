@@ -42,7 +42,7 @@ The level scale is the same across the fork:
 
 ### Setting the level from the notecard
 
-The single source is the `AVpos` notecard directive `VERBOSE n`. `[QS]boot` parses it during seed and writes it to the **`qs:cfg:verbose`** LSD key (a singleton, not per-channel). Every fork script reads that key in `state_entry` to initialise its own `verbose` global *before* its first `Out()` call:
+The single source is the `AVpos` notecard directive `VERBOSE n`. `[QS]boot` parses it during seed and writes it to the **`qs:cfg:verbose`** LSD key (a singleton, not per-channel). Almost every fork script reads that key in `state_entry` to initialise its own `verbose` global *before* its first `Out()` call (the exception is `[QS]root-control`, which ships with `verbose = 1` hardcoded and never reads the key):
 
 ```lsl
 // in state_entry, before any Out(...)
@@ -124,14 +124,12 @@ default
 
 ## Developer toggles (`bDebug`)
 
-Before the verbose ladder, individual scripts used a binary `integer bDebug = FALSE;` guarding `debugSay(...)` calls. Most scripts have since migrated to `Out()`: for example `[QS]offset` replaced its `bDebug`/`debugSay` scheme outright, and its LRU-cache diagnostics now ride the ladder:
+Before the verbose ladder, individual scripts used a binary `integer bDebug = FALSE;` guarding `debugSay(...)` calls. Most scripts have since migrated to `Out()`: for example `[QS]offset` replaced its `bDebug`/`debugSay` scheme outright. It now emits exactly two ladder lines:
 
-- Ready banner with current entry count: `Out(1, "Ready. LSD room=…")`.
+- Ready banner with current LSD headroom: `Out(1, "Ready. LSD room=…")`.
 - Emergency shrinks (memory pressure forcing RAM eviction before a save): `Out(0, "WARN: …")`, so they show even at the default floor.
-- LSD writes refused because `lsdHasRoom()` returned FALSE.
-- Sentinel deletes (ZERO/ZERO `90260` emitted).
 
-Useful when debugging "the save didn't persist" reports: set `VERBOSE 1` (or `2`) to see them.
+Useful when debugging "the save didn't persist" reports: set `VERBOSE 1` to see the ready banner's LSD headroom, and watch for the emergency-shrink `WARN` (which shows at the default floor regardless).
 
 A bare `bDebug`-style compile-time flag is still a fine pattern when you're adding *throwaway* tracing to one script while chasing a bug, as long as it doesn't ship enabled. Conventions:
 

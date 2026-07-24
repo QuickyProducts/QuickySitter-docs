@@ -6,7 +6,7 @@ keywords: multi-avatar, group, threesomes, more sitters
 toc: true
 ---
 
-QuickySitter supports any number of sitter slots, and the limit is SL's per-prim script-count cap, not anything in QS itself. The setup is a direct extension of the [Couples Setup](couples-setup.html) procedure.
+QuickySitter's core engine imposes no sitter-slot limit of its own, so the seat count you can wire in the AVpos notecard is bounded mainly by SL's per-prim script-count cap. The *product family* does add caps, though: `[QS]hudproxy` hard-caps concurrent HUD-driven sitters at **6**, and the `[QS]faces`, `[QS]sequence` and `[QS]select` plugins are sized for a small per-furniture cap (around 7 pre-handshake). So on a piece using the HUD or those plugins, plan around those limits rather than SL's script cap. The setup is a direct extension of the [Couples Setup](couples-setup.html) procedure.
 
 > **Working alone?** QuickySitter Pro's [Animesh Adjust Dummies](quickyhud-animesh.html) fill the empty seats of a group pose while you set it up: one posable dummy per seat, no extra avatars needed.
 
@@ -15,10 +15,12 @@ QuickySitter supports any number of sitter slots, and the limit is SL's per-prim
 For N sitter slots:
 
 - `[QS]boot` (still just one instance)
-- `[QS]sitA`, `[QS]sitA 2`, …, `[QS]sitA <N>`
-- `[QS]sitB`, `[QS]sitB 2`, …, `[QS]sitB <N>` (matching count)
+- `[QS]sitA`, `[QS]sitA 1`, `[QS]sitA 2`, …, `[QS]sitA <N-1>`
+- `[QS]sitB`, `[QS]sitB 1`, `[QS]sitB 2`, …, `[QS]sitB <N-1>` (matching count)
 
-Each slot has its own sit-target offset, its own ANIM lines in the AVpos notecard, and its own row in `qs:cfg:<ch>` / `qs:sitter:<ch>` LSD keys.
+The suffixes start at ` 1` (the unnumbered script is slot 0) and must be **contiguous**: sitA counts its siblings by probing `[QS]sitA 1`, `[QS]sitA 2`, … until the first gap, so a missing number silently truncates the slot count.
+
+Each slot has its own sit-target offset, its own `POSE`/`SYNC` lines in the AVpos notecard, and its own row in `qs:cfg:<ch>` / `qs:sitter:<ch>` LSD keys. (`ANIM` is a separate directive, the `[QS]faces` face-animation command, not a per-slot pose line.)
 
 ## SYNC across N slots
 

@@ -99,19 +99,21 @@ When several avatars share a multi-person pose, their looped animations can drif
 **Usage:**
 
 - Tap the SYNC button on the control pad for a one-shot manual re-sync.
-- For long sessions, the owner can enable AUTOSYNC from the Settings menu: pick an interval (60 s, 120 s, or 180 s) and the HUD will re-sync automatically until you turn it off.
+- For long sessions, the owner can enable AUTOSYNC from the Settings menu: pick an interval (60 s, 120 s, or 180 s). The interval ticker actually runs inside the furniture (`[QS]boot`), not the HUD, so the furniture keeps re-syncing on schedule even after the HUD is detached; it stops when AUTOSYNC is set back to off.
 
 **Notes:**
 
 - Re-Sync only affects looped animations on the furniture you are currently sitting on.
 - It is safe to press at any time; it never interrupts or restarts a pose, only realigns the timing.
-- AUTOSYNC settings persist across HUD detach/reattach.
+- AUTOSYNC settings persist across HUD detach/reattach, and because the ticker lives in the furniture the periodic re-sync continues while the HUD is detached.
 
 See also: [Re-Sync Protocol](resync-protocol.html) for the technical detail behind the SYNC button.
 
-### ADJUSTMODE for Creators (Owner Only)
+### ADJUSTMODE for Creators
 
 ADJUSTMODE is a working mode for furniture creators. While ADJUSTMODE is active, every position and rotation change made with the HUD is written directly into QuickySitter's pose data instead of being stored as a per-avatar offset.
+
+Since 1.25, entering ADJUSTMODE is no longer strictly owner-only: anyone allowed by the furniture's **Adjust ACL** (owner by default, widenable to group or everyone in `[QS]root-security`'s `[SECURITY]` menu) can enter it through the `[QUICKYHUD]` button in the furniture's `[ADJUST]` menu. Only the ADJUSTMODE toggle in the HUD's own Settings menu stays owner-only.
 
 **Workflow:**
 
@@ -122,7 +124,7 @@ ADJUSTMODE is a working mode for furniture creators. While ADJUSTMODE is active,
 
 **Notes:**
 
-- Changes apply to all sitters and are permanent. They can only be reverted by a script reset.
+- Changes apply to all sitters and are written to the furniture's Linkset Data, so they survive a script reset, rerez and region restart. To revert, adjust the pose data again or re-seed from a fresh AVpos notecard.
 - ADJUSTMODE replaces the classic AVsitter helper objects for live pose tuning.
 
 See also: [HUD Integration](hud-integration.html) and [Adjustment Workflow](adjustment-workflow.html).
@@ -131,10 +133,10 @@ See also: [HUD Integration](hud-integration.html) and [Adjustment Workflow](adju
 
 Saved pose offsets are stored in the furniture's Linkset Data. Open the Settings menu to access two storage functions:
 
-- The CLEAR confirmation dialog shows a storage report with the estimated remaining capacity (number of poses that can still be saved).
+- The CLEAR confirmation dialog shows a storage report: the number of stored offsets in the persistent LSD tier plus the volatile RAM tier, and the free Linkset Data space in bytes. It is a count of what is stored, not an estimate of how many more poses will fit.
 - The `CLEAR offset storage` button deletes all saved offsets for all avatars and all poses in one step. A confirmation dialog prevents accidental clearing.
 
-When storage runs full, the oldest unused entry is automatically removed to make room for new ones.
+Persistent (LSD-tier) offsets are **never** evicted automatically; when the LSD tier is full, new offsets spill into a volatile in-RAM tier that evicts its oldest entry (LRU) to make room. That RAM tier is lost on a script reset, whereas the LSD tier persists.
 
 See also: [Personal Pose Offsets](personal-pose-offsets.html) for the technical detail.
 

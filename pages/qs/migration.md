@@ -41,7 +41,7 @@ QuickySitter's `[QS]sitB` reads `qs:p:<ch>:<i>` from LSD on demand via `qs_pose_
 
 ### Which stock plugins keep working
 
-Purely protocol-driven stock plugins (camera, the lock/adult plugins, favs, texture, helperscript) work unchanged in a QS prim. Stock plugins that **find the engine by script name** do not: `llGetInventoryType("[AV]sitA")` presence probes and `[AV]sitA N` sitter-count walks come up empty in a QS linkset (the scripts are named `[QS]sitA`), so `[AV]faces`, `[AV]select`, `[AV]adjuster`, `[AV]sequence`, `[AV]prop` and `[AV]root-RLV` degrade to single-sitter behavior at best. Their QS menu entries also never appear: the gates read `qs:alive:<name>` presence flags (`qs:alive:prop`, `qs:alive:faces`, …) that only the `[QS]` variants publish. Swap those five (step 3 below); see the [Compatibility Matrix](compatibility-matrix.html) for the per-plugin detail.
+Purely protocol-driven stock plugins (camera, the lock/adult plugins, favs, texture, helperscript) work unchanged in a QS prim. Stock plugins that **find the engine by script name** do not: `llGetInventoryType("[AV]sitA")` presence probes and `[AV]sitA N` sitter-count walks come up empty in a QS linkset (the scripts are named `[QS]sitA`), so `[AV]faces`, `[AV]select`, `[AV]adjuster`, `[AV]sequence`, `[AV]prop` and `[AV]root-RLV` degrade to single-sitter behavior at best. Their QS menu entries also never appear: the gates read `qs:alive:<name>` presence flags (`qs:alive:prop`, `qs:alive:faces`, …) that only the `[QS]` variants publish. Swap those six (step 3 below); see the [Compatibility Matrix](compatibility-matrix.html) for the per-plugin detail.
 
 ## Step-by-step migration
 
@@ -63,14 +63,14 @@ You should see `llOwnerSay` chatter from boot reporting parsed channels. Sit on 
 
 - **`[AV]camera`**: stock camera's only name-bound code (`get_number_of_scripts` via `main_script="[AV]sitA"`) is dead, and all working paths are protocol-based. There's no `[QS]camera` planned.
 - **`[AV]LockGuard` / `[AV]LockMeister` / `[AV]Xcite!`**: third-party lock/Xcite plugins. QS doesn't fork them.
-- **`[AV]favs`**: favourites are user-state, stored in sitA via 90401/90402/90403. Stock favs works unchanged.
+- **`[AV]favs`**: favourites are user-state, stored by the favs plugin itself. 90401/90402/90403 are the add/remove/list commands `[AV]favs` receives; sitA has no handler for them. Stock favs works unchanged.
 - **`[AV]helperscript`**: only relevant during the import workflow, not at runtime.
 
-QS **does** fork the root family: `[QS]root`, `[QS]root-control`, `[QS]root-security`, `[QS]root-RLV` (the last publishes `qs:alive:rlv`). Stock `[AV]root-control` / `[AV]root-security` still work if you leave them; stock `[AV]root-RLV`, though, name-probes `[AV]sitA 1` to spot extra sitters, so its capture/seat-relocation misfires on multi-sitter pieces. Swap it for `[QS]root-RLV` there. There is no `[AV]root-RLV-extra` in the set.
+QS **does** fork the root family: `[QS]root`, `[QS]root-control`, `[QS]root-security`, `[QS]root-RLV` (the last publishes `qs:alive:rlv`). Stock `[AV]root-control` / `[AV]root-security` still work if you leave them; stock `[AV]root-RLV`, though, name-probes `[AV]sitA 1` to spot extra sitters, so its capture/seat-relocation misfires on multi-sitter pieces. Swap it for `[QS]root-RLV` there. Stock does ship `[AV]root-RLV-extra` (in `avstock/Plugins/AVcontrol/`, the undress helper `[QS]root-RLV`'s `unDressScript` still points at); QS just doesn't fork it.
 
 ## What does NOT migrate
 
-- **Personal offsets stored in stock `CUSTOMS`.** In stock AVsitter these live in sitA's per-session memory and are wiped on script reset. Migration replaces sitA, so any per-user offsets accumulated in the previous prim are gone. Users who had `[SAVE OFFSET]`-ed positions will need to re-save after the migration. (This is the same as any stock-AVsitter reset.) Going forward, install `[QS]offset` and the re-saved offsets persist in LSD (`QSO:*`) across reset and re-rez instead of being volatile. Note that `[QS]offset` **owns** the `CUSTOMS` store: without it there is no personal-offset persistence and no sitA fallback.
+- **Personal offsets stored in stock `CUSTOMS`.** In stock AVsitter these live in sitA's per-session memory and are wiped on script reset. Migration replaces sitA, so any per-user offsets accumulated in the previous prim are gone. Users who saved personal positions (via `[SAVE]` in the `[ADJUST]` personal-adjust menu) will need to re-save after the migration. (This is the same as any stock-AVsitter reset.) Going forward, install `[QS]offset` and the re-saved offsets persist in LSD (`QSO:*`) across reset and re-rez instead of being volatile. Note that `[QS]offset` **owns** the `CUSTOMS` store: without it there is no personal-offset persistence and no sitA fallback.
 - **`[DUMP]` history.** The `[DUMP]` URL written to the `slquicky.com` receiver is tied to the upload key, not the script. After migration the dump URL changes; old URLs go stale.
 
 ## Reverting

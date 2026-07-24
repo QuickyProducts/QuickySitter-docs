@@ -18,7 +18,7 @@ Set up and adjust **couples and group poses without a second avatar**: the Anime
 4. Enter ADJUSTMODE (the `[QUICKYHUD]` button in the seat list does it in one click and attaches the HUD) and `SELECT` the dummy in the HUD picker. It behaves like any sitter target.
 5. Adjust position/rotation; saving works as usual (`[SAVE]` / `[DUMP]` into the AVpos notecard).
 
-Repeat per seat: one dummy per empty seat, several at once for group poses. `[OFF ALL]` removes every dummy in one click; standing up cleans them up automatically.
+Repeat per seat: one dummy per empty seat, several at once for group poses. `[OFF ALL]` removes every dummy in one click; standing up cleans them up automatically (unless **Showcase mode** is on, see [Around real avatars](#around-real-avatars)).
 
 ## Reaching the menu while adjusting
 
@@ -53,13 +53,17 @@ Updates refresh the standard `[QS]dummy` set automatically; bodies you added you
 
 ## Around real avatars
 
-Dummies always yield to people:
+By default, dummies yield to people:
 
 - Someone **sits down** or **swaps** onto a dummy's seat → the dummy is removed with a short chat note, and the avatar lands on the seat normally.
 - Swapping an avatar **with** a dummy (trading places) is not supported, so the dummy simply yields.
 - The operator standing up removes all dummies.
 
 A **Re-Sync** restarts the dummies together with the real sitters, so SYNC poses stay in phase.
+
+### Showcase mode (1.25)
+
+The seat list carries an owner-only **`[SHOWCASE]`** toggle (its current state is shown in the seat-list prompt). With Showcase **on**, staged dummies **keep their seats** through stand-up, sit-down and swap instead of derezzing, which is handy for photos and vendor displays where the scene should stay populated after you step off. Turn Showcase **off** again (or use `[OFF ALL]`) to clear the dummies; with it off, the default yield-to-people behavior above applies.
 
 ## [FINALIZE]
 

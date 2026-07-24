@@ -14,7 +14,7 @@ The control family splits two ways in QuickySitter. The **root-prim scripts** (`
 |--------|--------------|
 | `[QS]root` | Root-prim touch forwarder: forwards the touch (90005) when the touched prim has no sitA/menu of its own. |
 | `[QS]root-control` | "Allow others to control the menu": couples controllers by name. |
-| `[QS]root-security` | Sit/menu access gate (ALL / OWNER / GROUP); sends LinkMsg 90202 to sitA. |
+| `[QS]root-security` | Sit/menu access gate (ALL / OWNER / GROUP); sends LinkMsg 90202 to sitA. Since 1.25 also a third **Adjust** ACL (OWNER / GROUP / ALL, default OWNER) set from the `[SECURITY]` menu and published to the `qs:sec:adjust` LSD key; `[QS]sitB` / `[QS]adjuster` read it to gate who may enter the adjust workflows (`[HELPER]` / `[QUICKYHUD]` and owner-gated registered `[ADJUST]` entries). Resets to OWNER on `CHANGED_OWNER`. |
 | `[QS]root-RLV` | RLV capture/relay; publishes the `qs:alive:rlv` presence flag. |
 
 There is **no** `[QS]root-RLV-extra` in the fork.

@@ -16,7 +16,7 @@ QuickySitter keeps the **link-message contract** that plugin scripts and **notec
 | **QuickySitter scripts in stock-AVsitter furniture** | ❌ Doesn't work. | sitA/sitB expect `qs:cfg`/`qs:sitter`/`qs:p:*` LSD keys that boot writes during seed; stock furniture has no `[QS]boot`. This is intentional, not a goal of the fork. |
 | **Mixed (some [QS], some [AV] scripts in one prim)** | ✅ Works for the QS-script set documented below. | The fork is structured so that creators can adopt one QS script at a time. See "Minimal QS install" below. |
 | **AVsitter notecard (AVpos) in QuickySitter furniture** | ✅ Reads stock AVpos directly. | Boot parses the unchanged AVpos format on first run, seeds LSD. No notecard migration needed. |
-| **AVsitter notecard with QS-specific directives** | ✅ Forward-compat. | QS does not currently add new AVpos directives; any future additions will be additive (unknown directives ignored by stock AVsitter). |
+| **AVsitter notecard with QS-specific directives** | ✅ Forward-compat. | QS adds the `VERBOSE n` AVpos directive (parsed by boot, re-emitted in `[DUMP]` output). It and any future additions are additive: stock AVsitter ignores unknown directives. |
 
 ## Minimal QS install
 
@@ -28,7 +28,7 @@ The smallest installation that gets QS benefits while leaving as much stock as p
 
 Camera, favs, texture, helperscript and the lock/adult plugins (LockMeister, LockGuard, Xcite!) can remain stock: they are purely protocol-driven (QS's unsolicited QSALIVE broadcasts reach them too; they ignore the unknown `num`). Select, adjuster, prop, faces, sequence and `[AV]root-RLV` are a different story: each derives engine presence and/or the sitter count from `[AV]sitA` script names that don't exist in a QS linkset, so they degrade to single-sitter behavior at best, and their QS menu entries stay hidden, because the gates read `qs:alive:*` flags only the `[QS]` variants write. That is exactly why these have `[QS]` forks; plan to swap them along with the base set. (`[QS]root-control` and `[QS]root-security` carry no sitter-name probe themselves, but the control suite addresses its members by name, so run them as a `[QS]` set rather than mixing with stock.)
 
-> **Escape hatch: stock names.** QS scripts never locate each other by hardcoded name (each derives its sibling names from its own name at runtime), so a creator who must keep a legacy name-probing plugin can rename the base pair back to the stock names (`[QS]sitA` → `[AV]sitA`, numbered copies too, and `[QS]sitB` → `[AV]sitB`), and legacy presence probes and `[AV]sitA N` count walks find their targets again. This does **not** restore the flag-gated QS menu entries; those still need the `[QS]` plugin forks.
+> **Escape hatch: stock names.** QS scripts never locate each other by hardcoded name: sitA derives its sitB partner from its own basename (`s/sitA/sitB/`), and if that misses (mixed prefixes) it falls back to scanning inventory for any script whose name **contains** `sitB`. So a creator who must keep a legacy name-probing plugin can rename the base pair back to the stock names (`[QS]sitA` → `[AV]sitA`, numbered copies too, and `[QS]sitB` → `[AV]sitB`), and legacy presence probes and `[AV]sitA N` count walks find their targets again (as long as the menu script keeps `sitB` in its name). This does **not** restore the flag-gated QS menu entries; those still need the `[QS]` plugin forks.
 
 If you want the full QS feature set:
 

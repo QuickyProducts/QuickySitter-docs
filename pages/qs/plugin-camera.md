@@ -34,18 +34,18 @@ Full reference in the [upstream AVcamera page](https://avsitter.github.io/avsitt
 | `90020` | `[QS]boot` → `[AV]camera` | DUMP request. Boot sends this hardcoded for camera (no QSDUMP announce). |
 | `90021` | `[AV]camera` → `[QS]boot` | DUMP complete echo. |
 | `90022` | `[AV]camera` → `[QS]boot` | One dump line. |
-| `90174` | `[AV]adjuster` → `[AV]camera` | Add CAMERA line at runtime. |
-| `90230` | various → `[AV]camera` | Set camera by name. |
-| `90231` | various → `[AV]camera` | Clear / reset camera. |
+| `90174` | `[QS]adjuster` → `[AV]camera` | Add CAMERA line at runtime. |
+| `90230` | various → `[AV]camera` | Set camera by name (also sends a 90005 menu-reopen echo to the controller). |
+| `90231` | various → `[AV]camera` | Set camera by name, identical to 90230 but **without** the 90005 menu-reopen echo. |
 
-These are all stock AVsitter numbers used with stock semantics.
+These are all stock AVsitter numbers used with stock semantics. Neither 90230 nor 90231 is a clear/reset: a camera reset is the message string `"RESET"` sent on either number (it restores the last camera and drops the by-button lock).
 
 ## Should `[QS]camera` ever be forked?
 
 Only if a use case appears that needs script-name-independent gating or QSDUMP-style discovery. Currently no plans:
 
 - Camera doesn't have a menu button that would need gating (camera switches happen via button-bound 90230 messages from pose entries).
-- The hardcoded `camera_script = "[AV]camera"` in boot is the one name-binding left, but it's confined to a literal that's trivial to update if needed.
+- Two hardcoded `"[AV]camera"` name-bindings remain: `camera_script` in `[QS]boot` (for the DUMP cascade) and the same literal in `[QS]adjuster` (which sends the 90174 / 90230 / 90231 messages to the camera). Both are confined to literals that are trivial to update if needed.
 
 If you're building a third-party camera plugin, follow the QSALIVE adoption pattern from [QSALIVE Discovery](qsalive-discovery.html) so it can detect QS at runtime without locking to a specific sitter-script name.
 

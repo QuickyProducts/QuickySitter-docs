@@ -12,7 +12,7 @@ This page lists the **fork-specific numbers** QuickySitter adds (in stock-unused
 
 ## Stock numbers used unchanged
 
-`90000`-`90014`, `90030` (SWAP), `90033`, `90045` (pose-played broadcast), `90050`/`90051` (menu pose pick), `90055`/`90056` (anim info), `90057` (helper move), `90060`/`90065`/`90070` (sit/unsit/permissions), `90075`/`90076` (oldschool helper), `90100`/`90101` (menu choice), `90150`-`90211`, `90230`, `90298`-`90300`, `90401`-`90500`. From a sender's perspective the contracts match stock.
+`90000`-`90014`, `90030` (SWAP), `90033`, `90045` (pose-played broadcast), `90050`/`90051` (menu pose pick), `90055`/`90056` (anim info), `90057` (helper move), `90060`/`90065`/`90070` (sit/unsit/permissions), `90075`/`90076` (oldschool helper), `90100`/`90101` (menu choice), `90150`-`90211`, `90220` (play pose without opening the menu; `[QS]prop` handles it alongside `90200`), `90230`, `90298`-`90300`, `90401`-`90500`. From a sender's perspective the contracts match stock.
 
 ## Stock numbers whose handler script moved
 
@@ -28,7 +28,7 @@ Plugins still send `90022`/`90021` to `LINK_THIS` exactly like in stock; the lis
 
 | Num | Change |
 |-----|--------|
-| `90301` | sitB's handler is stricter: only refreshes the seated avatar when `index == ANIM_INDEX` (saved pose is the playing one), and forwards pos/rot **directly from the 90301 payload** instead of re-reading LSD. Sender contract (`name\|pos\|rot\|`) unchanged. Stock plugins don't send 90301 (it was sitA→sitB internal), so this is invisible externally. |
+| `90301` | sitB's handler is stricter: it only refreshes the seated avatar when the saved pose is the one currently playing, compared by pose **name** (not by index) with a payload-shape check, and forwards pos/rot **directly from the 90301 payload** instead of re-reading LSD. Sender contract (`name\|pos\|rot\|`) unchanged. Stock plugins don't send 90301 (it was sitA→sitB internal), so this is invisible externally. |
 
 ## Stock numbers no longer routed
 
@@ -45,7 +45,8 @@ All in stock-unused ranges. A stock-AVsitter plugin sending or receiving in thes
 
 | Num | Direction | Use |
 |-----|-----------|-----|
-| `90023` | `[QS]boot` → all | Emitted at the end of the seed cascade. `[QS]sitB` re-reads MENU_LIST from LSD on receipt, eliminating the manual-reset step after a notecard re-save. |
+| `90023` | `[QS]boot` → all | `QS_BOOT_RELOAD`. Emitted at the end of the seed cascade. `[QS]sitB` reloads its page state from LSD on receipt (the retired MENU_LIST is gone), and `[QS]sitA` reloads too, eliminating the manual-reset step after a notecard re-save. |
+| `90024` | `[QS]boot` → all | `QS_BOOT_WIPE`. Broadcast **before** boot wipes the seeded LSD and resets, when a notecard re-save invalidates the seeded state. sitA/sitB flip their booted flag back to FALSE so pre-boot guards re-engage until `QS_BOOT_RELOAD` (90023) fires. |
 
 See [Boot Sequence](boot-sequence.html).
 
@@ -63,7 +64,7 @@ Plugin presence is **not** a link-message handshake. Each plugin writes a `qs:al
 | Num | Direction | Use |
 |-----|-----------|-----|
 | `90079` | `[QS]boot` → all | `QS_ALIVE_CENSUS`. boot wipes every `qs:alive:*` flag and broadcasts this; surviving plugins re-stamp their flag in response, so a removed plugin drops out without an inventory probe. |
-| `90093` | bidirectional | hudproxy presence probe (the only live HELLO). See [HUD Integration](hud-integration.html). |
+| `90093` | bidirectional | hudproxy presence probe (the live HUD-presence HELLO; `QSDUMP_HELLO` 90095 and `QS_SITB_HELLO` 90078 are also live, for the dump cascade and the boot self-check respectively). See [HUD Integration](hud-integration.html). |
 | `90094` | `[QS]boot` → all plugins | QSDUMP probe: "if you're DUMP-capable, announce yourself now." |
 | `90095` | DUMP plugin → `[QS]boot` | QSDUMP hello: "I respond to 90020 DUMP messages." |
 | `90096` | plugin → `[QS]sitA` | QSALIVE count/version/caps probe (**not** a presence handshake). See [QSALIVE Discovery](qsalive-discovery.html). |
@@ -73,7 +74,7 @@ Plugin presence is **not** a link-message handshake. Each plugin writes a `qs:al
 
 | Num | Direction | Use |
 |-----|-----------|-----|
-| `90098` | `[QS]adjuster` → `[QS]boot` | "Start dump for channel." Replaces stock adjuster-owned `[DUMP]`. `id` is a mode marker: `"quiet"` for the silent self-check dump, `""` (or `"loud"`) for the operator-visible `[DUMP]`. |
+| `90098` | `[QS]adjuster` → `[QS]boot` | "Start dump for channel." Replaces stock adjuster-owned `[DUMP]`. `id` is a mode marker: `"quiet"` for the ADJUSTMODE live-view dump (URL only, chat banners suppressed), `""` (or `"loud"`) for the operator-visible `[DUMP]`. The boot self-check (90077/90078) never dumps. |
 | `90099` | `[QS]boot` → self | Dump tick: self-trigger between dump-line iterations. |
 
 ### Quiet swap (9003x)
@@ -87,18 +88,19 @@ Plugin presence is **not** a link-message handshake. Each plugin writes a `qs:al
 | Num | Direction | Use |
 |-----|-----------|-----|
 | `90212` | plugin → `[QS]sitB` | QSPLUG_REGISTER: `msg = "<label>\|<click_chan>\|<scriptName>"`. Registers a runtime button into the `[OPTIONS]` top-level menu. sitB dedupes by `scriptName`. Click dispatch lands on `<click_chan>` with `msg = <label>`, `id = <controller-key>`. See [Options Menu Plugins](options-menu-plugins.html). |
+| `90213` | plugin → `[QS]sitB` | QSADJ_REGISTER: `msg = "<label>\|<click_chan>\|<scriptName>\|<flags>"`. Like QSPLUG_REGISTER but the button lands in the `[ADJUST]` submenu instead of `[OPTIONS]`. `flags` bit 0 = owner-only (rendered per the Adjust ACL, like `[QUICKYHUD]`). RAM registry, re-announced by the plugin on QSALIVE_REPLY (90097) so it survives a re-seed. |
 
 ### Personal pose offsets (9026x)
 
 | Num | Direction | Use |
 |-----|-----------|-----|
 | `90260` | `[QS]offset` → `[QS]sitA` + hudproxy | "Mirror this RAM-tier personal offset." ZERO/ZERO is the delete sentinel. |
-| `90261` | `[QS]sitA` → `[QS]offset` | "Push every RAM-tier cached offset for this (sitter, slot) pair to me." |
-| `90262` | `[QS]sitA` + hudproxy → `[QS]offset` | "Save this offset for (sitter, slot, pose)." Magic name `M#T!` is the all-poses fallback. |
+| `90261` | `[QS]sitA` + hudproxy → `[QS]offset` | "Push every RAM-tier cached offset for this (sitter, slot) pair to me." |
+| `90262` | `[QS]sitA`, hudproxy, hudadmin, `[QS]debug` → `[QS]offset` | "Save this offset for (sitter, slot, pose)." Magic name `M#T!` is the all-poses fallback. |
 | `90263` | `[QS]adjuster` → `[QS]sitA` + `[QS]offset` | "Drop stale customs after `[HELPER] [SAVE]`." |
-| `90264` | hudproxy → `[QS]offset` | "Wipe ALL personal offsets." |
+| `90264` | hudadmin → `[QS]offset` | "Wipe ALL personal offsets." (hudproxy has no 90264 sender.) |
 | `90265` | `[QS]offset` → all `[QS]sitA` | "Clear your RAM-tier mirror." Paired with 90264. |
-| `90266` | `[QS]adjuster` → hudproxy | "Flip QuickyHUD ADJUSTMODE remotely": `"On"` / `"Off"`. |
+| `90266` | `[QS]adjuster` + hudadmin → hudproxy | "Flip QuickyHUD ADJUSTMODE remotely": `"On"` / `"Off"`. |
 
 See [Personal Pose Offsets](personal-pose-offsets.html).
 
@@ -110,7 +112,7 @@ These per-plugin HELLO broadcasts were the original (pre-0.9951) presence mechan
 |-----|-----|-------------|
 | `90088` | `QS_OFFSET_HELLO`: offset presence | `qs:offset:alive` LSD flag (inverted name). |
 | `90089` | `QS_PROP_HELLO`: prop presence (gated `[PROP]`) | `qs:alive:prop` LSD flag. |
-| `90090` | `QS_FACES_HELLO`: faces presence (gated `[FACES]`/`[EXPRESSION]`) | `qs:alive:faces` LSD flag. |
+| `90090` | `QS_FACES_HELLO`: faces presence (gated `[FACES]`/`[FACE]`) | `qs:alive:faces` LSD flag. |
 | `90091` | `QS_ADJUSTER_HELLO`: adjuster presence (gated `[HELPER]`) | `qs:alive:adjuster` LSD flag. |
 | `90092` | `QS_SELECT_HELLO`: select presence (gated select routing) | `qs:alive:select` LSD flag (sitB also keeps an `[AV]select` inventory fallback for stock-AVsitter compat). |
 
@@ -120,6 +122,17 @@ These per-plugin HELLO broadcasts were the original (pre-0.9951) presence mechan
 |-----|-----------|-----|
 | `90271` | any in-prim source → `[QS]sitA` | SYNC-pose Re-Sync trigger. See [Re-Sync Protocol](resync-protocol.html). |
 | `90280` | any in-prim source → `[QS]prop` | `QSPROP_ATTACH`: dynamic prop register + rez without notecard entry. See [HUD Integration](hud-integration.html). |
+
+### QuickyHUD-internal numbers (9027x)
+
+These live entirely inside the QuickyHUD scripts (hudproxy ↔ hudadmin, both on the furniture prim). Listed here for range completeness; a stock plugin never sees them.
+
+| Num | Direction | Use |
+|-----|-----------|-----|
+| `90272` | hudproxy → hudadmin | `SELECT_OPEN_DIALOG`: render the SELECT (swap-target) picker. |
+| `90273` | hudadmin → hudproxy | `SELECT_PICKED`: the chosen target token. |
+| `90274` | hudproxy → hudadmin | `ATTACH_FOR_ADJUST`: ensure the operator has a HUD attached when ADJUSTMODE goes On. |
+| `90275` | any source → hudproxy | `QSANIM_OCCUPANT`: animesh dummy occupant hook. See [QuickyHUD Animesh](quickyhud-animesh.html). |
 
 ## Compatibility summary
 

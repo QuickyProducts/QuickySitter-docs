@@ -18,7 +18,7 @@ Face animations are declared with `ANIM` directives in `AVpos`, one per line. Th
 ANIM <trigger>|<expression>|<duration>|<expression>|<duration>|...
 ```
 
-Where `<trigger>` is a pose name (the face animation plays when that pose is selected), and each `<expression>|<duration>` pair specifies an SL face animation plus how long to hold it (in seconds). Up to three expressions per line is the practical limit.
+Where `<trigger>` is a pose name (the face animation plays when that pose is selected), and each `<expression>|<duration>` pair specifies an SL face animation plus how long to hold it (in seconds). You can chain as many `<expression>|<duration>` pairs on one line as you like; the parser walks the whole list.
 
 Examples:
 
@@ -47,7 +47,7 @@ Full reference in the [upstream AVfaces page](https://avsitter.github.io/avsitte
 integer faces_present = (llLinksetDataRead("qs:alive:faces") != "");
 ```
 
-If `qs:alive:faces` is unset when the menu is built, `[FACES]` / `[EXPRESSION]` buttons don't appear. No inventory probe and no script-name binding, so the gating works regardless of whether the script is named `[QS]faces`, `[FOO]faces`, or anything else.
+If `qs:alive:faces` is unset when the menu is built, the `[FACES]` entry (in `[QS]sitB`'s pose menu) and the `[FACE]` entry (in the `[QS]adjuster` picker) don't appear. There is no `[EXPRESSION]` button. No inventory probe and no script-name binding, so the gating works regardless of whether the script is named `[QS]faces`, `[FOO]faces`, or anything else.
 
 The HELLO presence broadcasts (the retired `90088`–`90092` band, which once included a `QS_FACES_HELLO`) were removed in 0.9951 in favour of the `qs:alive:*` flags.
 
@@ -55,9 +55,10 @@ The HELLO presence broadcasts (the retired `90088`–`90092` band, which once in
 
 Total changes from stock `[AV]faces`:
 
-1. **Presence via the `qs:alive:faces` LSD flag**: written in `state_entry`, re-stamped on `QS_ALIVE_CENSUS` (90079), read on demand. Same pattern as `[QS]prop`.
-2. **QSDUMP integration**: announces on 90095 so face entries are included in `[DUMP]` output.
-3. Version string + header comment block.
+1. **Sitter count via QSALIVE (90096/90097)**: the primary fork change. It replaces stock's `string main_script = "[AV]sitA"` inventory-walk for counting sitters (defaulting to 7 until the first 90097 reply lands, then the real count), and adds the project-wide `Out()` / `qs:cfg:verbose` verbose ladder.
+2. **Presence via the `qs:alive:faces` LSD flag**: written in `state_entry`, re-stamped on `QS_ALIVE_CENSUS` (90079), read on demand. Same pattern as `[QS]prop`.
+3. **QSDUMP integration**: announces on 90095 so face entries are included in `[DUMP]` output.
+4. Version string + header comment block.
 
 ## See also
 

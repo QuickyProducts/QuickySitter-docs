@@ -12,10 +12,10 @@ toc: true
 
 `state_entry` decides between two branches:
 
-1. **Skip seed.** `qs:boot:asset` matches the AVpos notecard's current asset-key → LSD already has fresh data from a previous boot. sitA and sitB will read it directly. Boot does no parsing work.
+1. **Skip seed.** `qs:boot:asset` matches the AVpos notecard's current asset-key **and** the `qs:cfg:slots:0` sidecar is present (written since 0.9952) → LSD already has fresh data from a previous boot. sitA and sitB will read it directly. Boot does no parsing work. Both conditions must hold: an asset-key match with a missing slots sidecar (e.g. furniture seeded by an older build) forces one re-seed, after which the steady-state skip path resumes.
 2. **Fresh seed.** Otherwise → parse the AVpos notecard line by line, write `qs:cfg:<ch>`, `qs:sitter:<ch>`, `qs:p:<ch>:<i>`, `qs:meta:<ch>`, and **finally** `qs:boot:asset` so the marker is only written if everything before it succeeded.
 
-After seeding completes, boot broadcasts `QS_BOOT_RELOAD` (90023) so any already-running sitB scripts re-read `MENU_LIST` from the freshly-written LSD instead of staying on the stale list from their last `state_entry`. Without this broadcast, a notecard re-save would require a manual reset on every sitB.
+After seeding completes, boot broadcasts `QS_BOOT_RELOAD` (90023) so any already-running sitA/sitB scripts reload from the freshly-written LSD instead of staying on stale state from their last `state_entry` (sitB rebuilds its page state, reading pose labels from `qs:p` per render rather than caching a full list). Without this broadcast, a notecard re-save would require a manual reset on every sitter script.
 
 ## Asset-key as durability marker
 
@@ -24,13 +24,13 @@ After seeding completes, boot broadcasts `QS_BOOT_RELOAD` (90023) so any already
 - Re-uploading a notecard with **the same content** yields the **same asset-key** in Second Life, because the viewer dedups identical assets. Skip-seed works.
 - Editing the notecard and saving yields a **new asset-key**. The skip-check fails, boot re-seeds, and live `[HELPER] [SAVE]` edits applied to LSD between boots are deliberately overwritten by the notecard's current text.
 
-`changed(CHANGED_INVENTORY)` clears `qs:*` and re-runs the seed path. Manual script reset / region restart hits the same code without the LSD wipe. If the marker survived, skip-seed runs.
+`changed(CHANGED_INVENTORY)` on a notecard change wipes the namespaced seed keys (`^qs:(meta|cfg|sitter|p|nm|nt|boot):`) and re-runs the seed path. Presence flags and other namespaces (`qs:alive:*`, `qs:sec:*`, `qs:prop:*`, `qs:offset:*`) survive that wipe: they aren't notecard-derived, so the plugins re-stamp them from their own `state_entry`. Manual script reset / region restart hits the seed code without any LSD wipe. If the marker survived, skip-seed runs.
 
 ## Boot self-check: 90077 / 90078
 
 `[QS]boot` verifies the minimum base ingredients are present in the linkset right after seeding. Failure modes get surfaced as `llOwnerSay` errors so the creator catches a broken install before the first sit attempt instead of seeing a silent no-menu / no-animation furniture:
 
-1. **Hard-fail.** `[QS]sitA` missing, `[QS]sitB` missing, **or** the `AVpos` notecard missing ([`[QS]boot.lsl:725-732`](https://github.com/QuickyProducts/QuickySitter/blob/master/qs/%5BQS%5Dboot.lsl)): no animation, no menu, or nothing to seed. Sets `llSetText` red so the prim is visibly broken in-world. These three plus `[QS]boot` itself are the only mandatory ingredients; everything else is optional and presence-gated.
+1. **Hard-fail.** `[QS]sitA` missing, `[QS]sitB` missing, **or** the `AVpos` notecard missing: no animation, no menu, or nothing to seed. The missing-notecard hard-fail lives in [`state_entry` (`[QS]boot.lsl` ~774-782)](https://github.com/QuickyProducts/QuickySitter/blob/master/qs/%5BQS%5Dboot.lsl); the missing-sitA/sitB hard-fail is surfaced later by the post-seed `self_check_report`. Sets `llSetText` red so the prim is visibly broken in-world. These three plus `[QS]boot` itself are the only mandatory ingredients; everything else is optional and presence-gated.
 2. **Conditional warn.** AVpos has `PROP*` directives but `[QS]prop` is not installed, so props won't be rezzed.
 
 Adjuster presence is deliberately **not** treated as a failure. The `[HELPER]` / `[QUICKYHUD]` menu gate lives in `[QS]sitB`, keyed on the `qs:alive:adjuster` LSD flag, so an end-user (read-only) install just doesn't expose the Adjust path. Nothing is broken from the user's view.
@@ -44,7 +44,7 @@ Adjuster presence is deliberately **not** treated as a failure. The `[HELPER]` /
 
 Detection has two complementary paths per base script: an explicit probe (90096 for sitA, 90077 for sitB) the script answers from its `link_message` handler, and an unsolicited HELLO emitted at the end of `qs_load_from_lsd()` in slot-0 sitA / slot-0 sitB. The probe covers the **skip-seed path** where boot is reset alone while sitA/sitB keep running (their `state_entry` doesn't re-fire, so no unsolicited HELLO); the unsolicited HELLOs cover the **fresh-boot path**, where `finalize_boot`'s 90023 broadcast triggers a fresh `qs_load_from_lsd()` in both base scripts.
 
-PROP* detection rides on the existing notecard parser: one extra `if (command == "PROP1" || command == "PROP2" || command == "PROP3")` branch in `dataserver` sets `has_prop_in_notecard = TRUE`. The `[QS]prop` presence check reuses `dump_plugins` (populated by QSDUMP announces).
+PROP* detection rides on the existing notecard parser: one extra `if (command == "PROP1" || command == "PROP2" || command == "PROP3")` branch in `dataserver` sets `has_prop_in_notecard = TRUE`. The `[QS]prop` presence check reads the `qs:alive:prop` LSD flag directly (`self_check_report` warns only when `has_prop_in_notecard` is set and `qs:alive:prop` is empty); it does not consult `dump_plugins`. Reading the flag keeps the check rename-safe.
 
 ## DUMP cascade
 

@@ -35,11 +35,15 @@ QuickySitter/
 │   ├── [QS]root-security.lsl
 │   ├── [QS]root-RLV.lsl
 │   ├── [QS]debug.lsl
+│   ├── plugins/
+│   │   └── propadjust/
+│   │       └── [QS]objectadjust.lsl   ← Prop-position adjuster (public since 1.25)
+│   ├── examples/            ← Plugin template + README
+│   ├── php/                 ← Self-hosted [DUMP] receiver (settings.php, config, dumps/)
 │   ├── test/
 │   │   └── TESTPLAN.md      ← Sync-drift investigation, test scenarios
 │   ├── PROTOCOL.md          ← Fork-specific link-message protocol
-│   ├── STORAGE.md           ← LSD layout and state model
-│   └── TODOLIST.md
+│   └── STORAGE.md           ← LSD layout and state model
 │
 ├── avstock/                 ← Pinned AVsitter snapshot (upstream reference)
 │   ├── Plugins/
@@ -49,12 +53,16 @@ QuickySitter/
 │   │   └── AVprop/
 │   ├── Utilities/
 │   ├── [AV]helperscript.lsl
-│   ├── [AV]root-security.lsl
 │   ├── avsitter2_link_message_reference.md
+│   ├── build-aux.py
+│   ├── Makefile
+│   ├── MARKETPLACE.txt
 │   ├── BUILD_GUIDE.md
 │   ├── IMPORT_GUIDE.md
 │   └── README.md
 │
+├── CHANGELOG.md
+├── LICENSE
 ├── README.md
 └── .gitignore
 ```
@@ -81,6 +89,7 @@ Each `[QS]*.lsl` is a self-contained script. Convention: file header starts with
 | `[QS]root-security` | Sit/menu access control (ALL / OWNER / GROUP). |
 | `[QS]root-RLV` | RLV capture/relay. Publishes `qs:alive:rlv`. |
 | `[QS]debug` | Owner-only `/88` LSD inspector and stress-traffic generator. |
+| `[QS]objectadjust` | Prop-position adjuster plugin (in `qs/plugins/propadjust/`). Public since 1.25; formerly HUD-bundle-exclusive. |
 
 ### In-repo design docs
 

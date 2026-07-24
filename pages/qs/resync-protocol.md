@@ -28,7 +28,7 @@ Handled by current `[QS]sitA` (release 1.25; scripts carry per-script versions b
 
 `[QS]sitA` applies the trigger only when it makes sense: a SYNC pose is playing (no `P:` prefix), a sitter is seated, and animation permission is held. Anything else (an empty sitter, a solo `P:` pose, a permission-pending window) is silently ignored. Broadcasting 90271 is therefore always harmless.
 
-*When* and *how often* to send is entirely the sender's decision. QuickyHUD's SYNC button is one such sender; any in-prim script can be another.
+*When* and *how often* to send is entirely the sender's decision. QuickyHUD's SYNC button is one such sender. `[QS]boot` is another: it runs the AUTOSYNC ticker (driven by the `QPP_CFG:AUTOSYNC` setting, 60 / 120 / 180 s) and fires 90271 on each tick, so re-phasing keeps happening even with the HUD detached. Any other in-prim script can send it too.
 
 ## See also
 

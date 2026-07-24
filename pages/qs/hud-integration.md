@@ -36,7 +36,7 @@ Three components, three message numbers, plus the offset-storage protocol shared
 
 QuickyHUD's `[QS]hudproxy` writes the `QPP_CFG:ADJUSTMODE` LSD key unprotected on its `state_entry`. `[QS]sitB` gates QuickyHUD-aware UI on key existence and value:
 
-- sitB appends the `[QUICKYHUD]` button to the Adjust-dialog tail for the owner (gated on `qs:alive:adjuster` present and `qs:hud:unlicensed` not set).
+- sitB appends the `[QUICKYHUD]` button to the Adjust-dialog tail for callers that pass the **Adjust ACL** (`qs:sec:adjust`; owner-only by default since 1.25, widenable to GROUP/ALL via `[SECURITY]`), also gated on `qs:alive:adjuster` present, the `QPP_CFG:ADJUSTMODE` key existing, and `qs:hud:unlicensed` not set.
 - sitB enriches the main pose menu (`[NEW]`/`[DUMP]`/`[SAVE]`/`[DONE]`) if `value == "On"`.
 
 **Problem.** LSD outlives script removal. If the creator removes hudproxy + hudadmin from the linkset after first install, the LSD key persists with whatever value it last had. sitB keeps showing `[QUICKYHUD]` (clicks no-op because nobody handles 90266) and stays stuck in the qh_on-enriched menu forever if the key happened to be `"On"` at removal time, including a `[DONE]` exit that can't clear the orphaned `"On"` state.
@@ -108,9 +108,11 @@ LSL suppresses self-delivery of `llMessageLinked` to the same script, so adjuste
 
 | Num   | Direction                | `msg`               | `id` | Meaning |
 |-------|--------------------------|---------------------|------|---------|
-| 90266 | `[QS]adjuster` → hudproxy | `"On"` / `"Off"`    | `llGetOwner()` (unused) | "Flip QuickyHUD ADJUSTMODE remotely." |
+| 90266 | `[QS]adjuster` → hudproxy | `"On"` / `"Off"`    | `"On"`: the clicking operator. `"Off"`: `llGetOwner()`. | "Flip QuickyHUD ADJUSTMODE remotely." |
 
-Sent from the `[HELPER]` choice dialog's "Quicky HUD" button (→ `"On"`), from `[STOP HELP]` (→ `"Off"`, routed back through `[HELPER]`), and from `end_helper_mode` auto-Off (→ `"Off"`, only when adjuster's local `helper_method == 1`). hudproxy mirrors the same `sAdjustmode` + LSD write its own settings menu performs; no confirmation dialog (the user already confirmed by clicking `[HELPER]`).
+On the `"On"` flip, `id` carries the **operator who clicked** (which, under the Adjust ACL, may be a non-owner) and hudproxy **uses** it: it forwards that key as `ATTACH_FOR_ADJUST` (90274) so the HUD lands on whoever entered ADJUSTMODE. On `"Off"`, `id` is `llGetOwner()` and hudproxy ignores it.
+
+`"On"` is sent from the `[QUICKYHUD]` button in the `[ADJUST]` submenu; hudadmin also emits 90266 from its own settings confirm dialog, and `[QS]animesh` sends it from the seat list. `"Off"` comes from the pose menu's `[DONE]` / `[ADJUST OFF]` exit and from `end_helper_mode`'s auto-Off (only when adjuster's local `helper_method == 1`). There is no `[STOP HELP]` button. hudproxy mirrors the same `sAdjustmode` + LSD write its own settings menu performs.
 
 ## Dynamic prop attach: `QSPROP_ATTACH` 90280
 
@@ -120,17 +122,17 @@ Sent from the `[HELPER]` choice dialog's "Quicky HUD" button (→ `"On"`), from 
 |-----|-----------|-------|------|---------|
 | 90280 | any in-prim source → `[QS]prop` | `<object>\|<type>\|<point>\|<sitter>\|<post_rez_say>` | sitter UUID | "Register this dynamic prop for the given sitter slot and rez it now. If a prior 90280 with the same `(sitter, object)` exists, update `point` + `post_rez_say` and re-rez." |
 
-**Payload fields** (pipe-delimited, parse with `llParseString2List`):
+**Payload fields** (pipe-delimited, parse with `llParseStringKeepNulls`, since the empty attach-point field must not collapse):
 
 | Field | Content |
 |-------|---------|
 | 0 | Object name in this prim's inventory. Must be an `INVENTORY_OBJECT`. |
 | 1 | Stock `[AV]prop` type: `0` = ground prop (COPY-OK NEXT), `1` = attachment prop (COPY-TRANSFER NEXT), `2` = attachment prop personal, `3` = special. The HUD case is type `1`. |
-| 2 | Attachment-point name (case-insensitive substring match into `ATTACH_POINTS` table). Empty string falls through to point `0` = "avatar center". For HUDs use e.g. `"HUD center"`. |
+| 2 | Attachment-point name (case-insensitive substring match into the attach-point table, where `CHEST`=1 … `AVATAR CENTER`=40). No match (including an empty string) returns `0`, which means the object's **default attach point** (`llAttachToAvatarTemp(0)`), not avatar center. hudadmin passes `""` deliberately. For HUDs use e.g. `"HUD center"`. |
 | 3 | Sitter slot index (0-based). Must be `< llGetListLength(SITTERS)`; out-of-range messages are silently dropped. |
 | 4 | **Optional post-rez say.** Verbatim string `[QS]prop` will `llSay` on its `comm_channel` once the rezzed prop reports `REZ` back via the same channel. Empty = no extra message. hudadmin uses it to push `"*QUICKYTEXTURE*\|<uuid>"` to a freshly-rezzed QuickyHUD. |
 
-The dynamic-prop entry is **stored** in the same `prop_triggers` / `prop_types` / `prop_objects` parallel lists that stock loads from `AVpos`. The trigger string is `<sitter>|<object>`, the prop group is `<sitter>|QSDYN`. Dedup is by trigger: re-issuing 90280 for the same `(sitter, object)` pair replaces the mutable fields and re-rezzes via the existing `rez_prop(idx)` path, with no growth in the registry.
+The dynamic-prop entry is **stored** in the `qs:prop:*` LSD registry. Since the 1.25 lazy-load refactor `[QS]prop` no longer keeps the stock `prop_triggers` / `prop_types` / `prop_objects` parallel RAM lists; each prop is one `qs:prop:<i>` LSD row (11 tab-separated fields) with a `qs:prop:trig:<trig>` index for trigger lookup. The trigger string is `<sitter>|<object>`, the prop group is `<sitter>|QSDYN`. Dedup is by trigger: re-issuing 90280 for the same `(sitter, object)` pair updates the mutable fields (`prop_update`) and re-rezzes via the existing `rez_prop(idx)` path, with no growth in the registry.
 
 No new linkmsg is needed for cleanup. Stock `[AV]prop`'s 90065 (stand-up) handler already calls `remove_props_by_sitter(msg, FALSE)`, which wipes all non-type-3 entries matching the standing sitter, including dynamic ones.
 
