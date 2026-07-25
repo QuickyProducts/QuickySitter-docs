@@ -68,10 +68,18 @@ No `hudconfig` notecard, or a blank first line, leaves everything at its default
 **Attaching by hand (`ATTACHMODE = menu`).** With auto-attach off, give users a way to attach the HUD by hand: add a button to your **AVpos** notecard:
 
 ```
-BUTTON Quicky HUD|90510|Quicky-HUD
+BUTTON POSE HUD|90510|POSE HUD
 ```
 
-The button label (`Quicky HUD`) is yours to change; the number **`90510`** and the **`Quicky-HUD`** parameter are what trigger the attach, so leave those exactly as shown.
+The button label (the part before the first `|`) is yours to change. What triggers the HUD is the number **`90510`** together with the parameter after it, and that parameter has to be one of two accepted spellings: **`POSE HUD`** or **`Quicky-HUD`**. Both work, neither is deprecated, so notecards using the older `Quicky-HUD` keep working unchanged.
+
+You can also put the entry into the furniture's `[ADJUST]` submenu instead of the main button strip. There the entries are `label|channel` pairs with no separate parameter, so the **label itself** has to be one of the two accepted spellings:
+
+```
+ADJUST POSE HUD|90510
+```
+
+Pressing the button while the user already wears the HUD takes it off again, so one button covers both directions.
 
 ### HUD screen position (`HUDOFFSET`)
 
@@ -87,7 +95,7 @@ ADJUSTMODE is your working mode while building. With it on, every move and rotat
 
 On a piece in **menu mode** (no auto-attach on sit), turning ADJUSTMODE on also makes sure you have a HUD to drive it: the in-prim hudproxy fires `90274 ATTACH_FOR_ADJUST` to hudadmin, which attaches a HUD to the seated operator. So you can enter ADJUSTMODE on a menu-mode piece without first attaching the HUD by hand.
 
-You can also enter ADJUSTMODE without opening the HUD's own Settings menu, using the dedicated **`[QUICKYHUD]`** button in the furniture's `[ADJUST]` submenu (driven by `[QS]adjuster`). It appears when `[QS]adjuster` is present (`qs:alive:adjuster`), the `QPP_CFG:ADJUSTMODE` key exists, the build is licensed, and the clicker passes the **Adjust ACL**. Clicking it flips ADJUSTMODE on through the same path (and, in menu mode, attaches a HUD for the operator). There is no separate *Quicky HUD* option inside `[HELPER]`.
+You can also enter ADJUSTMODE without opening the HUD's own Settings menu, using the dedicated **`[HELPER HUD]`** button in the furniture's `[ADJUST]` submenu (driven by `[QS]adjuster`). It appears when `[QS]adjuster` is present (`qs:alive:adjuster`), the `QPP_CFG:ADJUSTMODE` key exists, the build is licensed, and the clicker passes the **Adjust ACL**. Clicking it flips ADJUSTMODE on through the same path (and, in menu mode, attaches a HUD for the operator). There is no separate *Quicky HUD* option inside `[HELPER]`.
 
 ### Diagnostics (`VERBOSE`)
 

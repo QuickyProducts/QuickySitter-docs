@@ -32,7 +32,7 @@ Camera, favs, texture, helperscript and the lock/adult plugins (LockMeister, Loc
 
 If you want the full QS feature set:
 
-- `[QS]adjuster`: replaces `[AV]adjuster`. Gives you the on-the-fly `[HELPER] [SAVE]` writing into LSD, the 90263 customs-eviction protocol, and the `[QUICKYHUD]` button.
+- `[QS]adjuster`: replaces `[AV]adjuster`. Gives you the on-the-fly `[HELPER] [SAVE]` writing into LSD, the 90263 customs-eviction protocol, and the `[HELPER HUD]` button.
 - `[QS]prop`: replaces `[AV]prop`. Adds the 90280 dynamic-prop attach (used by QuickyHUD).
 - `[QS]faces`: replaces `[AV]faces`. Publishes `qs:alive:faces` so menu items gate cleanly.
 - `[QS]select`: optional seat-select picker for multi-furniture setups (sitB has a built-in picker otherwise).
@@ -45,7 +45,7 @@ If you want the full QS feature set:
 |--------|-------------------|-------------|------------------|
 | `[AV]prop` | ⚠️ degraded | `[QS]prop` | Stock prop derives presence/sitter mapping from `[AV]sitA` names: pose-driven rezzing works for slot 0 / single-sitter at best, and boot's self-check WARNs "prop plugin missing" because `qs:alive:prop` is never written. `[QS]prop` adds `QSPROP_ATTACH` (90280) and the lazy `qs:prop:*` LSD store. |
 | `[AV]faces` | ⚠️ degraded | `[QS]faces` | Stock faces counts sitters by walking `[AV]sitA N` names → faces play for sitter 0 at best, and the flag-gated `[FACES]` / `[FACE]` menu entries never appear. |
-| `[AV]adjuster` | ⚠️ degraded | `[QS]adjuster` | The `[HELPER]` menu entry is gated on `qs:alive:adjuster`, which stock never writes, so the helper flow is unreachable from QS menus; stock's sitter-count walk also comes up empty. `[QS]adjuster` adds the LSD `[SAVE]`, the 90263 eviction protocol and `[QUICKYHUD]`. |
+| `[AV]adjuster` | ⚠️ degraded | `[QS]adjuster` | The `[HELPER]` menu entry is gated on `qs:alive:adjuster`, which stock never writes, so the helper flow is unreachable from QS menus; stock's sitter-count walk also comes up empty. `[QS]adjuster` adds the LSD `[SAVE]`, the 90263 eviction protocol and `[HELPER HUD]`. |
 | `[AV]camera` | ✅ | none planned | Stock camera's only name-bound code path is dead code; all working paths are protocol-based. |
 | `[AV]sequence` | ⚠️ single-sitter only | `[QS]sequence` | Stock counts sitters via `[AV]sitA N` names → slots ≥ 1 lose sequences. `[QS]sequence` takes the count from QSALIVE; reads its own `[AV]sequence_settings` notecard. |
 | LockGuard / LockMeister / Xcite! | ✅ | none | All stock lock/Xcite controls work unchanged. |

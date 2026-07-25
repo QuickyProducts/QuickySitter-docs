@@ -15,7 +15,7 @@ Set up and adjust **couples and group poses without a second avatar**: the Anime
 1. Sit on the furniture and select the couples / group pose you want to work on.
 2. Open `[ADJUST]` → `[ANIMESH]`. The seat list shows the **empty seats of the current pose**.
 3. Pick a seat, then pick a body from the numbered list, and the dummy rezzes on that seat and starts the partner animation.
-4. Enter ADJUSTMODE (the `[QUICKYHUD]` button in the seat list does it in one click and attaches the HUD) and `SELECT` the dummy in the HUD picker. It behaves like any sitter target.
+4. Enter ADJUSTMODE (the `[HELPER HUD]` button in the seat list does it in one click and attaches the HUD) and `SELECT` the dummy in the HUD picker. It behaves like any sitter target.
 5. Adjust position/rotation; saving works as usual (`[SAVE]` / `[DUMP]` into the AVpos notecard).
 
 Repeat per seat: one dummy per empty seat, several at once for group poses. `[OFF ALL]` removes every dummy in one click; standing up cleans them up automatically (unless **Showcase mode** is on, see [Around real avatars](#around-real-avatars)).
@@ -25,7 +25,7 @@ Repeat per seat: one dummy per empty seat, several at once for group poses. `[OF
 The `[ADJUST]` menu is not reachable while ADJUSTMODE or helper mode is active, so the plugin offers three shortcuts:
 
 - **Click a dummy**: opens its body picker directly (change or `[REMOVE]` the body). Use **right-click → Touch**: a plain left-click often misses animesh objects (their click target is a static bounding box).
-- **`[QUICKYHUD]`** in the seat list: flips ADJUSTMODE on and attaches the HUD for you.
+- **`[HELPER HUD]`** in the seat list: flips ADJUSTMODE on and attaches the HUD for you.
 - **Auto-offer**: entering ADJUSTMODE alone on a multi-seat piece with no dummies out opens the seat list by itself after a moment.
 
 ## The dummy bodies

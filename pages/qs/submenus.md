@@ -58,7 +58,7 @@ For plugin authors: menu choices are reported via LinkMsg 90050 (pose selection)
 ## QS-specific behaviors
 
 - **`[NEW]` button appears** when `[QS]adjuster` is present and the user is in HELPER mode (or in QuickyHUD ADJUSTMODE). Clicking it opens a **type picker** (`[POSE]`/`[SYNC]`/`[SUBMENU]`/`[PROP]`/`[FACE]`/`[CAMERA]`). For a pose you then pick the animation(s) and confirm with `[DONE]`, after which a text box prompts for the entry name; the new entry is inserted into the menu at that point.
-- **`[QUICKYHUD]` button** in the Adjust dialog is gated on the full chain: the caller passes the **Adjust ACL** (`qs:sec:adjust`, owner always passes, widenable to GROUP/ALL via `[SECURITY]`), `qs:alive:adjuster` is set, the `QPP_CFG:ADJUSTMODE` LSD key exists, and `qs:hud:unlicensed` is not `"1"`. See [HUD Integration](hud-integration.html).
+- **`[HELPER HUD]` button** in the Adjust dialog is gated on the full chain: the caller passes the **Adjust ACL** (`qs:sec:adjust`, owner always passes, widenable to GROUP/ALL via `[SECURITY]`), `qs:alive:adjuster` is set, the `QPP_CFG:ADJUSTMODE` LSD key exists, and `qs:hud:unlicensed` is not `"1"`. See [HUD Integration](hud-integration.html).
 - **`[DONE]`** in the main pose menu appears in HELPER mode or QuickyHUD ADJUSTMODE (`QPP_CFG:ADJUSTMODE == "On"`). Clicking exits the mode (sitB broadcasts 90100 `[DONE]`, `[QS]adjuster` does the tear-down, including 90266 `"Off"` to hudproxy) and opens the adjust submenu.
 
 ## See also

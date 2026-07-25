@@ -33,7 +33,7 @@ After seeding completes, boot broadcasts `QS_BOOT_RELOAD` (90023) so any already
 1. **Hard-fail.** `[QS]sitA` missing, `[QS]sitB` missing, **or** the `AVpos` notecard missing: no animation, no menu, or nothing to seed. The missing-notecard hard-fail lives in [`state_entry` (`[QS]boot.lsl` ~774-782)](https://github.com/QuickyProducts/QuickySitter/blob/master/qs/%5BQS%5Dboot.lsl); the missing-sitA/sitB hard-fail is surfaced later by the post-seed `self_check_report`. Sets `llSetText` red so the prim is visibly broken in-world. These three plus `[QS]boot` itself are the only mandatory ingredients; everything else is optional and presence-gated.
 2. **Conditional warn.** AVpos has `PROP*` directives but `[QS]prop` is not installed, so props won't be rezzed.
 
-Adjuster presence is deliberately **not** treated as a failure. The `[HELPER]` / `[QUICKYHUD]` menu gate lives in `[QS]sitB`, keyed on the `qs:alive:adjuster` LSD flag, so an end-user (read-only) install just doesn't expose the Adjust path. Nothing is broken from the user's view.
+Adjuster presence is deliberately **not** treated as a failure. The `[HELPER]` / `[HELPER HUD]` menu gate lives in `[QS]sitB`, keyed on the `qs:alive:adjuster` LSD flag, so an end-user (read-only) install just doesn't expose the Adjust path. Nothing is broken from the user's view.
 
 ### Probes
 

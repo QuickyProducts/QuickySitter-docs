@@ -88,7 +88,7 @@ Plugin presence is **not** a link-message handshake. Each plugin writes a `qs:al
 | Num | Direction | Use |
 |-----|-----------|-----|
 | `90212` | plugin → `[QS]sitB` | QSPLUG_REGISTER: `msg = "<label>\|<click_chan>\|<scriptName>"`. Registers a runtime button into the `[OPTIONS]` top-level menu. sitB dedupes by `scriptName`. Click dispatch lands on `<click_chan>` with `msg = <label>`, `id = <controller-key>`. See [Options Menu Plugins](options-menu-plugins.html). |
-| `90213` | plugin → `[QS]sitB` | QSADJ_REGISTER: `msg = "<label>\|<click_chan>\|<scriptName>\|<flags>"`. Like QSPLUG_REGISTER but the button lands in the `[ADJUST]` submenu instead of `[OPTIONS]`. `flags` bit 0 = owner-only (rendered per the Adjust ACL, like `[QUICKYHUD]`). RAM registry, re-announced by the plugin on QSALIVE_REPLY (90097) so it survives a re-seed. |
+| `90213` | plugin → `[QS]sitB` | QSADJ_REGISTER: `msg = "<label>\|<click_chan>\|<scriptName>\|<flags>"`. Like QSPLUG_REGISTER but the button lands in the `[ADJUST]` submenu instead of `[OPTIONS]`. `flags` bit 0 = owner-only (rendered per the Adjust ACL, like `[HELPER HUD]`). RAM registry, re-announced by the plugin on QSALIVE_REPLY (90097) so it survives a re-seed. |
 
 ### Personal pose offsets (9026x)
 

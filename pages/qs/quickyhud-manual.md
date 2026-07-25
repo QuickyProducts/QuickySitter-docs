@@ -113,7 +113,7 @@ See also: [Re-Sync Protocol](resync-protocol.html) for the technical detail behi
 
 ADJUSTMODE is a working mode for furniture creators. While ADJUSTMODE is active, every position and rotation change made with the HUD is written directly into QuickySitter's pose data instead of being stored as a per-avatar offset.
 
-Since 1.25, entering ADJUSTMODE is no longer strictly owner-only: anyone allowed by the furniture's **Adjust ACL** (owner by default, widenable to group or everyone in `[QS]root-security`'s `[SECURITY]` menu) can enter it through the `[QUICKYHUD]` button in the furniture's `[ADJUST]` menu. Only the ADJUSTMODE toggle in the HUD's own Settings menu stays owner-only.
+Since 1.25, entering ADJUSTMODE is no longer strictly owner-only: anyone allowed by the furniture's **Adjust ACL** (owner by default, widenable to group or everyone in `[QS]root-security`'s `[SECURITY]` menu) can enter it through the `[HELPER HUD]` button in the furniture's `[ADJUST]` menu. Only the ADJUSTMODE toggle in the HUD's own Settings menu stays owner-only.
 
 **Workflow:**
 

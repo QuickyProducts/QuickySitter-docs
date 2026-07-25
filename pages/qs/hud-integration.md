@@ -36,10 +36,11 @@ Three components, three message numbers, plus the offset-storage protocol shared
 
 QuickyHUD's `[QS]hudproxy` writes the `QPP_CFG:ADJUSTMODE` LSD key unprotected on its `state_entry`. `[QS]sitB` gates QuickyHUD-aware UI on key existence and value:
 
-- sitB appends the `[QUICKYHUD]` button to the Adjust-dialog tail for callers that pass the **Adjust ACL** (`qs:sec:adjust`; owner-only by default since 1.25, widenable to GROUP/ALL via `[SECURITY]`), also gated on `qs:alive:adjuster` present, the `QPP_CFG:ADJUSTMODE` key existing, and `qs:hud:unlicensed` not set.
+- sitB appends the `[HELPER HUD]` button to the Adjust-dialog tail for callers that pass the **Adjust ACL** (`qs:sec:adjust`; owner-only by default since 1.25, widenable to GROUP/ALL via `[SECURITY]`), also gated on `qs:alive:adjuster` present, the `QPP_CFG:ADJUSTMODE` key existing, and `qs:hud:unlicensed` not set.
+  - **Label vs wire token (sitB 1.256).** The button *reads* `[HELPER HUD]` — it is the HUD-flavored sibling of `[HELPER]`. The token it *sends* on 90100 is unchanged: sitB translates the label back to `[QUICKYHUD]` before broadcasting. Scripts listening on 90100 keep matching `[QUICKYHUD]` and need no change; never match the display label.
 - sitB enriches the main pose menu (`[NEW]`/`[DUMP]`/`[SAVE]`/`[DONE]`) if `value == "On"`.
 
-**Problem.** LSD outlives script removal. If the creator removes hudproxy + hudadmin from the linkset after first install, the LSD key persists with whatever value it last had. sitB keeps showing `[QUICKYHUD]` (clicks no-op because nobody handles 90266) and stays stuck in the qh_on-enriched menu forever if the key happened to be `"On"` at removal time, including a `[DONE]` exit that can't clear the orphaned `"On"` state.
+**Problem.** LSD outlives script removal. If the creator removes hudproxy + hudadmin from the linkset after first install, the LSD key persists with whatever value it last had. sitB keeps showing `[HELPER HUD]` (clicks no-op because nobody handles 90266) and stays stuck in the qh_on-enriched menu forever if the key happened to be `"On"` at removal time, including a `[DONE]` exit that can't clear the orphaned `"On"` state.
 
 **Fix.** 90093 active-presence probe.
 
@@ -112,7 +113,7 @@ LSL suppresses self-delivery of `llMessageLinked` to the same script, so adjuste
 
 On the `"On"` flip, `id` carries the **operator who clicked** (which, under the Adjust ACL, may be a non-owner) and hudproxy **uses** it: it forwards that key as `ATTACH_FOR_ADJUST` (90274) so the HUD lands on whoever entered ADJUSTMODE. On `"Off"`, `id` is `llGetOwner()` and hudproxy ignores it.
 
-`"On"` is sent from the `[QUICKYHUD]` button in the `[ADJUST]` submenu; hudadmin also emits 90266 from its own settings confirm dialog, and `[QS]animesh` sends it from the seat list. `"Off"` comes from the pose menu's `[DONE]` / `[ADJUST OFF]` exit and from `end_helper_mode`'s auto-Off (only when adjuster's local `helper_method == 1`). There is no `[STOP HELP]` button. hudproxy mirrors the same `sAdjustmode` + LSD write its own settings menu performs.
+`"On"` is sent from the `[HELPER HUD]` button in the `[ADJUST]` submenu; hudadmin also emits 90266 from its own settings confirm dialog, and `[QS]animesh` sends it from the seat list. `"Off"` comes from the pose menu's `[DONE]` / `[ADJUST OFF]` exit and from `end_helper_mode`'s auto-Off (only when adjuster's local `helper_method == 1`). There is no `[STOP HELP]` button. hudproxy mirrors the same `sAdjustmode` + LSD write its own settings menu performs.
 
 ## Dynamic prop attach: `QSPROP_ATTACH` 90280
 

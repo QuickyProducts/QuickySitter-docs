@@ -19,7 +19,7 @@ Quick-reference table for every Linkset Data key QuickySitter writes or reads. F
 | `qs:boot:*` | `[QS]boot` writes and reads | Boot orchestration markers (currently only `qs:boot:asset`). |
 | `qs:alive:*` | each optional plugin writes its own flag; sitA, sitB, adjuster read | Plugin-presence flags (`qs:alive:prop`, `…:faces`, `…:adjuster`, `…:select`, `…:rlv`). `[QS]offset` uses the **inverted** name `qs:offset:alive`. Read on demand at menu-build, re-stamped on `QS_ALIVE_CENSUS` (90079). |
 | `qs:prop:*` | `[QS]prop` writes and reads | Lazy-loaded prop database (replaces parsing PROP entries from the notecard on every play). |
-| `qs:sec:adjust` | `[QS]root-security` writes; sitB, adjuster read | Adjust ACL level (`OWNER`/`GROUP`/`ALL`): the 1.25 gate for who may open `[ADJUST]` / `[QUICKYHUD]`. |
+| `qs:sec:adjust` | `[QS]root-security` writes; sitB, adjuster read | Adjust ACL level (`OWNER`/`GROUP`/`ALL`): the 1.25 gate for who may open `[ADJUST]` / `[HELPER HUD]`. |
 | `qs:nm:*`, `qs:nt:*` | `[QS]boot` writes; sitB reads | Page-oriented menu sidecar: `qs:nm:<ch>:<mi>` = child count of a menu section, `qs:nt:<ch>:<ti>` = the MENU a TOMENU navigates to. Lets sitB rebuild pages in O(1) instead of walking the pose list. |
 | `qs:select:btn:*` | `[QS]select` writes; hudproxy reads | Per-slot seat-picker button labels (notecard-derived) so the HUD SWAP dialog shows real seat names instead of generic "Sitter N". |
 | `qs:hud:*` | `[QS]hudadmin` writes; sitB, hudproxy, animesh read | HUD liveness / license mirror: `qs:hud:admin_alive`, `qs:hud:unlicensed`. |
@@ -111,7 +111,7 @@ The whole namespace is wiped (`^qs:prop:.*`) and re-parsed only when the AVpos n
 ### `qs:hud:unlicensed`
 
 **Writer:** `[QS]hudadmin` (QuickyHUD repo), which sets `"1"` when its license check fails.
-**Readers:** `[QS]sitB` (`[HELPER]`/`[QUICKYHUD]` gate) and hudproxy (`[QUICKYHUD]` attach gate). `[QS]adjuster` does **not** read it. Gates only the `[QUICKYHUD]` entry, not `[HELPER]`.
+**Readers:** `[QS]sitB` (`[HELPER]`/`[HELPER HUD]` gate) and hudproxy (`[HELPER HUD]` attach gate). `[QS]adjuster` does **not** read it. Gates only the `[HELPER HUD]` entry, not `[HELPER]`.
 **Format:** `"1"` when unlicensed; absent otherwise. Singleton flag (since 0.9935).
 
 ### `QSO:<short>:<slot>:<pose>`

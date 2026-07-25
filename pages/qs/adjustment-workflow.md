@@ -12,7 +12,7 @@ There are two ways to author and fine-tune poses in-world: the **QuickyHUD-drive
 
 The headline QS authoring path: adjust with the wearable QuickyHUD instead of the dialog helper bars.
 
-**Entering it.** The operator clicks `[QUICKYHUD]` in the adjust menu (or flips ADJUSTMODE from the HUD's own settings). `[QS]adjuster` sends 90266 `"On"` to hudproxy (sitB only broadcasts the button click on 90100), and entering ADJUSTMODE **auto-attaches a HUD to the seated operator** (`ATTACH_FOR_ADJUST` 90274 → hudadmin), so there is no rummaging in inventory. The pose menu gains a `[DONE]` exit button.
+**Entering it.** The operator clicks `[HELPER HUD]` in the adjust menu (or flips ADJUSTMODE from the HUD's own settings). `[QS]adjuster` sends 90266 `"On"` to hudproxy (sitB only broadcasts the button click on 90100, as the unchanged `[QUICKYHUD]` token — the 1.256 rename is display-only), and entering ADJUSTMODE **auto-attaches a HUD to the seated operator** (`ATTACH_FOR_ADJUST` 90274 → hudadmin), so there is no rummaging in inventory. The pose menu gains a `[DONE]` exit button.
 
 **Adjusting.** Nudge position and rotation with the HUD's camera-relative X/Y/Z buttons at the selected step size. While **ADJUSTMODE is `On`**, every change is written straight into the **pose default** (the value *all* sitters get) instead of a per-avatar offset. The new default is persisted to LSD (`qs:p:<ch>:<i>`) immediately, so it survives script reset, rerez and region restart; only re-seeding from a changed AVpos notecard overwrites it. (With ADJUSTMODE `Off`, the same HUD nudges save a *personal* offset for the wearer only, via 90262 → `[QS]offset`.)
 
@@ -30,7 +30,7 @@ What QS changed under the hood is small:
 
 - **`[SAVE]` persists.** Stock `[SAVE]` only updated sitB's memory, so it was lost on reset unless you `[DUMP]`ed and pasted back. QS writes the new default to LSD (`qs:p:<ch>:<i>`), so it survives script reset, rerez and region restart (as long as the notecard's asset-key is unchanged). To capture LSD edits back into the notecard, use `[DUMP]`.
 - **Live re-render + customs eviction.** `[SAVE]` emits 90263 (drop stale pose-specific customs) then 90301 (re-render the seated avatar on the new default); see the 90263 note below.
-- **`[QUICKYHUD]`** in this menu is the entry point into the ADJUSTMODE path above.
+- **`[HELPER HUD]`** in this menu is the entry point into the ADJUSTMODE path above.
 
 ### `[HELPER]` menu entries
 
@@ -39,7 +39,7 @@ What QS changed under the hood is small:
 | `[NEW]` | Create a new entry. Opens a type picker (`[POSE]`/`[SYNC]`/`[SUBMENU]`/...); for a pose you pick the animation(s), confirm with `[DONE]`, then type the name in a text box. Names are not auto-generated sequentially. |
 | `[SAVE]` | Write `CURRENT_POSITION`/`CURRENT_ROTATION` to `qs:p:<ch>:<i>` as the new pose default. Also emits 90263 to clear stale customs. |
 | `[DUMP]` | Trigger boot's dump cascade. From this path it runs **loud** (full chat output) and uploads. |
-| `[QUICKYHUD]` | Toggle QuickyHUD ADJUSTMODE (90266 `"On"`). Visible only when hudproxy is present. |
+| `[HELPER HUD]` | Toggle QuickyHUD ADJUSTMODE (90266 `"On"`). Visible only when hudproxy is present. |
 | `[DONE]` | Leave helper mode and return to the normal pose menu. |
 
 ## When to use which save
