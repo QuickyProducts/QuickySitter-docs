@@ -71,13 +71,21 @@ No `hudconfig` notecard, or a blank first line, leaves everything at its default
 BUTTON POSE HUD|90510|POSE HUD
 ```
 
-The button label (the part before the first `|`) is yours to change. What triggers the HUD is the number **`90510`** together with the parameter after it, and that parameter has to be one of two accepted spellings: **`POSE HUD`** or **`Quicky-HUD`**. Both work, neither is deprecated, so notecards using the older `Quicky-HUD` keep working unchanged.
+The button label (the part before the first `|`) is yours to change. What triggers the HUD is the number **`90510`** together with the parameter after it, and that parameter has to carry one of two accepted names: **`POSE HUD`** or **`Quicky-HUD`**. Both work, neither is deprecated, so notecards using the older `Quicky-HUD` keep working unchanged.
 
-You can also put the entry into the furniture's `[ADJUST]` submenu instead of the main button strip. There the entries are `label|channel` pairs with no separate parameter, so the **label itself** has to be one of the two accepted spellings:
+You can also put the entry into the furniture's `[ADJUST]` submenu instead of the main button strip. There the entries are `label|channel` pairs with no separate parameter, so the **label itself** has to carry the name:
 
 ```
 ADJUST POSE HUD|90510
 ```
+
+The name only has to *appear* in it, so you can dress the label up — handy exactly in the `[ADJUST]` case, where label and parameter are the same thing:
+
+```
+ADJUST 💠 POSE HUD|90510
+```
+
+Keep the whole label under 24 bytes (a dialog-button limit; an emoji counts as 4), and remember that very old viewers may draw an emoji as an empty box — the button still works there.
 
 Pressing the button while the user already wears the HUD takes it off again, so one button covers both directions.
 
