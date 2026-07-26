@@ -10,13 +10,16 @@ QuickySitter has **no public chat commands**. All user-facing interaction (pose 
 
 ## `/5`: [QS]adjuster (owner only)
 
-`[QS]adjuster` listens on fixed channel 5, filtered to the owner. Three commands:
+`[QS]adjuster` listens on fixed channel 5, filtered to the owner:
 
 | Command | What it does |
 |---------|--------------|
 | `/5 targets` | Labels every assigned seat prim with floating text showing its `SET-SLOT` pair (link message 90298 to the sitA scripts). Handy for verifying prim-description seat pinning; see [SitTargets](sittargets.html). |
-| `/5 helper` | Starts the classic `[HELPER]` flow for the slot-0 sitter. Requires someone to be seated. |
-| `/5 cleanup` | Build finalization: removes `[QS]adjuster` and the `[AV]helper` object from the prim (mirrors the stock AVsitter cleanup step). |
+| `/5 helper` | Starts the classic `[HELPER]` flow for the slot-0 sitter. Requires someone to be seated. The bars are live handles; persisting still happens per pose via `[SAVE]` from a menu, see [Adjustment Workflow](adjustment-workflow.html). |
+| `/5 adjust owner\|group\|all` | Sets the **Adjust ACL** level (same setting as `[SECURITY]` → `Adjust`) without opening the dialog. Works with or without `[QS]root-security` in the build; resets to owner-only when the furniture changes owner. |
+| `/5 cleanup` | Build finalization: removes `[QS]adjuster` and the `[AV]helper` object from the prim (mirrors the stock AVsitter cleanup step). Removing the adjuster is what switches authoring off — without it no `[HELPER]`/`[HELPER HUD]`/`[NEW]`/`[DUMP]`/`[SAVE]` exists on the piece, while personal pose offsets keep working. |
+
+One more channel-5 command is handled by the rezzed `[AV]helper` stick itself, not by the adjuster (stock behavior, filtered to the current helper **controller**, not the owner): saying an avatar UUID (`/5 <uuid>`) moves the stick onto that avatar's position if they are within 10 m — the classic trick for copying positions from poseballs.
 
 ## `/88`: [QS]debug (owner only, optional)
 

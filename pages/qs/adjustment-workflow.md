@@ -24,7 +24,7 @@ See [HUD Integration](hud-integration.html) for the in-prim contract and [Person
 
 ## The classic `[HELPER]` dialog (still available)
 
-The stock-AVsitter authoring loop is still here and unchanged in feel: `[HELPER]` exposes `[NEW]`/`[SAVE]`/`[DUMP]`, and you adjust with the dialog arrows. It's exposed only when `[QS]adjuster` is present (sitB reads `qs:alive:adjuster`), the `[AV]helper` object is in the prim's inventory, and the clicker passes the **Adjust ACL**. Since 1.25 that ACL is owner-only by default but can be widened to `GROUP` or `ALL` in `[QS]root-security`'s `[SECURITY]` menu (published as `qs:sec:adjust`); the owner always passes.
+The stock-AVsitter authoring loop is still here and unchanged in feel: `[HELPER]` exposes `[NEW]`/`[SAVE]`/`[DUMP]`, and you adjust with the dialog arrows. It's exposed only when `[QS]adjuster` is present (sitB reads `qs:alive:adjuster`), the `[AV]helper` object is in the prim's inventory, and the clicker passes the **Adjust ACL**. Since 1.25 that ACL is owner-only by default but can be widened to `GROUP` or `ALL` in `[QS]root-security`'s `[SECURITY]` menu (published as `qs:sec:adjust`) or with the owner chat shortcut [`/5 adjust owner|group|all`](chat-commands.html), which also works on furniture without the security plugin; the owner always passes.
 
 What QS changed under the hood is small:
 
