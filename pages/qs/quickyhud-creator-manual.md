@@ -59,7 +59,7 @@ For example: default reserve, auto-attach, the built-in design, and a small HUD 
 | Field | Default | What it does |
 |-------|---------|--------------|
 | `RESERVE` | `0` | The system already keeps a sensible memory reserve by default. Only raise this above `0` if you know the piece needs more free space. |
-| `ATTACHMODE` | `auto` | `auto` = the HUD attaches by itself when someone sits (via the AVsitter Experience). `menuplus` = no auto-attach, and the HUD adds its own `💠 POSE HUD` entry to the furniture's `[ADJUST]` menu, so you need to do nothing else. `menu` = no auto-attach and no entry either; you place the button yourself (see below). |
+| `ATTACHMODE` | `menuplus` | `menuplus` *(default)* = no auto-attach; the HUD adds its own `💠 POSE HUD` entry to the furniture's `[ADJUST]` menu, so sitters take it when they want it and you need to do nothing. `auto` = the HUD attaches by itself when someone sits (needs the AVsitter Experience; without it every sit raises a permission prompt). `menu` = no auto-attach and no entry either; you place the button yourself (see below). |
 | `TEXTURE` | *(empty)* | The default HUD design, as a texture UUID. Leave empty to keep the built-in design. |
 | `HUDOFFSET` | `<0,0,0>` | Where the HUD sits on screen when attached (see below). |
 
@@ -67,7 +67,7 @@ No `hudconfig` notecard, or a blank first line, leaves everything at its default
 
 **No auto-attach: two ways to give users the button.**
 
-With `ATTACHMODE = menuplus` there is nothing to do. The HUD registers a `💠 POSE HUD` entry in the furniture's `[ADJUST]` menu by itself, and removes it again if you later switch the mode back. This is the recommended setting: it cannot be forgotten, and a piece can no longer end up in a state where the HUD has no way to arrive.
+With `ATTACHMODE = menuplus`, the default, there is nothing to do. The HUD registers a `💠 POSE HUD` entry in the furniture's `[ADJUST]` menu by itself, and removes it again if you later switch the mode. Sitters get a HUD when they ask for one, which is why this is the default: attaching one to everybody was a constraint from the HUD's AVsitter-plugin days, not a decision.
 
 With `ATTACHMODE = menu` you place the button yourself. Add it to your **AVpos** notecard:
 
