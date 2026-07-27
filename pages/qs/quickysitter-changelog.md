@@ -8,6 +8,13 @@ toc: true
 
 Customer-facing changes only, and each entry is tagged **Fix** (bug fix) or **Feature** (new). Routine internal/technical changes aren't listed. Newest version on top.
 
+## Version 1.26
+
+- **Feature**: The `[QUICKYHUD]` entry in the `[ADJUST]` menu is now called `[HELPER HUD]`. It sits right next to `[HELPER]` and does the same job with the HUD instead of the helper bars, so the name now says what the button is for. Nothing else changes: same access rules, same adjust mode, and creator scripts listening for the old name keep working.
+- **Feature**: New owner chat shortcut for the Adjust access level: `/5 adjust owner`, `/5 adjust group` or `/5 adjust all`. Same setting as `[SECURITY]` > `Adjust`, but it also works on furniture that does not have the security plugin in it, so a store-owned piece can be opened up for your building account without adding scripts.
+- **Feature**: The Adjust access level is now only offered on furniture that still has the adjust tools in it. Once you finalize a piece with `/5 cleanup` there is no adjust workflow left to gate, so the entry drops out of the `[SECURITY]` menu.
+- **Fix**: The `/5 helper` chat command works again. It had silently done nothing since the 0.910 menu rework and now opens the helper bars for the avatar in the first seat, exactly like the `[HELPER]` button.
+
 ## Version 1.25
 
 *Version numbers of QuickySitter and the QuickySitter Pro creator kit are unified from this release on. QuickySitter jumps from 1.04 to 1.25 to meet the kit. Same product, no release was skipped.*
@@ -15,8 +22,6 @@ Customer-facing changes only, and each entry is tagged **Fix** (bug fix) or **Fe
 - **Feature**: Prop scale & worn-fit support: props equipped with the `[QS]objectadjust` script (drop it into your prop next to `[AV]object`) can be resized in the editor, or fitted directly on the body for attachment props, and saved with `[SAVE]`. No more take-back-and-replace loop. Owners can also fine-tune a rezzed prop's size by touch (±1/5/10 % menu, `[RESTORE]`).
 - **Feature**: New "Adjust" access level in the `[SECURITY]` menu (OWNER / GROUP / ALL, default OWNER): it lets chosen non-owners use the adjust tools (`[HELPER]` and the QuickyHUD adjust mode). Handy when a store account owns the furniture but you build from your personal account: set it to GROUP and both accounts just need the store group.
 - **Feature**: The `[DUMP]` settings-copy web page now shows the familiar classic AVsitter layout, with all pose and menu lines together and the position data grouped below.
-- **Fix**: On furniture with many poses and props the prop script could run out of memory and crash on early 1.25 (visible as "Stack-Heap Collision" in chat, and the Quicky HUD no longer attached).
-- **Fix**: That crash could also leave corrupted prop records stored in the furniture, so later the wrong prop appeared instead of the intended one (or instead of the Quicky HUD). Corrupted records are now detected, discarded, and rebuilt automatically, including ones left behind before the update.
 - **Fix**: `[DUMP]` no longer lists the internal "QSDYN" entries the Quicky HUD registers for its automatic attach, so they stop showing up as bogus PROP lines when you paste a dump back into the AVpos notecard (the HUD recreates them on demand; already-pasted lines keep working and simply vanish from the next dump).
 - **Fix**: The `[HELPER]` `[DUMP]` "Settings copy" link now uses the QuickySitter dump service; the old avsitter.com page it pointed to no longer works.
 
