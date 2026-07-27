@@ -59,35 +59,27 @@ For example: default reserve, auto-attach, the built-in design, and a small HUD 
 | Field | Default | What it does |
 |-------|---------|--------------|
 | `RESERVE` | `0` | The system already keeps a sensible memory reserve by default. Only raise this above `0` if you know the piece needs more free space. |
-| `ATTACHMODE` | `auto` | `auto` = the HUD attaches by itself when someone sits (via the AVsitter Experience). `menu` = no auto-attach; the user attaches it from a menu / button instead. |
+| `ATTACHMODE` | `auto` | `auto` = the HUD attaches by itself when someone sits (via the AVsitter Experience). `menuplus` = no auto-attach, and the HUD adds its own `💠 POSE HUD` entry to the furniture's `[ADJUST]` menu, so you need to do nothing else. `menu` = no auto-attach and no entry either; you place the button yourself (see below). |
 | `TEXTURE` | *(empty)* | The default HUD design, as a texture UUID. Leave empty to keep the built-in design. |
 | `HUDOFFSET` | `<0,0,0>` | Where the HUD sits on screen when attached (see below). |
 
 No `hudconfig` notecard, or a blank first line, leaves everything at its default. The config has to be on the very first line; comment lines above it aren't supported.
 
-**Attaching by hand (`ATTACHMODE = menu`).** With auto-attach off, give users a way to attach the HUD by hand: add a button to your **AVpos** notecard:
+**No auto-attach: two ways to give users the button.**
+
+With `ATTACHMODE = menuplus` there is nothing to do. The HUD registers a `💠 POSE HUD` entry in the furniture's `[ADJUST]` menu by itself, and removes it again if you later switch the mode back. This is the recommended setting: it cannot be forgotten, and a piece can no longer end up in a state where the HUD has no way to arrive.
+
+With `ATTACHMODE = menu` you place the button yourself. Add it to your **AVpos** notecard:
 
 ```
-BUTTON POSE HUD|90510|POSE HUD
+BUTTON Quicky HUD|90510|Quicky-HUD
 ```
 
-The button label (the part before the first `|`) is yours to change. What triggers the HUD is the number **`90510`** together with the parameter after it, and that parameter has to carry one of two accepted names: **`POSE HUD`** or **`Quicky-HUD`**. Both work, neither is deprecated, so notecards using the older `Quicky-HUD` keep working unchanged.
+The button label (the part before the first `|`) is yours to change. What triggers the HUD is the number **`90510`** together with the parameter after it, and that parameter has to read exactly **`Quicky-HUD`**.
 
-You can also put the entry into the furniture's `[ADJUST]` submenu instead of the main button strip. There the entries are `label|channel` pairs with no separate parameter, so the **label itself** has to carry the name:
+Pressing the button while the user already wears the HUD takes it off again, so one button covers both directions. The same is true of the `menuplus` entry.
 
-```
-ADJUST POSE HUD|90510
-```
-
-The name only has to *appear* in it, so you can dress the label up — handy exactly in the `[ADJUST]` case, where label and parameter are the same thing:
-
-```
-ADJUST 💠 POSE HUD|90510
-```
-
-Keep the whole label under 24 bytes (a dialog-button limit; an emoji counts as 4), and remember that very old viewers may draw an emoji as an empty box — the button still works there.
-
-Pressing the button while the user already wears the HUD takes it off again, so one button covers both directions.
+{% include note.html content="Both modes suppress auto-attach, so `menu` and `menuplus` differ only in who places the button. Existing furniture on `menu` keeps behaving exactly as before, including after a script update." %}
 
 ### HUD screen position (`HUDOFFSET`)
 
