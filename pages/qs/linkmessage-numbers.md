@@ -87,6 +87,7 @@ Plugin presence is **not** a link-message handshake. Each plugin writes a `qs:al
 
 | Num | Direction | Use |
 |-----|-----------|-----|
+| `90204` | `[QS]adjuster` → `[QS]root-security` | `QSADJ_ACL_SET`: apply an Adjust-ACL level from the `/5 adjust` chat command, `msg = "OWNER"` / `"GROUP"` / `"ALL"`. A stock-free slot inside the otherwise stock `90200` band. The adjuster sends it and writes `qs:sec:adjust` itself, both unconditionally, so the plugin's RAM state cannot go stale and revert the level on the next census. Since 1.26. |
 | `90212` | plugin → `[QS]sitB` | QSPLUG_REGISTER: `msg = "<label>\|<click_chan>\|<scriptName>"`. Registers a runtime button into the `[OPTIONS]` top-level menu. sitB dedupes by `scriptName`. Click dispatch lands on `<click_chan>` with `msg = <label>`, `id = <controller-key>`. See [Options Menu Plugins](options-menu-plugins.html). |
 | `90213` | plugin → `[QS]sitB` | QSADJ_REGISTER: `msg = "<label>\|<click_chan>\|<scriptName>\|<flags>"`. Like QSPLUG_REGISTER but the button lands in the `[ADJUST]` submenu instead of `[OPTIONS]`. `flags` bit 0 = owner-only (rendered per the Adjust ACL, like `[HELPER HUD]`). RAM registry, re-announced by the plugin on QSALIVE_REPLY (90097) so it survives a re-seed. |
 
@@ -94,6 +95,10 @@ Plugin presence is **not** a link-message handshake. Each plugin writes a `qs:al
 
 | Num | Direction | Use |
 |-----|-----------|-----|
+| `90214` | `[QS]adjuster` → `[QS]faces` | `QSFACE_PICK`: open the facial-anim picker for a sitter slot. `msg = "<slot>\|<controller>\|<sitterAv>"`. Prim-local (sent `LINK_THIS`, and the receiver refuses a cross-prim sender), because the slot indexes the receiving prim's own sitter list. Since 1.26. |
+| `90215` | `[QS]adjuster` → creator-only plugins | `QS_FINALIZE`: broadcast by `/5 cleanup` just before the adjuster removes itself. Subscribers tear THEMSELVES down; the adjuster knows no plugin inventory names. Unheard when no such plugin is present. Since 1.26. |
+| `90216` | plugin → `[QS]sitB` | `QSADJ_UNREGISTER`: drop a button registered via 90213. `msg = <scriptName>`, the same identity 90213 dedupes on. A plugin that deletes itself MUST send this first, otherwise its button outlives it and dispatches to a channel nobody listens on. Since 1.26. |
+| `90238` | `[QS]sitB` → hudadmin | Click channel of the self-registered `💠 POSE HUD` entry (attach mode `menuplus`). Same handler as the 90510 button, so it toggles. Since 1.26. |
 | `90260` | `[QS]offset` → `[QS]sitA` + hudproxy | "Mirror this RAM-tier personal offset." ZERO/ZERO is the delete sentinel. |
 | `90261` | `[QS]sitA` + hudproxy → `[QS]offset` | "Push every RAM-tier cached offset for this (sitter, slot) pair to me." |
 | `90262` | `[QS]sitA`, hudproxy, hudadmin, `[QS]debug` → `[QS]offset` | "Save this offset for (sitter, slot, pose)." Magic name `M#T!` is the all-poses fallback. |
@@ -133,6 +138,7 @@ These live entirely inside the QuickyHUD scripts (hudproxy ↔ hudadmin, both on
 | `90273` | hudadmin → hudproxy | `SELECT_PICKED`: the chosen target token. |
 | `90274` | hudproxy → hudadmin | `ATTACH_FOR_ADJUST`: ensure the operator has a HUD attached when ADJUSTMODE goes On. |
 | `90275` | any source → hudproxy | `QSANIM_OCCUPANT`: animesh dummy occupant hook. See [Animesh Adjust Dummies](quickysitter-pro-animesh.html). |
+| `90276` | hudproxy → linkset | `ADJUSTMODE_CHANGED`: the mode flipped, `msg = "On"` / `"Off"`. Fired from the single choke point every flip passes through. hudadmin uses the `"Off"` edge to retire HUDs that only existed for ADJUSTMODE. Nobody listens on stock AVsitter, so the broadcast is compat-neutral there. Since 1.26. |
 
 ## Compatibility summary
 

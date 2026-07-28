@@ -33,7 +33,7 @@ Pipe-delimited. **Use `llParseString2List`, not `llParseStringKeepNulls`**, beca
 | Field | Content |
 |-------|---------|
 | 0 | Button label as it appears in the dialog (e.g. `[MYPLUGIN]`). Convention is bracket-wrapped uppercase for visual parity with built-in buttons, but anything llDialog accepts works. |
-| 1 | Click channel: the LinkMessage `num` sitB fires when the user picks your button. Pick a genuinely free number: within 90212–90229 and 90232–90259, the numbers `90212` (QSPLUG_REGISTER itself), `90213` (QSADJ_REGISTER), and `90220` (a stock play-by-name channel handled by `[QS]prop`) are **taken**, leaving 90214–90219, 90221–90229, and 90232–90259 (43 numbers) actually free. Document your pick in your plugin's README. |
+| 1 | Click channel: the LinkMessage `num` sitB fires when the user picks your button. Pick a genuinely free number. The two bands are 90212–90229 and 90232–90259, and within them these are **taken**: `90212` (QSPLUG_REGISTER itself), `90213` (QSADJ_REGISTER), `90214` (QSFACE_PICK), `90215` (QS_FINALIZE), `90216` (QSADJ_UNREGISTER), `90220` (a stock play-by-name channel handled by `[QS]prop`), `90234` (the click channel used by the shipped plugin example, so copy-paste starters land on it), `90235`–`90237` (the Animesh Adjust Dummies plugin) and `90238` (the self-registered `💠 POSE HUD` entry). That leaves 90217–90219, 90221–90229, 90232–90233 and 90239–90259: 36 numbers. Document your pick in your plugin's README. |
 | 2 | `llGetScriptName()` of the announcing script. Used as the dedupe key: a re-announce on plugin reset / inventory change overwrites the existing registry slot instead of appending a duplicate. |
 
 ## What sitB does with this
