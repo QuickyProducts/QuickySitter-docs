@@ -12,7 +12,7 @@ There are two ways to author and fine-tune poses in-world: the **QuickyHUD-drive
 
 The headline QS authoring path: adjust with the wearable QuickyHUD instead of the dialog helper bars.
 
-**Entering it.** The operator clicks `[HELPER HUD]` in the adjust menu (or flips ADJUSTMODE from the HUD's own settings). `[QS]adjuster` sends 90266 `"On"` to hudproxy (sitB only broadcasts the button click on 90100, as the unchanged `[QUICKYHUD]` token — the 1.256 rename is display-only), and entering ADJUSTMODE **auto-attaches a HUD to the seated operator** (`ATTACH_FOR_ADJUST` 90274 → hudadmin), so there is no rummaging in inventory. The pose menu gains a `[DONE]` exit button.
+**Entering it.** The operator clicks `[HELPER HUD]` in the adjust menu, which since 1.26 is the only way in; the HUD's own settings no longer carry an ADJUSTMODE toggle. `[QS]adjuster` sends 90266 `"On"` to hudproxy (sitB only broadcasts the button click on 90100, as the unchanged `[QUICKYHUD]` token — the 1.256 rename is display-only), and entering ADJUSTMODE **auto-attaches a HUD to the seated operator** (`ATTACH_FOR_ADJUST` 90274 → hudadmin), so there is no rummaging in inventory. The pose menu gains a `[DONE]` exit button.
 
 **Adjusting.** Nudge position and rotation with the HUD's camera-relative X/Y/Z buttons at the selected step size. While **ADJUSTMODE is `On`**, every change is written straight into the **pose default** (the value *all* sitters get) instead of a per-avatar offset. The new default is persisted to LSD (`qs:p:<ch>:<i>`) immediately, so it survives script reset, rerez and region restart; only re-seeding from a changed AVpos notecard overwrites it. (With ADJUSTMODE `Off`, the same HUD nudges save a *personal* offset for the wearer only, via 90262 → `[QS]offset`.)
 

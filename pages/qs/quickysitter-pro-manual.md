@@ -93,11 +93,13 @@ Set the shipped design in the `TEXTURE` field. Users can also switch designs liv
 
 ### ADJUSTMODE: authoring poses live
 
-ADJUSTMODE is your working mode while building. With it on, every move and rotate you make with the HUD writes **straight into the pose data** instead of being stored as a personal offset. Tune your poses, then use the **`[DUMP]`** function to write the result into a fresh AVpos notecard. Toggle ADJUSTMODE (with a confirmation) from the HUD's Settings menu; it stays on until you turn it off. See [User Manual → ADJUSTMODE for Creators](quickyhud-manual.html#adjustmode-for-creators-owner-only) for the full workflow.
+ADJUSTMODE is your working mode while building. With it on, every move and rotate you make with the HUD writes **straight into the pose data** instead of being stored as a personal offset. Tune your poses, then use the **`[DUMP]`** function to write the result into a fresh AVpos notecard. Enter it with the **`[HELPER HUD]`** button in the furniture's `[ADJUST]` menu, leave it with `[DONE]` or `[ADJUST OFF]` in the pose menu; standing up ends it too. See [User Manual → ADJUSTMODE for Creators](quickyhud-manual.html#adjustmode-for-creators) for the full workflow.
 
 On a piece in **menu mode** (no auto-attach on sit), turning ADJUSTMODE on also makes sure you have a HUD to drive it: the in-prim hudproxy fires `90274 ATTACH_FOR_ADJUST` to hudadmin, which attaches a HUD to the seated operator. So you can enter ADJUSTMODE on a menu-mode piece without first attaching the HUD by hand.
 
-You can also enter ADJUSTMODE without opening the HUD's own Settings menu, using the dedicated **`[HELPER HUD]`** button in the furniture's `[ADJUST]` submenu (driven by `[QS]adjuster`). It appears when `[QS]adjuster` is present (`qs:alive:adjuster`), the `QPP_CFG:ADJUSTMODE` key exists, the build is licensed, and the clicker passes the **Adjust ACL**. Clicking it flips ADJUSTMODE on through the same path (and, in menu mode, attaches a HUD for the operator). There is no separate *Quicky HUD* option inside `[HELPER]`.
+The **`[HELPER HUD]`** button in the furniture's `[ADJUST]` submenu (driven by `[QS]adjuster`) is the only way in since 1.26. It appears when `[QS]adjuster` is present (`qs:alive:adjuster`), the `QPP_CFG:ADJUSTMODE` key exists, the build is licensed, and the clicker passes the **Adjust ACL**. In menu mode it also attaches a HUD for the operator. There is no separate *Quicky HUD* option inside `[HELPER]`, and the toggle that used to live in the HUD's Settings menu is gone.
+
+Note what that means for a finalized piece: `/5 cleanup` removes `[QS]adjuster`, so the button disappears with it and ADJUSTMODE can no longer be entered at all. That is the point of the presence-based model, and it is why personal pose offsets are deliberately kept working without the adjuster.
 
 ### Diagnostics (`VERBOSE`)
 

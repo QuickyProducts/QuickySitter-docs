@@ -54,14 +54,14 @@ The HUD provides quick access to the most important positioning functions for Qu
 5. **Move X / Y**: shift forward/back and left/right in three step sizes (0.01 / 0.05 / 0.1 m).
 6. **Move up / down (Z)**: raise and lower height in the same three steps.
 7. **Position ↔ rotation**: switch the arrows to rotation control (RX/RY/RZ) and back.
-8. **Settings**: opens RESET (any sitter), plus ADJUSTMODE, AUTOSYNC and CLEAR (owner only).
+8. **Settings**: opens RESET (any sitter), plus AUTOSYNC and CLEAR (owner only).
 9. **HUD size +/−**: scale the on-screen HUD larger or smaller.
 10. **Minimize**: collapse the HUD to the bolt icon; tap it again to restore.
 11. **Help**: links to this manual, the Marketplace page and the support group.
 
 > **Personal vs. permanent:** Move and rotate (5–7, including Z) normally adjust your *personal offset*, saved per avatar and per pose, and restored the next time you sit. In **ADJUSTMODE** they instead edit the pose's *default values* (the QuickySitter pose data, not offsets), the way a creator re-adjusts the base poses for everyone.
 
-**Inside the Settings menu (8):** RESET (reset the selected target to its default pose) is available to any sitter; the ADJUSTMODE toggle, AUTOSYNC (off / 60 / 120 / 180 s) and CLEAR offset storage are owner only.
+**Inside the Settings menu (8):** RESET (reset the selected target to its default pose) is available to any sitter; AUTOSYNC (off / 60 / 120 / 180 s) and CLEAR offset storage are owner only. ADJUSTMODE is not in here: since 1.26 it is entered from the furniture's `[ADJUST]` menu, see below.
 
 **Automatic / background:** offsets are saved and restored per avatar and pose, the HUD attaches on sit (or from a menu button in menu mode), and with RLV active the hover height is set to 0 on attach and restored on detach.
 
@@ -113,14 +113,14 @@ See also: [Re-Sync Protocol](resync-protocol.html) for the technical detail behi
 
 ADJUSTMODE is a working mode for furniture creators. While ADJUSTMODE is active, every position and rotation change made with the HUD is written directly into QuickySitter's pose data instead of being stored as a per-avatar offset.
 
-Since 1.25, entering ADJUSTMODE is no longer strictly owner-only: anyone allowed by the furniture's **Adjust ACL** (owner by default, widenable to group or everyone in `[QS]root-security`'s `[SECURITY]` menu) can enter it through the `[HELPER HUD]` button in the furniture's `[ADJUST]` menu. Only the ADJUSTMODE toggle in the HUD's own Settings menu stays owner-only.
+Since 1.26 ADJUSTMODE has exactly one entrance: the `[HELPER HUD]` button in the furniture's `[ADJUST]` menu. The toggle that used to sit in the HUD's own Settings menu is gone, it was a second door into the same mode with its own separate guard. Who may use it is decided by the furniture's **Adjust ACL** (owner by default, widenable to group or everyone in `[QS]root-security`'s `[SECURITY]` menu, or with the `/5 adjust` chat command).
 
 **Workflow:**
 
-1. Enable ADJUSTMODE from the Settings menu (a confirmation dialog appears).
-2. Sit on the furniture and adjust poses with the HUD as usual.
+1. Sit down and open the furniture's `[ADJUST]` menu, then press `[HELPER HUD]`. On a piece that does not attach the HUD automatically, one is attached for you.
+2. Adjust poses with the HUD as usual.
 3. When finished, use QuickySitter's `[DUMP]` function to write the new values into a fresh AVpos notecard.
-4. Disable ADJUSTMODE again from the Settings menu.
+4. Leave ADJUSTMODE with `[DONE]` or `[ADJUST OFF]` in the pose menu. Standing up also ends it.
 
 **Notes:**
 

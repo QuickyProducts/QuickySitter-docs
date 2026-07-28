@@ -113,7 +113,7 @@ LSL suppresses self-delivery of `llMessageLinked` to the same script, so adjuste
 
 On the `"On"` flip, `id` carries the **operator who clicked** (which, under the Adjust ACL, may be a non-owner) and hudproxy **uses** it: it forwards that key as `ATTACH_FOR_ADJUST` (90274) so the HUD lands on whoever entered ADJUSTMODE. On `"Off"`, `id` is `llGetOwner()` and hudproxy ignores it.
 
-`"On"` is sent from the `[HELPER HUD]` button in the `[ADJUST]` submenu; hudadmin also emits 90266 from its own settings confirm dialog, and `[QS]animesh` sends it from the seat list. `"Off"` comes from the pose menu's `[DONE]` / `[ADJUST OFF]` exit and from `end_helper_mode`'s auto-Off (only when adjuster's local `helper_method == 1`). There is no `[STOP HELP]` button. hudproxy mirrors the same `sAdjustmode` + LSD write its own settings menu performs.
+`"On"` is sent from the `[HELPER HUD]` button in the `[ADJUST]` submenu, and from `[QS]animesh`'s seat list (which since 1.26 offers that jump only while `[QS]adjuster` is present, because every way back out runs through the adjuster). The settings confirm dialog in hudadmin that used to emit it as well was removed in 1.257 together with hudproxy's own settings entry. `"Off"` comes from the pose menu's `[DONE]` / `[ADJUST OFF]` exit and from `end_helper_mode`'s auto-Off (only when adjuster's local `helper_method == 1`). There is no `[STOP HELP]` button.
 
 ## Dynamic prop attach: `QSPROP_ATTACH` 90280
 
