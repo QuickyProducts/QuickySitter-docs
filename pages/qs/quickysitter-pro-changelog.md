@@ -1,7 +1,7 @@
 ---
 title: QuickySitter Pro Changelog
 sidebar: home_sidebar
-permalink: quickyhud-changelog.html
+permalink: quickysitter-pro-changelog.html
 keywords: changelog, releases, fixes, features, quickysitter pro, quickyhud
 toc: true
 ---

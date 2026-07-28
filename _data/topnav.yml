@@ -23,7 +23,7 @@ topnav_dropdowns:
         - title: QuickySitter Changelog
           url: /quickysitter-changelog.html
         - title: QuickySitter Pro Changelog
-          url: /quickyhud-changelog.html
+          url: /quickysitter-pro-changelog.html
         - title: QuickySitter on GitHub
           external_url: https://github.com/QuickyProducts/QuickySitter
         - title: AVsitter (upstream)
