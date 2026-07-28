@@ -63,7 +63,7 @@ The HUD provides quick access to the most important positioning functions for Qu
 
 **Inside the Settings menu (8):** RESET (reset the selected target to its default pose) is available to any sitter; AUTOSYNC (off / 60 / 120 / 180 s) and CLEAR offset storage are owner only. ADJUSTMODE is not in here: since 1.26 it is entered from the furniture's `[ADJUST]` menu, see below.
 
-**Automatic / background:** offsets are saved and restored per avatar and pose, the HUD attaches on sit (or from a menu button in menu mode), and with RLV active the hover height is set to 0 on attach and restored on detach.
+**Automatic / background:** offsets are saved and restored per avatar and pose, the HUD follows you across a seat swap, and with RLV active the hover height is set to 0 on attach and restored on detach. How the HUD reaches you in the first place depends on what the creator chose, see [Getting the HUD](#getting-the-hud).
 
 ## Key Features
 
@@ -83,14 +83,18 @@ The HUD evaluates the camera position to determine movement direction. This ensu
 
 **Example:** Moving "left" on the control pad will move the avatar left relative to your current camera view, not the world axis.
 
-### Automatic HUD Attachment (Experience Enabled)
+### Getting the HUD
 
-On furniture set up for **auto-attach** (the default mode), the HUD uses the AVsitter Experience to attach automatically. When an avatar sits on such a piece:
+Since 1.26 you are not given a HUD unless you want one. On furniture in the default setting, sitting down changes nothing: open the furniture's `[ADJUST]` menu and press **`💠 POSE HUD`**, and the HUD attaches. Press the same entry again and it detaches, so one button covers both directions and you never need right-click > Detach.
 
-- The HUD is automatically attached to the sitter.
-- There is no need to manually search for or attach the HUD from the inventory.
+Creators can choose two other modes:
 
-Some pieces are instead configured for **menu mode**, where the HUD does not attach on its own. On those, attach it yourself by pressing the **Quicky HUD** button the creator added to the menu.
+- **Auto-attach.** The HUD attaches by itself when you sit, using the AVsitter Experience, with nothing to press and nothing to find in your inventory. This was the default before 1.26; where the Experience is unavailable it means a permission request on every sit, which is why it is no longer the baseline.
+- **Own button.** The creator places the button themselves, anywhere in the furniture's menus. It behaves the same way, including the second press that puts the HUD away.
+
+In every mode the HUD is also attached for you when you enter ADJUSTMODE and are not wearing one, and a HUD that only appeared for that purpose is taken away again when you leave the mode. One you fetched yourself stays.
+
+Swapping seats keeps your HUD: if you were wearing one before the swap you get it back on the new seat, and sitters who had none stay HUD-free.
 
 ### Animation Re-Sync
 
