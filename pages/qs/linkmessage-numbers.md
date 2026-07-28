@@ -132,7 +132,7 @@ These live entirely inside the QuickyHUD scripts (hudproxy ↔ hudadmin, both on
 | `90272` | hudproxy → hudadmin | `SELECT_OPEN_DIALOG`: render the SELECT (swap-target) picker. |
 | `90273` | hudadmin → hudproxy | `SELECT_PICKED`: the chosen target token. |
 | `90274` | hudproxy → hudadmin | `ATTACH_FOR_ADJUST`: ensure the operator has a HUD attached when ADJUSTMODE goes On. |
-| `90275` | any source → hudproxy | `QSANIM_OCCUPANT`: animesh dummy occupant hook. See [QuickyHUD Animesh](quickyhud-animesh.html). |
+| `90275` | any source → hudproxy | `QSANIM_OCCUPANT`: animesh dummy occupant hook. See [Animesh Adjust Dummies](quickysitter-pro-animesh.html). |
 
 ## Compatibility summary
 

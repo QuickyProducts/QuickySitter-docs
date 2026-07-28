@@ -1,7 +1,9 @@
 ---
 title: QuickySitter Pro Animesh Adjust Dummies
 sidebar: home_sidebar
-permalink: quickyhud-animesh.html
+permalink: quickysitter-pro-animesh.html
+redirect_from:
+  - /quickyhud-animesh.html
 keywords: animesh, dummy, adjust, partner, couples, group poses, solo setup, creator
 toc: true
 ---

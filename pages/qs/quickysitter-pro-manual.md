@@ -1,12 +1,14 @@
 ---
 title: QuickySitter Pro Manual
 sidebar: home_sidebar
-permalink: quickyhud-creator-manual.html
+permalink: quickysitter-pro-manual.html
+redirect_from:
+  - /quickyhud-creator-manual.html
 keywords: quickysitter pro, creator, toolset, quicky hud, configuration, hudconfig, design, adjustmode, attach mode, hud offset, verbose
 toc: true
 ---
 
-**QuickySitter Pro** is the creator toolset: the plugins and tools that make building and selling QuickySitter furniture easier. The HUD is one of those plugins, the Animesh Adjust Dummies are another. This manual covers the creator side: getting Pro into a piece and configuring how it behaves. For everyday use of the HUD while sitting, see the [User Manual](quickyhud-manual.html). For setting up couples / group poses without a second avatar, see [Animesh Adjust Dummies](quickyhud-animesh.html).
+**QuickySitter Pro** is the creator toolset: the plugins and tools that make building and selling QuickySitter furniture easier. The HUD is one of those plugins, the Animesh Adjust Dummies are another. This manual covers the creator side: getting Pro into a piece and configuring how it behaves. For everyday use of the HUD while sitting, see the [User Manual](quickyhud-manual.html). For setting up couples / group poses without a second avatar, see [Animesh Adjust Dummies](quickysitter-pro-animesh.html).
 
 > **Note:** This page is the *creator* side: preparing and configuring furniture you sell. QuickySitter Pro is built for the **QuickySitter engine**, which is what you get the most out of it on. The HUD's in-prim components (`[QS]hudproxy` / `[QS]hudadmin`) are deliberately kept able to run on a stock AVsitter linkset too; only the SYNC / Re-Sync features are structurally bound to `[QS]sitA` and need the QuickySitter engine.
 
