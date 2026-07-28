@@ -2,6 +2,8 @@
 title: QuickySitter Pro Changelog
 sidebar: home_sidebar
 permalink: quickysitter-pro-changelog.html
+redirect_from:
+  - /quickyhud-changelog.html
 keywords: changelog, releases, fixes, features, quickysitter pro, quickyhud
 toc: true
 ---

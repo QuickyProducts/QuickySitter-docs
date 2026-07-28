@@ -65,6 +65,16 @@ kramdown:
 
 # filter used to process markdown. note that kramdown differs from github-flavored markdown in some subtle ways
 
+plugins:
+  - jekyll-redirect-from
+# Lets a renamed page keep its old address alive via `redirect_from:` in the
+# page's front matter. Already bundled with the github-pages gem, it only
+# needed switching on. Note the key: `plugins:` is the Jekyll 3.5+ spelling
+# and what GitHub Pages builds with; the pinned Gemfile.lock in this repo is
+# far older (Jekyll 3.3.1), where it was still called `gems:`, so a LOCAL
+# build ignores this until someone runs `bundle update`. The live site is
+# unaffected by that lock.
+
 collections:
   avsitter1_lsl_examples_beginner:
     output: true
