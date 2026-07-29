@@ -27,16 +27,27 @@ Each linkset has a Linkset Data cap of **128 KiB** total. Keys and values both c
 
 **What it can't fix:** The pool is shared: `qs:p:*` pose rows, `qs:prop:*` prop records, `QSO:*` personal offsets and QuickyHUD's `QPP_CFG:*` keys all draw from the same 128 KiB, so a pose-heavy build leaves less room for everything else. The 200-poses-of-headroom default for personal offsets is the practical safety margin.
 
-## Notecard read limit (64 KiB) and editor cutoff (~48 KB)
+## Notecard read limit (64 KiB) and the viewer editor's paste cutoff
 
-LSL can read notecards up to 64 KiB via `llGetNotecardLine`. **The viewer's notecard editor truncates content past about 49 248 bytes**, so anything past that point exists but isn't visible or editable in-world.
+LSL reads notecards up to 64 KiB via `llGetNotecardLine`. That limit is firm: past it, boot never sees the content at all.
+
+The viewer's built-in notecard editor has a second, lower limit, and it matters on the **write** side rather than the read side. The two measurements we have:
+
+| Observed | What happened |
+|---|---|
+| 2026-05-16, pasting a 268 KB generated AVpos | Truncated on save at roughly **49 248 bytes**. The last line that survived intact was `POSE CooC08P11`. |
+| 2026-07-29, opening a 50 032-byte / 50 012-character production AVpos | Opens complete, down to the last line, and reads back fine. |
+
+So a notecard of that size is not a problem to *open*. What is unverified is whether editing and saving one in-world near that size preserves it, since the truncation was measured on the save path.
 
 **Practical impact:**
 
-- Large AVpos notecards work at runtime (boot reads the full 64 KiB).
-- They become unmaintainable in-world. Open them in the viewer editor, scroll to the end, and you see them mid-line.
-- **Edit large AVpos notecards externally** and paste in via the viewer (CTRL-A → CTRL-V over the existing content).
-- A bytes-per-pose-entry rule of thumb: roughly 80 – 120 bytes for a non-trivial entry with POS/ROT and a long animation name. 48 KB ≈ 400 – 600 entries before you cross the editor cutoff.
+- Large AVpos notecards work at runtime. Reading is bounded by 64 KiB, nothing lower.
+- Around 50 KB and above, **prefer editing externally** and pasting the whole content back (CTRL-A → CTRL-V) in one go rather than making small edits and saving in-world, until someone measures the save path properly.
+- The symptom of having hit it: open the notecard, scroll to the end, and it stops mid-line.
+- A bytes-per-pose-entry rule of thumb: roughly 80 – 120 bytes for a non-trivial entry with POS/ROT and a long animation name, so 64 KiB is somewhere around 550 – 800 entries.
+
+{% include note.html content="Both figures come from one creator's Firestorm setup. Other viewers may differ, and the save-path limit has not been pinned down." %}
 
 ## Animation-loop drift between viewers
 
