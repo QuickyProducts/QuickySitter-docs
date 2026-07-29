@@ -34,7 +34,7 @@ Three possibilities:
 
 1. **You didn't save the notecard after editing.** SL viewer's notecard editor caches your edits until Save is hit. Without save, the asset-key doesn't change.
 2. **You hit save but boot didn't notice.** `changed(CHANGED_INVENTORY)` should fire; if you suspect it didn't, reset `[QS]boot` manually.
-3. **You're hitting [the SL notecard 48 KB editor limit](known-limits.html#notecard-read-limit-64-kib-and-editor-cutoff-48-kb).** Notecards larger than ~49 248 bytes are truncated in the viewer editor. The script can still read the full notecard up to 64 KiB, but you can't safely *edit* large notecards in-world. Edit externally and paste.
+3. **The notecard is large and the viewer editor dropped part of your edit on save.** See [Notecard size limits](known-limits.html#notecard-size-65536-bytes-per-line-cap-1024-bytes-and-the-viewer-editors-paste-cutoff). Reading is not the problem: a 50 KB notecard is read in full, and only a single line over 1024 bytes loses its tail. But the built-in editor has been seen to truncate large content when saving, so for a notecard around 50 KB, edit it externally and paste the whole thing back rather than making small in-world edits.
 
 ## Why doesn't the `[FACES]` / `[PROP]` button show up even though I have the scripts?
 

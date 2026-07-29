@@ -293,8 +293,8 @@ See [`[QS]sequence`](plugin-sequence.html) and the [upstream AVsequence docs](ht
 - **`{<name>}<pos><rot>` without a matching POSE.** The position-update is silently dropped if no `qs_seed_find` match exists. Make sure the pose is declared first.
 - **Notecard never saved after creation.** A freshly created notecard that's never been saved is corrupt, so boot will hang on the `dataserver` event. Open, save, reset.
 - **Mixed line endings.** AVpos accepts both CR and LF; CRLF works. Pasted text from Windows is fine.
-- **The read limit is 64 KiB.** `llGetNotecardLine` stops there, so boot never sees anything past it. Below it a notecard works, however large: a 50 032-byte AVpos opens complete in-world. The viewer editor's own cutoff bites on the **save** path, not on opening, so for notecards around 50 KB and up, paste the whole content back in one go rather than editing in-world. See [Known Limits](known-limits.html).
-- **Bytes per line cap.** SL truncates notecard reads at 255 bytes per line. Very long ANIM / PROP lines may silently drop their tail.
+- **A notecard cannot exceed 65 536 bytes**, which is a storage limit rather than a reading one: `llGetNotecardLine` documents no total-size limit. Below it a notecard works, however large; a 50 032-byte AVpos opens complete in-world. The viewer editor's own cutoff bites on the **save** path, not on opening, so for notecards around 50 KB and up, paste the whole content back in one go rather than editing in-world. See [Known Limits](known-limits.html).
+- **Bytes per line cap: 1024.** `llGetNotecardLine` returns at most 1024 bytes of a line and drops the rest, so a very long chain of animation names or a fully loaded `PROP` line can lose its tail. It was 255 bytes until server 2021-10-25, and older documentation (including this page) still quoted that figure.
 
 ## See also
 

@@ -27,9 +27,14 @@ Each linkset has a Linkset Data cap of **128 KiB** total. Keys and values both c
 
 **What it can't fix:** The pool is shared: `qs:p:*` pose rows, `qs:prop:*` prop records, `QSO:*` personal offsets and QuickyHUD's `QPP_CFG:*` keys all draw from the same 128 KiB, so a pose-heavy build leaves less room for everything else. The 200-poses-of-headroom default for personal offsets is the practical safety margin.
 
-## Notecard read limit (64 KiB) and the viewer editor's paste cutoff
+## Notecard size (65 536 bytes), per-line cap (1024 bytes) and the viewer editor's paste cutoff
 
-LSL reads notecards up to 64 KiB via `llGetNotecardLine`. That limit is firm: past it, boot never sees the content at all.
+Two firm numbers, both from the SL wiki rather than from folklore:
+
+- **A notecard asset cannot exceed 65 536 bytes** ([Notecard](https://wiki.secondlife.com/wiki/Notecard)). This is a storage limit, not a reading one: SL will not keep a larger notecard in the first place.
+- **`llGetNotecardLine` returns at most 1024 bytes per line**, and drops the rest ([llGetNotecardLine](https://wiki.secondlife.com/wiki/LlGetNotecardLine)). It was **255 bytes until server 2021-10-25.565008**, which is where the older figure in this documentation came from. `llGetNotecardLine` itself documents **no** total-size limit.
+
+So "the script can read up to 64 KiB" was never quite the right framing: the 64 KiB is the largest notecard that can exist, and a long `ANIM` or `PROP` line loses its tail at 1024 bytes, not at 255.
 
 The viewer's built-in notecard editor has a second, lower limit, and it matters on the **write** side rather than the read side. The two measurements we have:
 
@@ -42,10 +47,11 @@ So a notecard of that size is not a problem to *open*. What is unverified is whe
 
 **Practical impact:**
 
-- Large AVpos notecards work at runtime. Reading is bounded by 64 KiB, nothing lower.
+- Large AVpos notecards work at runtime. Nothing below the 65 536-byte storage limit constrains reading.
 - Around 50 KB and above, **prefer editing externally** and pasting the whole content back (CTRL-A → CTRL-V) in one go rather than making small edits and saving in-world, until someone measures the save path properly.
 - The symptom of having hit it: open the notecard, scroll to the end, and it stops mid-line.
-- A bytes-per-pose-entry rule of thumb: roughly 80 – 120 bytes for a non-trivial entry with POS/ROT and a long animation name, so 64 KiB is somewhere around 550 – 800 entries.
+- A bytes-per-pose-entry rule of thumb: roughly 80 – 120 bytes for a non-trivial entry with POS/ROT and a long animation name, so 65 536 bytes is somewhere around 550 – 800 entries.
+- A single line only loses its tail past **1024 bytes**, which in practice means a pose with a very long chain of animation names, or a `PROP` line carrying worn-fit vectors on top of everything else.
 
 {% include note.html content="Both figures come from one creator's Firestorm setup. Other viewers may differ, and the save-path limit has not been pinned down." %}
 
