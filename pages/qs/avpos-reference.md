@@ -252,18 +252,32 @@ See [`[QS]prop`](plugin-prop.html) for the prop type matrix, the `<group>` seman
 ANIM <trigger_name>|<expression>|<duration>|<expression>|<duration>|...
 ```
 
-Trigger is usually a pose name. Expression is an SL face animation; duration is a float (seconds). Up to three expressions per ANIM line are recommended.
+The trigger is a pose name: `[QS]faces` starts the sequence when it sees the pose-played broadcast (`90045`) for that name. Everything after the trigger is read strided, as expression / duration pairs. Up to three expressions per ANIM line are recommended.
 
 ```
 ANIM Happy|express_laugh_emote|5|express_smile|1|express_wink_emote|2
 ```
 
-Re-use an existing ANIM by referencing it by name:
+### Duration has three forms
+
+| Duration | Effect |
+|----------|--------|
+| `5` | Hold the expression for five seconds. |
+| `-5` | Re-apply the expression every second for five seconds. Facial expressions decay in SL, so this is what a long expression usually wants. |
+| `-` | Stop the sequence after playing, rather than looping back to the start. |
+| *(omitted)* | Legal. The field is simply absent, and `[QS]faces` reads an empty duration. |
+
+### An expression field can also name another ANIM
 
 ```
 ANIM pose1|express_laugh_emote|5|express_smile|1
 ANIM pose2|pose1
 ```
+
+`pose2` re-uses `pose1`'s whole sequence. This is resolved at **play** time, not while reading the notecard: on `90045`, `[QS]faces` takes the matched entry's sequence text and looks for another ANIM in the same sitter whose *trigger* equals it. Two consequences worth knowing:
+
+- The fallback is silent. If no ANIM by that name exists, the field is started as an **animation name** instead, which is how custom facial animations in the prim are used: `ANIM Kiss|MY_CUSTOM_FACE` plays the animation `MY_CUSTOM_FACE`.
+- So a single field after the trigger is inherently ambiguous, and both readings are valid. Nothing warns you either way; if a name is neither another ANIM nor an animation in the prim, the expression simply does not play.
 
 See [`[QS]faces`](plugin-faces.html).
 
