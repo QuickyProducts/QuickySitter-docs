@@ -31,7 +31,7 @@ SITTER 1|Female
 
 Unknown commands are silently ignored (forward-compat). Blank lines and comment-style lines (anything that isn't a recognised directive followed by data) are skipped.
 
-There is no multi-line block syntax: `NAME`, `ANIM`, `POS`, `ROT` as standalone directives don't exist in the parser. The position/rotation of a pose lives on a separate `{<name>}<pos><rot>` line (see below).
+There is no multi-line block syntax. A pose is one line, and its position and rotation live on a separate `{<name>}<pos><rot>` line (see below); `NAME`, `POS` and `ROT` as standalone directives don't exist in the parser. (`ANIM` does exist, but it defines a facial expression rather than a pose attribute: see [Face animations](#face-animations-anim-handled-by-qsfaces).)
 
 ## Global directives
 
@@ -39,7 +39,7 @@ These usually appear once near the top of the notecard. They apply **furniture-w
 
 | Directive | Argument | Meaning |
 |-----------|----------|---------|
-| `SITTER <n>` (or `SITTER <n>\|<info>`) | sitter slot index (0-based); optional info field can include `Male` / `Female` gender | Starts a new sitter channel. Subsequent POSE/SYNC/MENU/BUTTON lines belong to this slot until the next `SITTER` line. |
+| `SITTER <n>` (or `SITTER <n>\|<label>\|<gender>`) | sitter slot index (0-based); optional label; optional gender `M` or `F` | Starts a new sitter channel. Subsequent POSE/SYNC/MENU/BUTTON lines belong to this slot until the next `SITTER` line. See [The SITTER line in detail](#the-sitter-line-in-detail). |
 | `MTYPE <int>` | menu type | Dialog behavior. See upstream docs for values. |
 | `ETYPE <int>` | exit type | Stand-up behavior. |
 | `SET <int>` | set ID | Not a count. Tags seat assignments for prim-description pinning (`<set>-<slot>` in the prim description). Internal default -1 = auto-assign seats. See [SitTargets](sittargets.html). |
@@ -58,11 +58,39 @@ These usually appear once near the top of the notecard. They apply **furniture-w
 | `ADJUST <items>` | `\|`-separated menu entries | Customises the `[ADJUST]` submenu. |
 | `ROLES <text>` | - | RLV designations. |
 
+## The SITTER line in detail
+
+```
+SITTER <n>|<label>|<gender>
+```
+
+The gender is the **third** field, and only `M` or `F` are recognised (exact,
+case-sensitive). Both trailing fields are optional, but their *positions* are
+not:
+
+| Line | Label | Gender |
+|------|-------|--------|
+| `SITTER 0` | – | – |
+| `SITTER 0\|Driver` | `Driver` | – |
+| `SITTER 0\|F` | `F` | – |
+| `SITTER 0\|\|F` | – | `F` |
+| `SITTER 0\|Driver\|M` | `Driver` | `M` |
+
+So a gender with no label keeps the empty label field. `SITTER 0|F` makes `F`
+the label and leaves the slot genderless; there is no "a single suffix means
+gender" rule. Longer spellings like `Male` or `Female` are **not** recognised.
+
+When an avatar sits, `[QS]sitA` puts them in the first unoccupied slot whose
+gender matches their shape. Slots without a gender match anyone.
+
+{% include warning.html content="A trailing space used to be fatal here: `SITTER 0|F|F ` parsed as gender -1 before 1.27, and the seat went to the next gender-matching slot instead. boot trims both ends now, but a notecard carrying trailing spaces is still worth cleaning." %}
+
 ## Pose declarations
 
 ```
 POSE <menu_name>|<animation_filename>
 SYNC <menu_name>|<animation_filename>
+POSE <menu_name>|<animation_filename>|<M or F>
 ```
 
 - **`POSE`**: solo pose. Stored with the `P:` prefix in LSD.
@@ -75,6 +103,26 @@ POSE Sit casual|sit
 POSE Sit cross-legged|sit_generic
 SYNC Cuddle|hug_female
 ```
+
+A trailing `M` or `F` marks that pose as the default for a sitter of that shape
+gender. It needs an animation in front of it: in `POSE Sit relaxed|F` the `F`
+becomes the animation name, not a marker.
+
+```
+POSE Sit relaxed|sit_relaxed|F
+```
+
+**Names are truncated to 23 characters.** boot cuts `POSE`, `SYNC`, `MENU`,
+`TOMENU` and `BUTTON` names at 23, so a longer name silently becomes a
+different name than the one a `{<name>}` line or a `PROP` trigger refers to.
+
+**Names are trimmed on both ends**, on the pose line and in the `{<name>}`
+lookup, so `SYNC  Relax` (two spaces) and `{Relax}` are the same pose.
+
+**A duplicate name inside one sitter is legal but ambiguous.** Each pose gets
+its own LSD row and `[QS]sitB` dispatches by index, so every button plays its
+own animation. Only the name-keyed bindings collapse onto the first occurrence:
+the `{<name>}` position, a `PROP` trigger and an `ANIM` trigger.
 
 ## Position / rotation: `{<name>}<pos><rot>`
 
@@ -108,15 +156,49 @@ Exception (deliberate): a `MENU` without `TOMENU` hides its poses from the dialo
 BUTTON <label>|<integer>
 ```
 
-Defines a clickable button that sends a link-message. `<integer>` is the LinkMsg number: `90200` is the AVprop default, `90401`/`90402`/`90403` are AVfavs commands, `99` is SWAP, etc. See [LinkMessage Numbers](linkmessage-numbers.html) for the canonical map.
+Defines a clickable button that sends a link-message when clicked. `<integer>`
+is the LinkMsg number: `90030` is SWAP, `90200` is the AVprop default,
+`90210` starts a sequence, `90401`/`90402`/`90403` are AVfavs commands. See
+[LinkMessage Numbers](linkmessage-numbers.html) for the canonical map.
 
 ```
-BUTTON [SWAP]|99
+BUTTON [SWAP]|90030
 BUTTON Add Fav|90401
 BUTTON Quilt1
 ```
 
-A `BUTTON` line without `|<integer>` defaults to integer `90200` (the AVprop rezz path).
+A `BUTTON` line without `|<integer>` defaults to integer `90200` (the AVprop
+rezz path).
+
+### Extra fields after the number
+
+Everything past the number is payload for whoever listens. The receiver gets it
+as the link-message string, so one script can serve several buttons and switch
+on the label:
+
+```
+BUTTON 'Swap F>M'|90030|0|1
+BUTTON 'Swap Girls'|90030|0|2
+```
+
+Those two are SWAPs between specific seat pairs: `90030` takes the two slot
+indexes as payload.
+
+### Third-party numbers
+
+Creators wire add-on products in through this mechanism, usually on a number of
+the vendor's own choosing. Numbers outside the `90000`–`90500` band are a
+reliable sign of that:
+
+```
+BUTTON [BENTOFACE]|-31450010
+BUTTON ✘ Lock/Kick|99
+```
+
+Those are not AVsitter features and nothing QuickySitter ships listens for
+them. They work only while the matching third-party script sits in the same
+linkset. `99` in particular is **not** a stock number of any kind, despite
+appearing in some notecards in the wild.
 
 ## Prop attachments: `PROP`, `PROP1`, `PROP2`, `PROP3`
 
@@ -138,6 +220,29 @@ Example:
 PROP Read|paper|G1|<0.550008, -0.001500, 0.142298>|<-134.045500, 75.901150, 44.793560>
 PROP1 Dine|knife|G1|<0.387543, -0.311709, 0.173970>|<-0.017549, 9.899983, 90.102720>|Right Hand
 ```
+
+### `<attach_point>` uses AVsitter's spelling, not the viewer's
+
+`[QS]prop` carries its own list of 40 point names and resolves the field by
+uppercasing it and taking the first list name that occurs as a **substring** of
+it. Matching is therefore case-insensitive and forgiving about extra words:
+`right hand`, `Right Hand` and `on my right hand` all work.
+
+What it is not forgiving about is a different word. Several viewer names differ
+from AVsitter's:
+
+| Viewer says | AVsitter wants |
+|-------------|----------------|
+| Skull | `head` |
+| Spine | `back` |
+| Belly | `stomach` |
+| Left Pec | `left pectoral` |
+| L Forearm | `left lower arm` |
+| Left Eyeball | `left eye` |
+
+A field that matches nothing resolves to point **0** and the prop attaches
+nowhere. Two spellings seen in real notecards that silently fail this way:
+`left forearm` (wants `left lower arm`) and `Pelvic` (wants `pelvis`).
 
 See [`[QS]prop`](plugin-prop.html) for the prop type matrix, the `<group>` semantic, and the [`QSPROP_ATTACH` dynamic protocol](hud-integration.html#dynamic-prop-attach-qsprop_attach-90280) used by HUD addons.
 
@@ -188,7 +293,7 @@ See [`[QS]sequence`](plugin-sequence.html) and the [upstream AVsequence docs](ht
 - **`{<name>}<pos><rot>` without a matching POSE.** The position-update is silently dropped if no `qs_seed_find` match exists. Make sure the pose is declared first.
 - **Notecard never saved after creation.** A freshly created notecard that's never been saved is corrupt, so boot will hang on the `dataserver` event. Open, save, reset.
 - **Mixed line endings.** AVpos accepts both CR and LF; CRLF works. Pasted text from Windows is fine.
-- **The viewer notecard editor truncates around 48 KB.** Edit large notecards externally and paste back. See [Known Limits](known-limits.html).
+- **A large notecard runs but may not be editable in-world.** `llGetNotecardLine` reads up to 64 KiB, so boot sees the whole thing. The viewer's own notecard editor gives up earlier, around 49 000 **characters** (not bytes: a notecard full of multi-byte characters like `✘ ✔ ♥` can be well past 49 000 bytes and still open completely). Past that point, opening the notecard in-world hides the tail and saving it there deletes it, so edit large ones externally and paste back. See [Known Limits](known-limits.html).
 - **Bytes per line cap.** SL truncates notecard reads at 255 bytes per line. Very long ANIM / PROP lines may silently drop their tail.
 
 ## See also
