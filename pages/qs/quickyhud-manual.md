@@ -85,16 +85,17 @@ The HUD evaluates the camera position to determine movement direction. This ensu
 
 ### Getting the HUD
 
-Since 1.26 you are not given a HUD unless you want one. On furniture in the default setting, sitting down changes nothing: open the furniture's `[ADJUST]` menu and press **`💠 POSE HUD`**, and the HUD attaches. Press the same entry again and it detaches, so one button covers both directions and you never need right-click > Detach.
+How you get the HUD depends on the furniture. Every piece uses one of these three ways, and the creator decides which:
 
-Creators can choose two other modes:
-
-- **Auto-attach.** The HUD attaches by itself when you sit, using the AVsitter Experience, with nothing to press and nothing to find in your inventory. This was the default before 1.26; where the Experience is unavailable it means a permission request on every sit, which is why it is no longer the baseline.
-- **Own button.** The creator places the button themselves, anywhere in the furniture's menus. It behaves the same way, including the second press that puts the HUD away.
+- **The `💠 POSE HUD` entry.** Sitting down does nothing by itself. Open the furniture's `[ADJUST]` menu and press **`💠 POSE HUD`**, and the HUD attaches. Press the same entry again and it detaches, so one button covers both directions and you never need right-click > Detach.
+- **Auto-attach.** The HUD attaches by itself when you sit, using the AVsitter Experience, with nothing to press and nothing to find in your inventory. Where that Experience is not available, you get a permission request on every sit.
+- **A button of the creator's own.** Placed anywhere in the furniture's menus. It behaves like the `💠 POSE HUD` entry, including the second press that puts the HUD away.
 
 In every mode the HUD is also attached for you when you enter ADJUSTMODE and are not wearing one, and a HUD that only appeared for that purpose is taken away again when you leave the mode. One you fetched yourself stays.
 
 Swapping seats keeps your HUD: if you were wearing one before the swap you get it back on the new seat, and sitters who had none stay HUD-free.
+
+Which of the three modes a piece uses is set in its `hudconfig` notecard, together with the HUD's default screen position and its reserved storage. If the furniture is yours, you can change it: see [The `hudconfig` notecard](quickysitter-pro-manual.html#the-hudconfig-notecard) in the QuickySitter Pro manual.
 
 ### Animation Re-Sync
 
@@ -150,3 +151,4 @@ See also: [Personal Pose Offsets](personal-pose-offsets.html) for the technical 
 - [HUD Integration](hud-integration.html): the in-prim hudproxy/hudadmin contract.
 - [Personal Pose Offsets](personal-pose-offsets.html): how offsets are stored and persisted.
 - [Adjustment Workflow](adjustment-workflow.html): the creator-side `[HELPER]` workflow ADJUSTMODE replaces for live tuning.
+- [The `hudconfig` notecard](quickysitter-pro-manual.html#the-hudconfig-notecard): attach mode, default HUD position, reserved storage and HUD texture, set per piece of furniture.
