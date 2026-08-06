@@ -38,6 +38,8 @@ QuickySitter/
 │   ├── plugins/
 │   │   └── propadjust/
 │   │       └── [QS]objectadjust.lsl   ← Prop-position adjuster (public since 1.25)
+│   ├── tools/               ← Creator-side utilities, removed on /5 cleanup
+│   │   └── [QS]AVpos-shifter.lsl      ← Forked AVpos shifter (since 1.27)
 │   ├── examples/            ← Plugin template + README
 │   ├── php/                 ← Self-hosted [DUMP] receiver (settings.php, config, dumps/)
 │   ├── test/

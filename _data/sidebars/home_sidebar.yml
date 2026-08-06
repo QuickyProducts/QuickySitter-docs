@@ -37,6 +37,9 @@ entries:
     - title: Adjustment Workflow
       url: /adjustment-workflow.html
       output: web
+    - title: Creator Utilities
+      url: /creator-utilities.html
+      output: web
 
   - title: Multi-Avatar Setups
     output: web
