@@ -10,6 +10,13 @@ toc: true
 
 Customer-facing changes only. Each entry is tagged **Fix** (bug fix), **Feature** (new), or **Base** (groundwork shipped ahead of a separate feature). Routine internal/technical changes aren't listed. Newest version on top.
 
+## Version 1.27
+
+- **Feature**: One click updates everything, including furniture that still runs the old AVsitter-era Quicky HUD. The updater now delivers its installer into each piece by itself and finishes the job a few seconds later without a second click. Until now those pieces had to be found one by one and the installer dragged into each of them, and pieces you have no modify rights on could not be reached at all.
+- **Fix**: Old Quicky furniture is now converted completely instead of half. Previously an update installed the new scripts but left the AVsitter ones in place next to them, because only the installer can replace them and it was not present during a normal update. Affected pieces are repaired by the next update, no matter which state they are in.
+- **Fix**: Updating furniture that still runs the older Quicky HUD (the AVsitter-era version) now finishes the job. Its leftover settings are converted instead of being left in a form the new scripts cannot read, so the `[HELPER HUD]` entry actually appears in the furniture's `[ADJUST]` menu rather than silently staying away. The old pose buffer is cleared in the process: personal position adjustments that were saved with the old HUD are not carried over and have to be set again. Your poses and positions (`AVpos`) are untouched.
+- **Fix**: The installer now says what it is about to do before you click. When it lands in furniture that still has AVsitter, it tells you that those scripts will be replaced and that the installer cannot undo it afterwards.
+
 ## Version 1.26
 
 - **Feature**: Sitters are no longer given a HUD they did not ask for. The new default attach mode `menuplus` leaves the HUD detached and instead puts a `💠 POSE HUD` entry into the furniture's `[ADJUST]` menu, so whoever wants it presses once and gets it, and pressing again takes it off. Auto-attach was never a design decision, it is what the HUD inherited from its days as an AVsitter plugin, where nothing else was possible. It also meant a permission prompt on every single sit wherever the AVsitter Experience is not available. Furniture that should keep attaching automatically needs `ATTACHMODE` set to `auto` in its `hudconfig` notecard; `menu` (no auto-attach, you place the button yourself in `AVpos`) is unchanged.

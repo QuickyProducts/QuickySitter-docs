@@ -8,6 +8,11 @@ toc: true
 
 Customer-facing changes only, and each entry is tagged **Fix** (bug fix) or **Feature** (new). Routine internal/technical changes aren't listed. Newest version on top.
 
+## Version 1.27
+
+- **Feature**: New build tool `[QS]AVpos-shifter`, the QuickySitter version of the AVsitter AVpos shifter. It moves every pose and prop in an `AVpos` notecard by an offset (`/5 <0,0,1.5>`), turns them (`/6 <0,0,180>`), or rebases the whole notecard onto another prim you touch. Three things are better than in the original: the "Settings copy" link at the end works again, because it posts to the QuickySitter dump service instead of the old avsitter.com page that stopped accepting our output; it reminds you to run `[HELPER]` `[DUMP]` into the notecard first, since positions you saved with `[SAVE]` live in the furniture and not in the notecard, so shifting without that step would convert the old numbers and throw your saved ones away; and it no longer deletes itself after each run, so you can shift twice without fetching a fresh copy. It disappears with `/5 cleanup` together with the other build tools. See [Creator Utilities](creator-utilities.html).
+- **Fix**: Seats are handed out by gender again on furniture whose `AVpos` has a stray space at the end of a `SITTER` line. That space was read as part of the gender letter, so the seat counted as "no gender set" and a woman was put into the next female seat instead of the first one (`F2` before `F`, with the second woman then getting `F`). Such lines are common in notecards that came from the original AVsitter kit, where the space is ignored. After updating, re-save the `AVpos` notecard once so the furniture re-reads it.
+
 ## Version 1.26
 
 - **Feature**: The `[QUICKYHUD]` entry in the `[ADJUST]` menu is now called `[HELPER HUD]`. It sits right next to `[HELPER]` and does the same job with the HUD instead of the helper bars, so the name now says what the button is for. Nothing else changes: same access rules, same adjust mode, and creator scripts listening for the old name keep working.
