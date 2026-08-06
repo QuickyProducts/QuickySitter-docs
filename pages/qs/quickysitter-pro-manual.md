@@ -30,9 +30,39 @@ The payoff goes beyond the QuickyHUD adjustment workflow: conversion moves the p
 
 The complete pose system is installed for you and the installer removes itself. The piece is now Quicky-enabled. Add your poses with an **AVpos** notecard as usual.
 
+### Before you sell: finalizing a piece
+
+A piece you have been building still carries the creator tools. Those are licensed to you, not to your customers, so take them out before you hand the piece over. Do it while you still own the piece: it is one command, and it cannot be undone from inside the furniture.
+
+There are two ways, and which one you want depends on whether your customers should keep the `[HELPER]` menu.
+
+| | Removes | Leaves |
+|---|---|---|
+| `/5 cleanup` typed in chat | the animesh toolkit **and** the `[HELPER]` menu, the helper bars object and `[QS]adjuster` | the running furniture: poses, menus, the HUD |
+| `[FINALIZE]` in the `[ANIMESH]` menu | the animesh toolkit: the dummy bodies, the `animeshconfig` notecard and both animesh scripts | everything else, `[HELPER]` menu included |
+
+Both are owner-only. Keeping the `[HELPER]` menu in a piece you sell is perfectly fine, it belongs to the open-source sitter engine, and some creators deliberately leave it in so their customers can fine-tune poses themselves. The animesh toolkit is the part that must not travel.
+
+`/5 cleanup` also takes the Adjust access level out of the `[SECURITY]` menu, because with the adjust tools gone there is no adjust workflow left to gate.
+
 ### Before you sell: script permissions
 
-Before you sell a finished piece, set the Quicky scripts inside to **copy-only** for the next owner: the buyer can copy and use the furniture, but the scripts can't be modified or transferred out.
+The Quicky scripts in a finished piece must be **copy-only** for the next owner: copy on, modify off, transfer off. The buyer can copy and use the furniture, but the scripts cannot be modified or taken out and passed on. This is a requirement of the creator license agreement, not a recommendation.
+
+Finalizing checks this for you. Both paths above look at `[QS]hudproxy` and `[QS]hudadmin` and tell you in chat if either of them is set differently, naming the script and the permission:
+
+```
+⚠ Delivery check: [QS]hudproxy and [QS]hudadmin must ship COPY ONLY
+(next owner: copy on, modify off, transfer off). The licence agreement
+allows nothing else.
+[QS]hudadmin: TRANSFER is on, the buyer can pass it on
+Fix this in Edit > Contents before you hand the piece out.
+Nothing was changed here.
+```
+
+The check reports, it does not act: no permission is changed and no script is removed, so you can correct it in **Edit > Contents** and finalize again, or simply fix it and deliver.
+
+Two things it cannot see. `hudmatrix` and `hudcontrol` live inside the QuickyHUD object itself, and no script can read another object's contents, so check those by hand. And a piece with no HUD scripts in it produces no message at all, since there is nothing for the check to look at.
 
 ### Installing, updating, repairing
 
