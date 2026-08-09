@@ -8,7 +8,7 @@ toc: true
 
 QuickySitter's core engine imposes no sitter-slot limit of its own, so the seat count you can wire in the AVpos notecard is bounded mainly by SL's per-prim script-count cap. The *product family* does add caps, though: `[QS]hudproxy` hard-caps concurrent HUD-driven sitters at **6**, and the `[QS]faces`, `[QS]sequence` and `[QS]select` plugins are sized for a small per-furniture cap (around 7 pre-handshake). So on a piece using the HUD or those plugins, plan around those limits rather than SL's script cap. The setup is a direct extension of the [Couples Setup](couples-setup.html) procedure.
 
-> **Working alone?** QuickySitter Pro's [Animesh Adjust Dummies](quickysitter-pro-animesh.html) fill the empty seats of a group pose while you set it up: one posable dummy per seat, no extra avatars needed.
+> **Working alone?** The Creator Edition's [Animesh Adjust Dummies](quickysitter-pro-animesh.html) fill the empty seats of a group pose while you set it up: one posable dummy per seat, no extra avatars needed.
 
 ## Adding more sitters
 

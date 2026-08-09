@@ -8,13 +8,15 @@ keywords: quickysitter pro, creator, toolset, quicky hud, configuration, hudconf
 toc: true
 ---
 
-**QuickySitter Pro** is the creator toolset: the plugins and tools that make building and selling QuickySitter furniture easier. The HUD is one of those plugins, the Animesh Adjust Dummies are another. This manual covers the creator side: getting Pro into a piece and configuring how it behaves. For everyday use of the HUD while sitting, see the [User Manual](quickyhud-manual.html). For setting up couples / group poses without a second avatar, see [Animesh Adjust Dummies](quickysitter-pro-animesh.html).
+**QuickySitter Pro (Creator Edition)** is the creator toolset: the plugins and tools that make building and selling QuickySitter furniture easier. The HUD is one of those plugins, the Animesh Adjust Dummies are another. This manual covers the creator side: getting the kit into a piece and configuring how it behaves. For everyday use of the HUD while sitting, see the [User Manual](quickyhud-manual.html). For setting up couples / group poses without a second avatar, see [Animesh Adjust Dummies](quickysitter-pro-animesh.html).
 
-> **Note:** This page is the *creator* side: preparing and configuring furniture you sell. QuickySitter Pro is built for the **QuickySitter engine**, which is what you get the most out of it on. The HUD's in-prim components (`[QS]hudproxy` / `[QS]hudadmin`) are deliberately kept able to run on a stock AVsitter linkset too; only the SYNC / Re-Sync features are structurally bound to `[QS]sitA` and need the QuickySitter engine.
+> **Which product is which?** From release 1.27 there are three names. **QuickySitter** is the sitter engine on its own. **QuickySitter Pro (Creator Edition)** is this kit, the one you build and sell furniture with. **QuickySitter Pro (Personal Edition)** is the same system for your own furniture, without the right to build products for sale. Both editions were previously sold together as "QuickyHUD + QuickySitter". The HUD itself keeps its name, QuickyHUD.
+
+> **Note:** This page is the *creator* side: preparing and configuring furniture you sell. The Creator Edition is built for the **QuickySitter engine**, which is what you get the most out of it on. The HUD's in-prim components (`[QS]hudproxy` / `[QS]hudadmin`) are deliberately kept able to run on a stock AVsitter linkset too; only the SYNC / Re-Sync features are structurally bound to `[QS]sitA` and need the QuickySitter engine.
 
 ## Setting up a piece
 
-From your QuickySitter Pro kit you only handle two things: the **installer** (a script object you drop into the furniture) and the **Quicky Updater HUD** (the in-world HUD you wear and click).
+From your Creator Edition kit you only handle two things: the **installer** (a script object you drop into the furniture) and the **Quicky Updater HUD** (the in-world HUD you wear and click).
 
 ### Converting an existing AVsitter piece
 

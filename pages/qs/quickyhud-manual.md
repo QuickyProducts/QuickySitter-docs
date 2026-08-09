@@ -95,7 +95,7 @@ In every mode the HUD is also attached for you when you enter ADJUSTMODE and are
 
 Swapping seats keeps your HUD: if you were wearing one before the swap you get it back on the new seat, and sitters who had none stay HUD-free.
 
-Which of the three modes a piece uses is set in its `hudconfig` notecard, together with the HUD's default screen position and its reserved storage. If the furniture is yours, you can change it: see [The `hudconfig` notecard](quickysitter-pro-manual.html#the-hudconfig-notecard) in the QuickySitter Pro manual.
+Which of the three modes a piece uses is set in its `hudconfig` notecard, together with the HUD's default screen position and its reserved storage. If the furniture is yours, you can change it: see [The `hudconfig` notecard](quickysitter-pro-manual.html#the-hudconfig-notecard) in the Creator Edition manual.
 
 ### Animation Re-Sync
 
