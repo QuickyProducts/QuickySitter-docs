@@ -159,7 +159,7 @@ QuickySitter keeps the AVsitter 2 plugin protocol, so protocol-driven stock **AV
 | **Expressions** (`[QS]faces`) | Facial expressions per pose. |
 | **Sequences** (`[QS]sequence`) | Auto-advancing pose sequences. |
 | **Helper** (`[AV]helperscript`) | The classic stock pose-adjust helper: QuickySitter's HUD + ADJUSTMODE already cover this, so you rarely need it. |
-| **Pose pad** (`[QS]huddialog`) | Turns the `[POSE]` entry in `[ADJUST]` into the HUD's arrow controls as a menu: camera-relative directions, three step sizes, a Move and a Rotate page, every press saved right away. Each sitter gets their own pad. Leave it out and `[POSE]` stays the classic position dialog. Needs the Quicky HUD scripts in the piece. |
+| **Pose pad** (`[QS]huddialog`) | Turns the `[POSE]` entry in `[ADJUST]` into the HUD's arrow controls as a menu: camera-relative directions, three step sizes, a Move and a Rotate page, every press saved right away. Each sitter gets their own pad. Part of the Quicky HUD set, so installs and updates deliver it with the rest; delete it from a piece and `[POSE]` goes back to the classic position dialog. |
 
 QuickySitter ships its own take on some of these (expressions, sequences, props, RLV, the seat picker) with extra integration: where a Quicky version is included, use that.
 
