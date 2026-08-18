@@ -37,7 +37,11 @@ The piece answers with its own pose menu and the session begins. From there the 
 3. `[ANIMESH]` opens the seat list, exactly as when seated. Fill the seats with dummies.
 4. Drive them with the HUD: the arrows move, `SELECT` picks which dummy they move, `MENU` returns to the pose menu, `RESET` puts one back. Every change is saved as the pose default straight away, so there is no separate save step.
 5. `[DUMP]` rebuilds the `AVpos` once you are happy, and the link arrives in chat.
-6. `[DONE]` ends the session and clears the dummies.
+6. `[DONE]` ends the session and clears the dummies, and it is the only thing that does.
+
+Walking off, teleporting away, logging out or sitting down all end the session but **leave the scene standing**, so an interruption does not cost you a group setup. Clear it later with `[OFF ALL]` in the seat list, or with `[DONE]` in the next session.
+
+Picking a different pose keeps the dummies on seats that pose does not use. That is deliberate: it is how you hold two solo poses side by side and judge one against the other. Seats the new pose does define are re-animated and moved into it as usual.
 
 `[HELPER HUD]` hands you a HUD if you are not wearing one and takes it back when the session ends. The session also ends by itself if you sit down or leave the region, so nothing is left running behind you.
 
@@ -105,7 +109,7 @@ A **Re-Sync** restarts the dummies together with the real sitters, so SYNC poses
 
 ### Showcase mode is gone (1.28)
 
-Earlier versions carried a `[SHOWCASE]` toggle that kept staged dummies on their seats through stand-up, for photos and vendor displays. It existed to work around the fact that building a display meant sitting on it and then getting off. Remote authoring builds the same display without anyone sitting down in the first place, so the toggle has been removed and the yield-to-people behaviour above always applies. Set a display piece up with `/5 animesh` and finalize it as usual.
+Earlier versions carried a `[SHOWCASE]` toggle that kept staged dummies on their seats through stand-up, for photos and vendor displays. It existed to work around the fact that building a display meant sitting on it and then getting off. Remote authoring builds the same display without anyone sitting down in the first place, so the toggle has been removed. A standing session leaves its dummies in place unless you press `[DONE]`, and for a seated one the yield-to-people behaviour above always applies. Set a display piece up with `/5 animesh` and finalize it as usual.
 
 ## [FINALIZE]
 
