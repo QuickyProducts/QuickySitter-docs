@@ -4,11 +4,11 @@ sidebar: home_sidebar
 permalink: quickysitter-pro-animesh.html
 redirect_from:
   - /quickyhud-animesh.html
-keywords: animesh, dummy, adjust, partner, couples, group poses, solo setup, creator
+keywords: animesh, dummy, adjust, partner, couples, group poses, solo setup, creator, remote authoring, standing
 toc: true
 ---
 
-Set up and adjust **couples and group poses without a second avatar**: the Animesh plugin rezzes a posable dummy onto any empty seat of the current pose. The dummy plays that seat's animation and sits at its pose position. You adjust it through the QuickyHUD exactly like a real partner, and the result saves through the normal adjust workflow.
+Set up and adjust **couples and group poses without a second avatar**: the Animesh plugin rezzes a posable dummy onto any empty seat of the current pose. The dummy plays that seat's animation and sits at its pose position. You adjust it through the QuickyHUD exactly like a real partner, and the result saves through the normal adjust workflow. You can do all of it seated, or stand next to the piece and build it from outside (see [Remote authoring](#remote-authoring-building-without-sitting-down-128)).
 
 > **Note:** This is a **creator tool**, delivered with QuickySitter Pro (Creator Edition) only, never with the Personal Edition. It is license-gated: on a piece without a valid creator license the plugin stays idle and the `[ANIMESH]` entry never appears. Finished customer furniture never receives it, and `[FINALIZE]` strips it off a piece before you sell.
 
@@ -20,7 +20,47 @@ Set up and adjust **couples and group poses without a second avatar**: the Anime
 4. Enter ADJUSTMODE (the `[HELPER HUD]` button in the seat list does it in one click and attaches the HUD) and `SELECT` the dummy in the HUD picker. It behaves like any sitter target.
 5. Adjust position/rotation; saving works as usual (`[SAVE]` / `[DUMP]` into the AVpos notecard).
 
-Repeat per seat: one dummy per empty seat, several at once for group poses. `[OFF ALL]` removes every dummy in one click; standing up cleans them up automatically (unless **Showcase mode** is on, see [Around real avatars](#around-real-avatars)).
+Repeat per seat: one dummy per empty seat, several at once for group poses. `[OFF ALL]` removes every dummy in one click; standing up cleans them up automatically.
+
+## Remote authoring: building without sitting down (1.28)
+
+Everything above assumes you are sitting on the piece. You do not have to be. Stand within **5 m** of the furniture and type:
+
+```
+/5 animesh
+```
+
+The piece answers with its own pose menu and the session begins. From there the work is the same, with one difference that matters: you can walk around the piece and look at the scene from outside while you build it.
+
+1. Pick the pose you want to build. The menu stays open, so you can change your mind.
+2. `[ADJUST]` leads to the session's own page: `[ANIMESH]`, `[HELPER HUD]`, `[DUMP]` and `[DONE]`.
+3. `[ANIMESH]` opens the seat list, exactly as when seated. Fill the seats with dummies.
+4. Drive them with the HUD: the arrows move, `SELECT` picks which dummy they move, `MENU` returns to the pose menu, `RESET` puts one back. Every change is saved as the pose default straight away, so there is no separate save step.
+5. `[DUMP]` rebuilds the `AVpos` once you are happy, and the link arrives in chat.
+6. `[DONE]` ends the session and clears the dummies.
+
+`[HELPER HUD]` hands you a HUD if you are not wearing one and takes it back when the session ends. The session also ends by itself if you sit down or leave the region, so nothing is left running behind you.
+
+### Sitting or standing
+
+The two modes divide the work rather than replacing each other:
+
+- **Sit** to create a pose and to judge how it feels on a real body, which is the one thing a dummy cannot tell you.
+- **Stand** to build and position a couple or a group, and to see the result the way a visitor will.
+
+Switching is free. Sitting down during a session hands you straight to the seated tools; standing up and typing `/5 animesh` brings you back, and your dummies are still where you left them.
+
+### Who may open a session
+
+Remote authoring follows the **Adjust** access level in the `[SECURITY]` menu, the same setting that governs the seated adjust tools. On the default, `OWNER`, only you can open a session. Set it to `GROUP` or `ALL` and the people you have opened the piece to can build on it too, which is what you want when you build from a personal account while a store account owns the furniture.
+
+On a piece without the security plugin the chat shortcut does the same job:
+
+```
+/5 adjust group
+```
+
+The level falls back to `OWNER` automatically when a piece changes hands, so a customer never inherits an opened setting.
 
 ## Reaching the menu while adjusting
 
@@ -63,13 +103,13 @@ By default, dummies yield to people:
 
 A **Re-Sync** restarts the dummies together with the real sitters, so SYNC poses stay in phase.
 
-### Showcase mode (1.25)
+### Showcase mode is gone (1.28)
 
-The seat list carries an owner-only **`[SHOWCASE]`** toggle (its current state is shown in the seat-list prompt). With Showcase **on**, staged dummies **keep their seats** through stand-up, sit-down and swap instead of derezzing, which is handy for photos and vendor displays where the scene should stay populated after you step off. Turn Showcase **off** again (or use `[OFF ALL]`) to clear the dummies; with it off, the default yield-to-people behavior above applies.
+Earlier versions carried a `[SHOWCASE]` toggle that kept staged dummies on their seats through stand-up, for photos and vendor displays. It existed to work around the fact that building a display meant sitting on it and then getting off. Remote authoring builds the same display without anyone sitting down in the first place, so the toggle has been removed and the yield-to-people behaviour above always applies. Set a display piece up with `/5 animesh` and finalize it as usual.
 
 ## [FINALIZE]
 
-`[FINALIZE]` in the seat list (owner-only, with a confirm dialog) strips the complete animesh kit off the piece: all `[QS]dummy` bodies, the `animeshconfig` notecard and both plugin scripts. Run it on a finished piece **before you sell it**, and the customer copy then carries no trace of the tool.
+`[FINALIZE]` in the seat list (owner-only, with a confirm dialog) strips the complete animesh kit off the piece: all `[QS]dummy` bodies, the `animeshconfig` notecard and all three plugin scripts. Run it on a finished piece **before you sell it**, and the customer copy then carries no trace of the tool.
 
 ## Limits
 
@@ -86,3 +126,5 @@ The seat list carries an owner-only **`[SHOWCASE]`** toggle (its current state i
 | A seat is missing from the list | The seat is occupied, or the current pose has no entry for that slot in the AVpos notecard. |
 | Dummy sits at the wrong spot | The slot's `{pose}` position line is missing or unadjusted in AVpos. Adjust the dummy and save. |
 | Boot line says `N bodies (D discovered + C config)` | Informational: how many bodies the picker can offer (discovered by name + notecard entries), not how many are rezzed. |
+| `/5 animesh` does nothing | You are further than 5 m from the piece, the plugin is not on it, or the Adjust access level does not include you (see [Who may open a session](#who-may-open-a-session)). Typing it again while a session runs simply reopens the menu. |
+| The HUD does not move a standing dummy | Press `SELECT` and pick the dummy first: with nobody seated there is no default target to fall back on. |
