@@ -8,6 +8,11 @@ toc: true
 
 Customer-facing changes only, and each entry is tagged **Fix** (bug fix) or **Feature** (new). Routine internal/technical changes aren't listed. Newest version on top.
 
+## Version 1.28
+
+- **Feature**: Groundwork for Remote authoring, the Creator Edition feature that lets you build an animesh scene while standing instead of sitting. Two things had to change on the sitter side: a prop, and the HUD itself, can now be handed to someone who occupies no seat at all, and the Adjust access level from `[SECURITY]` decides who may open such a session, exactly as it already decides who may use the seated adjust tools. On furniture without the security plugin the chat shortcut `/5 adjust owner|group|all` sets the same level. Nothing changes for a piece that is only sat on.
+- **Fix**: The `[DUMP]` link is repeated when the dump finishes. Until now the completion line only said the link was final, while the link itself had been printed before the dump started, so on a large piece you had to scroll back through hundreds of lines to find it. Both the success and the failure line now carry it, and in the failure case it is the more useful of the two, because it shows you what did arrive.
+
 ## Version 1.27
 
 - **Feature**: New build tool `[QS]AVpos-shifter`, the QuickySitter version of the AVsitter AVpos shifter. It moves every pose and prop in an `AVpos` notecard by an offset (`/5 <0,0,1.5>`), turns them (`/6 <0,0,180>`), or rebases the whole notecard onto another prim you touch. Three things are better than in the original: the "Settings copy" link at the end works again, because it posts to the QuickySitter dump service instead of the old avsitter.com page that stopped accepting our output; it reminds you to run `[HELPER]` `[DUMP]` into the notecard first, since positions you saved with `[SAVE]` live in the furniture and not in the notecard, so shifting without that step would convert the old numbers and throw your saved ones away; and it no longer deletes itself after each run, so you can shift twice without fetching a fresh copy. It disappears with `/5 cleanup` together with the other build tools. See [Creator Utilities](creator-utilities.html).
