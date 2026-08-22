@@ -8,6 +8,10 @@ toc: true
 
 Customer-facing changes only, and each entry is tagged **Fix** (bug fix) or **Feature** (new). Routine internal/technical changes aren't listed. Newest version on top.
 
+## Version 1.29
+
+- **Fix**: `<< Softer` and `Harder >>` change the speed for **everyone seated** again, the way AVsitter always did it. A guard added in an earlier QuickySitter release (against a double-dialog bug) had quietly narrowed the two buttons to the seat that clicked them, so a couple on a `SYNC` pose with speed variants drifted apart: the plus and minus variants are different-length loops, and one seat alone changed pace. The guard itself stays, and the bug it fixed stays fixed - only the speed buttons go back to reaching every seat.
+
 ## Version 1.28
 
 - **Feature**: Groundwork for Remote authoring, the Creator Edition feature that lets you build an animesh scene while standing instead of sitting. Two things had to change on the sitter side: a prop, and the HUD itself, can now be handed to someone who occupies no seat at all, and the Adjust access level from `[SECURITY]` decides who may open such a session, exactly as it already decides who may use the seated adjust tools. On furniture without the security plugin the chat shortcut `/5 adjust owner|group|all` sets the same level. Nothing changes for a piece that is only sat on.
