@@ -14,11 +14,11 @@ topnav_dropdowns:
   folders:
     - title: Links
       folderitems:
-        - title: QuickyHUD User Manual
-          url: /quickyhud-manual.html
         - title: QuickySitter Pro Manual
           url: /quickysitter-pro-manual.html
-        - title: QuickySitter Pro Animesh Adjust Dummies
+        - title: QuickySitter Pro HUD Manual
+          url: /quickyhud-manual.html
+        - title: QuickySitter Pro Animesh Manual
           url: /quickysitter-pro-animesh.html
         - title: QuickySitter Changelog
           url: /quickysitter-changelog.html

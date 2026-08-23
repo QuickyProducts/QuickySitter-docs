@@ -1,5 +1,5 @@
 ---
-title: QuickyHUD User Manual
+title: QuickySitter Pro HUD Manual
 sidebar: home_sidebar
 permalink: quickyhud-manual.html
 keywords: quicky hud, pose hud, manual, help, adjustmode, sync

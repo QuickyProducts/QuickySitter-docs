@@ -8,7 +8,7 @@ keywords: quickysitter pro, creator, toolset, quicky hud, configuration, hudconf
 toc: true
 ---
 
-**QuickySitter Pro (Creator Edition)** is the creator toolset: the plugins and tools that make building and selling QuickySitter furniture easier. The HUD is one of those plugins, the Animesh Adjust Dummies are another. This manual covers the creator side: getting the kit into a piece and configuring how it behaves. For everyday use of the HUD while sitting, see the [User Manual](quickyhud-manual.html). For setting up couples / group poses without a second avatar, see [Animesh Adjust Dummies](quickysitter-pro-animesh.html).
+**QuickySitter Pro (Creator Edition)** is the creator toolset: the plugins and tools that make building and selling QuickySitter furniture easier. The HUD is one of those plugins, the Animesh Adjust Dummies are another. This manual covers the creator side: getting the kit into a piece and configuring how it behaves. For everyday use of the HUD while sitting, see the [HUD Manual](quickyhud-manual.html). For setting up couples / group poses without a second avatar, see [Animesh Adjust Dummies](quickysitter-pro-animesh.html).
 
 > **Which product is which?** From release 1.27 there are three names. **QuickySitter** is the sitter engine on its own. **QuickySitter Pro (Creator Edition)** is this kit, the one you build and sell furniture with. **QuickySitter Pro (Personal Edition)** is the same system for your own furniture, without the right to build products for sale. Both editions were previously sold together as "QuickyHUD + QuickySitter". The HUD itself keeps its name, QuickyHUD.
 
@@ -121,11 +121,11 @@ Second Life resets a HUD's position every time it attaches, so the HUD re-applie
 
 ### HUD design / texture
 
-Set the shipped design in the `TEXTURE` field. Users can also switch designs live: tap the design button for a built-in one, or drop a texture UUID for a custom design. The chosen design sticks across re-attach. (See the [User Manual](quickyhud-manual.html).)
+Set the shipped design in the `TEXTURE` field. Users can also switch designs live: tap the design button for a built-in one, or drop a texture UUID for a custom design. The chosen design sticks across re-attach. (See the [HUD Manual](quickyhud-manual.html).)
 
 ### ADJUSTMODE: authoring poses live
 
-ADJUSTMODE is your working mode while building. With it on, every move and rotate you make with the HUD writes **straight into the pose data** instead of being stored as a personal offset. Tune your poses, then use the **`[DUMP]`** function to write the result into a fresh AVpos notecard. Enter it with the **`[HELPER HUD]`** button in the furniture's `[ADJUST]` menu, leave it with `[DONE]` or `[ADJUST OFF]` in the pose menu; standing up ends it too. See [User Manual → ADJUSTMODE for Creators](quickyhud-manual.html#adjustmode-for-creators) for the full workflow.
+ADJUSTMODE is your working mode while building. With it on, every move and rotate you make with the HUD writes **straight into the pose data** instead of being stored as a personal offset. Tune your poses, then use the **`[DUMP]`** function to write the result into a fresh AVpos notecard. Enter it with the **`[HELPER HUD]`** button in the furniture's `[ADJUST]` menu, leave it with `[DONE]` or `[ADJUST OFF]` in the pose menu; standing up ends it too. See [HUD Manual → ADJUSTMODE for Creators](quickyhud-manual.html#adjustmode-for-creators) for the full workflow.
 
 On a piece in **menu mode** (no auto-attach on sit), turning ADJUSTMODE on also makes sure you have a HUD to drive it: the in-prim hudproxy fires `90274 ATTACH_FOR_ADJUST` to hudadmin, which attaches a HUD to the seated operator. So you can enter ADJUSTMODE on a menu-mode piece without first attaching the HUD by hand.
 
@@ -171,4 +171,4 @@ Full plugin-by-plugin detail: [Compatibility Matrix](compatibility-matrix.html).
 
 ## See also
 
-- [User Manual](quickyhud-manual.html): using the HUD while sitting.
+- [HUD Manual](quickyhud-manual.html): using the HUD while sitting.

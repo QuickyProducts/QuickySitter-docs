@@ -1,5 +1,5 @@
 ---
-title: QuickySitter Pro Animesh Adjust Dummies
+title: QuickySitter Pro Animesh Manual
 sidebar: home_sidebar
 permalink: quickysitter-pro-animesh.html
 redirect_from:
