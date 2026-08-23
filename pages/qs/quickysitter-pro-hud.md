@@ -1,7 +1,9 @@
 ---
 title: QuickySitter Pro HUD Manual
 sidebar: home_sidebar
-permalink: quickyhud-manual.html
+permalink: quickysitter-pro-hud.html
+redirect_from:
+  - /quickyhud-manual.html
 keywords: quicky hud, pose hud, manual, help, adjustmode, sync
 toc: true
 ---
